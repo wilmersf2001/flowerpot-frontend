@@ -3,15 +3,17 @@ import Link from "next/link";
 export function PanelShell({
   label,
   nav,
+  footer,
   children,
 }: {
   label: string;
   nav: { href: string; label: string }[];
+  footer?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <div className="flex min-h-svh">
-      <aside className="hidden w-60 shrink-0 border-r bg-sidebar p-4 text-sidebar-foreground md:block">
+      <aside className="hidden w-60 shrink-0 flex-col border-r bg-sidebar p-4 text-sidebar-foreground md:flex">
         <div className="mb-6 px-2">
           <span className="text-sm font-bold tracking-tight">Flowerpot</span>
           <p className="text-xs text-muted-foreground">{label}</p>
@@ -27,6 +29,7 @@ export function PanelShell({
             </Link>
           ))}
         </nav>
+        {footer && <div className="mt-auto pt-4">{footer}</div>}
       </aside>
       <main className="flex-1 p-6">{children}</main>
     </div>

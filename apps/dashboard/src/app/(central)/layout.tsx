@@ -1,4 +1,5 @@
 import { PanelShell } from "@/components/panel-shell";
+import { LogoutButton } from "@/components/logout-button";
 
 // Served at admin.flowerpot.pe once middleware.ts routes by subdomain (M1).
 const NAV = [
@@ -14,7 +15,11 @@ export default function CentralLayout({
   children: React.ReactNode;
 }) {
   return (
-    <PanelShell label="Administración central" nav={NAV}>
+    <PanelShell
+      label="Administración central"
+      nav={NAV}
+      footer={<LogoutButton />}
+    >
       {children}
     </PanelShell>
   );
