@@ -53,7 +53,7 @@ import { type NextRequest, NextResponse } from "next/server";
 //   return NextResponse.redirect(url);
 // }
 
-export function middleware(_req: NextRequest): NextResponse {
+export function proxy(_req: NextRequest): NextResponse {
   // M0: pass everything through untouched.
   return NextResponse.next();
 }
