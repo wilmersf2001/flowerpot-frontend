@@ -1,0 +1,21 @@
+{
+  "name": "@repo/types",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./api": "./src/api.d.ts"
+  },
+  "scripts": {
+    "gen": "openapi-typescript http://api.flowerpot.test/docs/api.json -o ./src/api.d.ts",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/config": "*",
+    "eslint": "^9",
+    "openapi-typescript": "^7.4.0",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,24 @@
+/**
+ * The single stylesheet every app imports:  `import "@repo/ui/globals.css"`.
+ * Loads Tailwind + the shared Flowerpot tokens, and tells Tailwind v4 to scan
+ * this package's components for utility classes (it does not cross package
+ * boundaries on its own).
+ */
+@import "tailwindcss";
+@import "@repo/config/tailwind/theme.css";
+
+@source "../components";
+
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}

@@ -1,159 +1,68 @@
-# Turborepo starter
+# Flowerpot — Frontend
 
-This Turborepo starter is maintained by the Turborepo core team.
+Monorepo (Turborepo + npm) del frontend de **Flowerpot**, SaaS multi-tenant de
+gestión de gimnasios en Perú. El backend (Laravel API REST) vive en otro repo.
 
-## Using this example
+> Estado: **M0 — andamiaje**. No hay lógica de negocio todavía.
 
-Run the following command:
+## Estructura
 
-```sh
-npx create-turbo@latest
+```
+apps/
+  web/         Next.js público  — marketing, pricing, checkout (SEO, SSG/ISR)   :3000
+  dashboard/   Next.js privado  — UNA app, DOS paneles según subdominio          :3001
+                 admin.flowerpot.pe  -> route group (central)   [dueño del SaaS]
+                 {gym}.flowerpot.pe  -> route group (tenant)    [cada gimnasio]
+packages/
+  ui/           design system: shadcn/ui + Tailwind v4 (Button, Input, Table, Toast)
+  api-client/   instancia axios + interceptores (X-Tenant, manejo de 401)
+  types/        tipos generados desde OpenAPI (openapi-typescript) — placeholder
+  config/       tsconfig + ESLint + preset de Tailwind/PostCSS compartidos
 ```
 
-## What's inside?
+### `apps/dashboard` — paneles por subdominio
 
-This Turborepo includes the following packages/apps:
+`src/middleware.ts` es hoy un **esqueleto con TODOs** (M0). Cuando se implemente:
+lee el subdominio, elige route group `(central)` / `(tenant)`, en `(tenant)`
+setea la cookie `tenant=<slug>` (que `@repo/api-client` reenvía como `X-Tenant`),
+y chequea la cookie `session` (httpOnly) para proteger rutas privadas.
 
-### Apps and Packages
+## Scripts
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `@next/eslint-plugin-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+npm install
+npm run dev            # ambas apps (turbo)
+npm run dev:web        # solo :3000
+npm run dev:dashboard  # solo :3001
+npm run build
+npm run lint
+npm run check-types
+npm run gen:types      # regenera packages/types/src/api.d.ts (backend aún no expone Scramble)
 ```
 
-Without global `turbo`, use your package manager:
+## Config
 
-```sh
-cd my-turborepo
-npx turbo build
-npm exec turbo build
-npm exec turbo build
+Copia `apps/<app>/.env.local.example` a `apps/<app>/.env.local`:
+
+```
+NEXT_PUBLIC_API_URL=http://api.flowerpot.test/api
+API_INTERNAL_URL=http://api.flowerpot.test/api
+SESSION_COOKIE_NAME=session
+ROOT_DOMAIN=flowerpot.pe
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Reglas del proyecto
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+- TypeScript estricto; `any` prohibido sin justificación inline.
+- Sin Inertia; nada acoplado directamente a Laravel (todo pasa por `@repo/api-client`).
+- El token de auth va SIEMPRE en cookie httpOnly, nunca en `localStorage`.
+- Iconos: solo `lucide-react`, importados por nombre.
+- Node >= 20, npm 10.
 
-```sh
-turbo build --filter=docs
+## Añadir componentes shadcn
+
+shadcn está centralizado en `packages/ui`. Desde una app:
+
+```bash
+cd packages/ui && npx shadcn@latest add <componente>
 ```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-npm exec turbo link
-npm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)

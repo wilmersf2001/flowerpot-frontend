@@ -1,0 +1,20 @@
+/**
+ * Convenience entry: Tailwind + Flowerpot tokens + base layer.
+ * `@repo/ui/globals.css` composes these itself and also declares `@source`
+ * for the component files, so apps normally import `@repo/ui/globals.css`
+ * rather than this file directly.
+ */
+@import "tailwindcss";
+@import "./theme.css";
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}

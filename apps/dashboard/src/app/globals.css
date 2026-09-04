@@ -1,0 +1,4 @@
+@import "@repo/ui/globals.css";
+
+/* Also scan this app's own source (relative to this file = apps/dashboard/src). */
+@source "../";
