@@ -15,10 +15,12 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
-/** A dónde va el usuario tras autenticarse (primer ítem del panel central). */
-const AFTER_LOGIN_PATH = "/tenants";
-
-export function LoginForm() {
+/** A dónde va el usuario tras autenticarse. Lo decide el panel (ver page.tsx). */
+export function LoginForm({
+  afterLoginPath = "/tenants",
+}: {
+  afterLoginPath?: string;
+}) {
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -45,7 +47,7 @@ export function LoginForm() {
     }
 
     if (res.ok) {
-      router.replace(AFTER_LOGIN_PATH);
+      router.replace(afterLoginPath);
       router.refresh();
       return;
     }

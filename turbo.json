@@ -2,7 +2,13 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalEnv": ["NODE_ENV"],
-  "globalPassThroughEnv": ["ROOT_DOMAIN", "SESSION_COOKIE_NAME"],
+  "globalPassThroughEnv": [
+    "ROOT_DOMAIN",
+    "SESSION_COOKIE_NAME",
+    "TENANT_SESSION_COOKIE_NAME",
+    "DEV_PANEL",
+    "DEV_TENANT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

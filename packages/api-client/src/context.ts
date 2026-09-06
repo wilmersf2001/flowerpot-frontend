@@ -13,23 +13,27 @@
 /**
  * Returns the current tenant slug, to be sent as the `X-Tenant` header.
  *
- * TODO(M1): read the `tenant` cookie.
- *   - Client: parse `document.cookie`.
- *   - Server (RSC / route handler): `cookies().get("tenant")` from
- *     `next/headers`, injected by whoever constructs the request.
+ * Client: parses the non-httpOnly `tenant` cookie that `proxy.ts` sets from the
+ * subdomain. Server (RSC / route handler): still returns `null` here — server
+ * callers must pass `X-Tenant` explicitly via `createApiClient({ headers })`,
+ * because `next/headers` can't be imported from this framework-agnostic package.
  */
 export function readTenantFromContext(): string | null {
-  return null;
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/(?:^|;\s*)tenant=([^;]*)/);
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
 }
 
 /**
- * Called once when the API answers 401. Must drop the httpOnly session cookie
- * (server-side, via a sign-out route handler / server action) and send the
- * user to `/login`.
+ * Called when the API answers 401 (session missing/expired). There is no
+ * client-side token to clear; we just bounce the browser to `/login`, where
+ * `proxy.ts` takes over. A hard navigation (not `router.push`) is deliberate:
+ * it drops all in-memory state of the expired session.
  *
- * TODO(M1): wire to the real sign-out flow. Deliberately a no-op for now.
- * Never clears a client-side token store, because there isn't one.
+ * No-op on the server and when we're already on `/login` (avoids a loop).
  */
 export function handleUnauthorized(): void {
-  // no-op (M0)
+  if (typeof window === "undefined") return;
+  if (window.location.pathname === "/login") return;
+  window.location.assign("/login");
 }

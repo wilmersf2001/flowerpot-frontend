@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/session";
+import { resolvePanelFromHost } from "@/lib/domain";
+import {
+  SESSION_COOKIES,
+  TENANT_SLUG_COOKIE,
+  sessionCookieOptions,
+  tenantSlugCookieOptions,
+} from "@/lib/session";
 
 /**
- * BFF de login del panel central.
+ * BFF de login. Según el subdominio por el que entró el navegador:
  *
- * Recibe las credenciales del formulario, llama a `POST /admin/login` de la API
- * y, si todo va bien, guarda el token de Sanctum en una cookie httpOnly. El
- * token nunca llega al navegador.
+ *   panel central -> POST /admin/login
+ *   panel tenant  -> POST /auth/login   (+ cabecera `X-Tenant: <slug>`)
+ *
+ * Si la API responde OK, guarda el token de Sanctum en la cookie httpOnly del
+ * panel correspondiente. El token nunca llega al navegador.
  */
 
 const LoginSchema = z.object({
@@ -34,7 +42,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const apiUrl = process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_INTERNAL_URL;
   if (!apiUrl) {
     return NextResponse.json(
       { message: "API no configurada (falta API_INTERNAL_URL)." },
@@ -42,14 +50,21 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  const panel = resolvePanelFromHost(request.headers.get("host"));
+  const endpoint =
+    panel.kind === "tenant" ? "/auth/login" : "/admin/login";
+
+  const apiHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+  if (panel.kind === "tenant") apiHeaders["X-Tenant"] = panel.slug;
+
   let apiRes: Response;
   try {
-    apiRes = await fetch(`${apiUrl}/admin/login`, {
+    apiRes = await fetch(`${apiUrl}${endpoint}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers: apiHeaders,
       body: JSON.stringify(parsed.data),
       cache: "no-store",
     });
@@ -85,6 +100,9 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(SESSION_COOKIE, token, sessionCookieOptions);
+  response.cookies.set(SESSION_COOKIES[panel.kind], token, sessionCookieOptions);
+  if (panel.kind === "tenant") {
+    response.cookies.set(TENANT_SLUG_COOKIE, panel.slug, tenantSlugCookieOptions);
+  }
   return response;
 }

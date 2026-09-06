@@ -1,25 +1,15 @@
-import { PanelShell } from "@/components/panel-shell";
+import { AppShell } from "@/components/app-shell";
+import { currentPanel } from "@/lib/panel";
 
-// Served at {gym}.flowerpot.pe once middleware.ts routes by subdomain (M1).
-const NAV = [
-  { href: "/members", label: "Socios" },
-  { href: "/memberships", label: "Membresías" },
-  { href: "/payments", label: "Pagos" },
-  { href: "/attendance", label: "Asistencia" },
-  { href: "/check-in", label: "Check-in" },
-  { href: "/staff", label: "Personal" },
-  { href: "/branches", label: "Sedes" },
-  { href: "/cash-register", label: "Caja" },
-];
-
-export default function TenantLayout({
+/**
+ * Panel de un gimnasio. Se sirve en `{slug}.<ROOT_DOMAIN>`; `proxy.ts` resuelve
+ * el slug desde el subdominio e inyecta las cabeceras que lee `currentPanel()`.
+ */
+export default async function TenantLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <PanelShell label="Panel del gimnasio" nav={NAV}>
-      {children}
-    </PanelShell>
-  );
+  const panel = await currentPanel();
+  return <AppShell panel={panel}>{children}</AppShell>;
 }

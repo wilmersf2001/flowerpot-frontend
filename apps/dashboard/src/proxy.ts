@@ -1,43 +1,98 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE } from "@/lib/session";
+import { resolvePanelFromHost } from "@/lib/domain";
+import {
+  SESSION_COOKIES,
+  TENANT_SLUG_COOKIE,
+  tenantSlugCookieOptions,
+  type PanelKind,
+} from "@/lib/session";
 
 /**
- * apps/dashboard es UNA app Next.js que servirá DOS paneles por subdominio:
+ * apps/dashboard es UNA app Next.js que sirve DOS paneles según el subdominio:
  *
- *   admin.flowerpot.pe   -> route group (central)  — dueño del SaaS
- *   {gym}.flowerpot.pe   -> route group (tenant)   — cada gimnasio
+ *   admin.<ROOT_DOMAIN>   -> route group (central)  — dueño del SaaS
+ *   {gym}.<ROOT_DOMAIN>   -> route group (tenant)   — cada gimnasio
  *
- * El ruteo por subdominio y la cookie `tenant` siguen pendientes (M1). Lo que
- * ya está activo aquí es el guard de sesión: sin cookie httpOnly de sesión no
- * se entra a ninguna ruta salvo `/login`.
+ * Este proxy hace tres cosas en cada request:
+ *   1. Resuelve el panel desde el host y lo pasa a la app por cabeceras
+ *      (`x-panel`, `x-tenant-slug`) + deja la cookie legible `tenant`.
+ *   2. Guard de sesión: sin la cookie httpOnly del panel -> `/login`.
+ *   3. Evita cruzar de panel (una ruta de gimnasio en el subdominio admin, etc.).
  */
 
-/** Rutas accesibles sin sesión. */
-const PUBLIC_PATHS = new Set<string>(["/login"]);
+/** A dónde se manda al usuario recién logueado, por panel. */
+const AFTER_LOGIN: Record<PanelKind, string> = {
+  central: "/tenants",
+  tenant: "/members",
+};
 
-/** Destino tras iniciar sesión (primer ítem del panel central). */
-const AFTER_LOGIN_PATH = "/tenants";
+/** Rutas que pertenecen a cada panel (route groups `(central)` / `(tenant)`). */
+const CENTRAL_PREFIXES = ["/tenants", "/plans", "/subscriptions", "/gym-settings"];
+const TENANT_PREFIXES = [
+  "/members",
+  "/memberships",
+  "/payments",
+  "/attendance",
+  "/check-in",
+  "/staff",
+  "/branches",
+  "/cash-register",
+];
+
+function matchesPrefix(pathname: string, prefixes: readonly string[]): boolean {
+  return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
 
 export function proxy(req: NextRequest): NextResponse {
   const { pathname } = req.nextUrl;
-  const hasSession = req.cookies.has(SESSION_COOKIE);
-  const isPublic = PUBLIC_PATHS.has(pathname);
+  const panel = resolvePanelFromHost(req.headers.get("host"));
+  const kind: PanelKind = panel.kind;
 
-  // Sin sesión -> al login.
-  if (!hasSession && !isPublic) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  const hasSession = req.cookies.has(SESSION_COOKIES[kind]);
+  const isLogin = pathname === "/login";
+
+  // --- 1. Propagar el panel a la app por cabeceras de request. ---
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-panel", kind);
+  if (panel.kind === "tenant") {
+    requestHeaders.set("x-tenant-slug", panel.slug);
+  } else {
+    requestHeaders.delete("x-tenant-slug");
   }
 
-  // Con sesión, no tiene sentido volver al login.
-  if (hasSession && isPublic) {
+  const withPanel = (res: NextResponse): NextResponse => {
+    // Cookie legible con el slug (o borrarla en el panel central).
+    if (panel.kind === "tenant") {
+      res.cookies.set(TENANT_SLUG_COOKIE, panel.slug, tenantSlugCookieOptions);
+    } else {
+      res.cookies.set(TENANT_SLUG_COOKIE, "", {
+        ...tenantSlugCookieOptions,
+        maxAge: 0,
+      });
+    }
+    return res;
+  };
+
+  const redirectTo = (to: string): NextResponse => {
     const url = req.nextUrl.clone();
-    url.pathname = AFTER_LOGIN_PATH;
-    return NextResponse.redirect(url);
+    url.pathname = to;
+    url.search = "";
+    return withPanel(NextResponse.redirect(url));
+  };
+
+  // --- 2. Guard de sesión. ---
+  if (!hasSession && !isLogin) return redirectTo("/login");
+  if (hasSession && isLogin) return redirectTo(AFTER_LOGIN[kind]);
+
+  // --- 3. Con sesión: no cruzar de panel y aterrizar "/" donde toca. ---
+  if (hasSession) {
+    const crossPanel =
+      (kind === "central" && matchesPrefix(pathname, TENANT_PREFIXES)) ||
+      (kind === "tenant" && matchesPrefix(pathname, CENTRAL_PREFIXES));
+    if (pathname === "/" || crossPanel) return redirectTo(AFTER_LOGIN[kind]);
   }
 
-  return NextResponse.next();
+  return withPanel(NextResponse.next({ request: { headers: requestHeaders } }));
 }
 
 export const config = {
