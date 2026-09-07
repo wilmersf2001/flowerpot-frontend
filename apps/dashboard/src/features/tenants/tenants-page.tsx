@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@repo/ui/button";
-import { ResourceHeader } from "@/features/_shared";
+import {
+  ResourceHeader,
+  SearchInput,
+  useDebouncedValue,
+} from "@/features/_shared";
 import { useTenants } from "./lib/tenants.hooks";
 import type { CreateTenantResult, TenantRow } from "./lib/tenants.types";
 import { TenantsTable } from "./components/tenants-table";
@@ -11,13 +15,26 @@ import { TenantFormDialog } from "./components/tenant-form-dialog";
 import { TenantCredentialsDialog } from "./components/tenant-credentials-dialog";
 import { DeleteTenantDialog } from "./components/delete-tenant-dialog";
 
-/** Pantalla de gimnasios: lista + alta + baja. Punto de entrada del módulo. */
+/** Pantalla de gimnasios: lista + búsqueda + paginación + alta + baja. */
 export function TenantsPage() {
-  const tenants = useTenants();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  // El backend recibe este texto como `search` (filtra por el id del tenant).
+  const debouncedSearch = useDebouncedValue(search.trim(), 300);
+
+  const tenants = useTenants({ page, search: debouncedSearch });
+  const meta = tenants.data;
 
   const [formOpen, setFormOpen] = useState(false);
-  const [credentials, setCredentials] = useState<CreateTenantResult | null>(null);
+  const [credentials, setCredentials] = useState<CreateTenantResult | null>(
+    null,
+  );
   const [toDelete, setToDelete] = useState<TenantRow | null>(null);
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -30,6 +47,12 @@ export function TenantsPage() {
             Nuevo gimnasio
           </Button>
         }
+      />
+
+      <SearchInput
+        value={search}
+        onChangeAction={handleSearch}
+        placeholder="Buscar por identificador…"
       />
 
       {tenants.isError ? (
@@ -45,9 +68,23 @@ export function TenantsPage() {
         </div>
       ) : (
         <TenantsTable
-          rows={tenants.data ?? []}
+          rows={meta?.data ?? []}
           isLoading={tenants.isPending}
-          onDelete={setToDelete}
+          onDeleteAction={setToDelete}
+          emptyMessage={
+            debouncedSearch
+              ? "Ningún gimnasio coincide con la búsqueda."
+              : undefined
+          }
+          pagination={{
+            page: meta?.current_page ?? page,
+            lastPage: meta?.last_page ?? 1,
+            total: meta?.total ?? 0,
+            from: meta?.from ?? null,
+            to: meta?.to ?? null,
+            onPageChangeAction: setPage,
+            isFetching: tenants.isFetching,
+          }}
         />
       )}
 

@@ -6,3 +6,6 @@ export const TENANTS_ENDPOINT = "/tenants";
  * Es el identificador del gimnasio y, a la vez, su subdominio.
  */
 export const TENANT_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
+
+/** Tamaño de página por defecto del list de gimnasios. */
+export const TENANTS_PER_PAGE = 10;

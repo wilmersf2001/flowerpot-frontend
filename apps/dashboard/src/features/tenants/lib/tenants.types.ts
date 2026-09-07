@@ -15,6 +15,17 @@ export interface CreateTenantInput {
   id: string;
 }
 
+/**
+ * Query de `GET /tenants`: paginado (`page`) + búsqueda de texto libre.
+ * En la UI el usuario busca por el identificador del gimnasio, pero el backend
+ * recibe ese texto en el parámetro `search`.
+ */
+export interface TenantListParams {
+  page?: number;
+  perPage?: number;
+  search?: string;
+}
+
 /** Fila de `GET /tenants` — `TenantResource` = `parent::toArray()` del modelo. */
 export interface TenantRow {
   id: string;

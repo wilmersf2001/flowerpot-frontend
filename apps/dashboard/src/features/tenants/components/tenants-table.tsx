@@ -8,7 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
-import { DataTable, type Column } from "@/features/_shared";
+import {
+  DataTable,
+  type Column,
+  type DataTablePagination,
+} from "@/features/_shared";
 import type { TenantRow } from "../lib/tenants.types";
 
 function formatDate(value: unknown): string {
@@ -37,18 +41,23 @@ const columns: Column<TenantRow>[] = [
 export function TenantsTable({
   rows,
   isLoading,
-  onDelete,
+  onDeleteAction,
+  pagination,
+  emptyMessage = "Aún no hay gimnasios. Crea el primero.",
 }: {
   rows: TenantRow[];
   isLoading: boolean;
-  onDelete: (tenant: TenantRow) => void;
+  onDeleteAction: (tenant: TenantRow) => void;
+  pagination?: DataTablePagination;
+  emptyMessage?: string;
 }) {
   return (
     <DataTable
       columns={columns}
       rows={rows}
       isLoading={isLoading}
-      emptyMessage="Aún no hay gimnasios. Crea el primero."
+      emptyMessage={emptyMessage}
+      pagination={pagination}
       rowActions={(row) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -58,7 +67,10 @@ export function TenantsTable({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem variant="destructive" onClick={() => onDelete(row)}>
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => onDeleteAction(row)}
+            >
               <Trash2 className="size-4" />
               Eliminar
             </DropdownMenuItem>

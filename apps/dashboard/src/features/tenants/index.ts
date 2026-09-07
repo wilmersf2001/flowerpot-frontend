@@ -4,6 +4,7 @@ export { useTenants, useCreateTenant, useDeleteTenant } from "./lib/tenants.hook
 export { tenantsApi } from "./lib/tenants.api";
 export type {
   TenantRow,
+  TenantListParams,
   CreateTenantInput,
   CreateTenantResult,
 } from "./lib/tenants.types";
