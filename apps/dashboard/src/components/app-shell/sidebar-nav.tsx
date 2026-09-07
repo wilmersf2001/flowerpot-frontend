@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@repo/ui/lib/utils";
+import { NAV_ICONS } from "./nav-icons";
 import type { NavItem } from "./nav.config";
 
 /** ¿La ruta actual cae dentro de este item? (`/members` activo en `/members/123`) */
@@ -28,7 +29,8 @@ export function SidebarNav({
           : "flex-row overflow-x-auto pb-1",
       )}
     >
-      {items.map(({ href, label, icon: Icon }) => {
+      {items.map(({ href, label, icon }) => {
+        const Icon = NAV_ICONS[icon];
         const active = isActive(pathname, href);
         return (
           <Link
