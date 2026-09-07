@@ -12,10 +12,10 @@ import type { TenantRow } from "../lib/tenants.types";
  */
 export function DeleteTenantDialog({
   tenant,
-  onOpenChange,
+  onOpenChangeAction,
 }: {
   tenant: TenantRow | null;
-  onOpenChange: (open: boolean) => void;
+  onOpenChangeAction: (open: boolean) => void;
 }) {
   const deleteTenant = useDeleteTenant();
 
@@ -24,7 +24,7 @@ export function DeleteTenantDialog({
     try {
       await deleteTenant.mutateAsync(tenant.id);
       toast.success(`Gimnasio "${tenant.id}" eliminado.`);
-      onOpenChange(false);
+      onOpenChangeAction(false);
     } catch (err) {
       const message =
         err instanceof ApiError
@@ -37,7 +37,7 @@ export function DeleteTenantDialog({
   return (
     <ConfirmDialog
       open={tenant !== null}
-      onOpenChange={onOpenChange}
+      onOpenChange={onOpenChangeAction}
       title={`Eliminar "${tenant?.id ?? ""}"`}
       description="Se elimina el gimnasio y todos sus datos. Esta acción no se puede deshacer."
       confirmLabel="Eliminar"

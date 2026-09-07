@@ -1,40 +1,41 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   DataTable,
   RowActions,
-  formatDate,
   type Column,
   type DataTablePagination,
 } from "@/features/_shared";
-import type { TenantRow } from "../lib/tenants.types";
+import { PlanRow } from "../lib/plans.types";
 
-const columns: Column<TenantRow>[] = [
+const columns: Column<PlanRow>[] = [
   {
-    key: "id",
-    header: "Identificador",
-    cell: (row) => <span className="font-medium">{row.id}</span>,
+    key: "name",
+    header: "Plan",
+    cell: (row) => <span className="font-medium">{row.name}</span>,
   },
   {
-    key: "created_at",
-    header: "Creado",
+    key: "price_formatted",
+    header: "Precio",
     cell: (row) => (
-      <span className="text-muted-foreground">{formatDate(row.created_at)}</span>
+      <span className="text-muted-foreground">{row.price_formatted}</span>
     ),
   },
 ];
 
-export function TenantsTable({
+export function PlansTable({
   rows,
   isLoading,
+  onEditAction,
   onDeleteAction,
   pagination,
-  emptyMessage = "Aún no hay gimnasios. Crea el primero.",
+  emptyMessage = "Aún no hay planes. Crea el primero.",
 }: {
-  rows: TenantRow[];
+  rows: PlanRow[];
   isLoading: boolean;
-  onDeleteAction: (tenant: TenantRow) => void;
+  onEditAction: (plan: PlanRow) => void;
+  onDeleteAction: (plan: PlanRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
@@ -50,9 +51,15 @@ export function TenantsTable({
           label={`Acciones de ${row.id}`}
           actions={[
             {
+              label: "Editar",
+              icon: Pencil,
+              onSelect: () => onEditAction(row),
+            },
+            {
               label: "Eliminar",
               icon: Trash2,
               variant: "destructive",
+              separatorBefore: true,
               onSelect: () => onDeleteAction(row),
             },
           ]}

@@ -90,16 +90,16 @@ export function TenantsPage() {
 
       <TenantFormDialog
         open={formOpen}
-        onOpenChange={setFormOpen}
-        onCreated={setCredentials}
+        onOpenChangeAction={setFormOpen}
+        onCreatedAction={setCredentials}
       />
       <TenantCredentialsDialog
         result={credentials}
-        onClose={() => setCredentials(null)}
+        onCloseAction={() => setCredentials(null)}
       />
       <DeleteTenantDialog
         tenant={toDelete}
-        onOpenChange={(open) => {
+        onOpenChangeAction={(open) => {
           if (!open) setToDelete(null);
         }}
       />

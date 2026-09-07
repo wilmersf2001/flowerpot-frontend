@@ -23,13 +23,13 @@ import type { CreateTenantResult } from "../lib/tenants.types";
 /** Diálogo "Nuevo gimnasio". Controlado por el padre. */
 export function TenantFormDialog({
   open,
-  onOpenChange,
-  onCreated,
+  onOpenChangeAction,
+  onCreatedAction,
 }: {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChangeAction: (open: boolean) => void;
   /** Se llama con las credenciales del admin tras crear el gimnasio. */
-  onCreated: (result: CreateTenantResult) => void;
+  onCreatedAction: (result: CreateTenantResult) => void;
 }) {
   const createTenant = useCreateTenant();
 
@@ -53,8 +53,8 @@ export function TenantFormDialog({
     try {
       const result = await createTenant.mutateAsync(values);
       toast.success(`Gimnasio "${values.id}" creado.`);
-      onOpenChange(false);
-      onCreated(result);
+      onOpenChangeAction(false);
+      onCreatedAction(result);
     } catch (err) {
       if (err instanceof ApiError && err.isValidationError && err.errors?.id?.[0]) {
         setError("id", { message: err.errors.id[0] });
@@ -67,7 +67,7 @@ export function TenantFormDialog({
   });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChangeAction}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>Nuevo gimnasio</DialogTitle>
@@ -101,7 +101,7 @@ export function TenantFormDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => onOpenChangeAction(false)}
               disabled={isSubmitting}
             >
               Cancelar

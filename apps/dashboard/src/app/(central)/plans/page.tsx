@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { PlansPage } from "@/features/plans";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Planes" };
+export const metadata: Metadata = { title: "Planes" };
 
 export default function Page() {
-  return <ResourceScaffold title="Planes" description="Planes comerciales y sus límites." />;
+  return <PlansPage />;
 }
