@@ -7,6 +7,7 @@ import {
   isServer,
 } from "@tanstack/react-query";
 import { Toaster } from "@repo/ui/toast";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 function makeQueryClient(): QueryClient {
   return new QueryClient({
@@ -32,8 +33,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      <Toaster />
+      <ThemeProvider>
+        {children}
+        <Toaster />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -36,6 +36,7 @@ export interface PlanListParams {
 export interface PlanRow {
   id: string;
   name: string;
+  slug: string;
   description: string;
   price_cents: number;
   price_formatted: string;

@@ -4,9 +4,15 @@ import {
   useQueryClient,
   useMutation,
 } from "@tanstack/react-query";
+import type { Paginated } from "@repo/types";
 import { plansApi } from "./plans.api";
 import { planKeys } from "./plans.keys";
-import { CreatePlanInput, PlanListParams, UpdatePlanInput } from "./plans.types";
+import {
+  CreatePlanInput,
+  PlanListParams,
+  PlanRow,
+  UpdatePlanInput,
+} from "./plans.types";
 
 /** Lista paginada de plans, con búsqueda opcional (`search`). */
 export function usePlans(params: PlanListParams = {}) {
@@ -33,6 +39,42 @@ export function useUpdatePlan() {
     mutationFn: ({ id, input }: { id: string; input: UpdatePlanInput }) =>
       plansApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: planKeys.all }),
+  });
+}
+
+/**
+ * Activa/desactiva un plan al vuelo (el `Switch` de la tabla). Es un
+ * `PUT /plans/{id}` con solo `is_active`, pero con actualización optimista:
+ * la fila cambia de estado en el acto y se revierte si el backend falla.
+ */
+export function useTogglePlanActive() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      plansApi.update(id, { is_active: isActive }),
+    onMutate: async ({ id, isActive }) => {
+      await queryClient.cancelQueries({ queryKey: planKeys.lists() });
+      const snapshots = queryClient.getQueriesData<Paginated<PlanRow>>({
+        queryKey: planKeys.lists(),
+      });
+      for (const [key, page] of snapshots) {
+        if (!page) continue;
+        queryClient.setQueryData<Paginated<PlanRow>>(key, {
+          ...page,
+          data: page.data.map((plan) =>
+            plan.id === id ? { ...plan, is_active: isActive } : plan,
+          ),
+        });
+      }
+      return { snapshots };
+    },
+    onError: (_err, _vars, context) => {
+      for (const [key, page] of context?.snapshots ?? []) {
+        queryClient.setQueryData(key, page);
+      }
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: planKeys.all }),
   });
 }
 

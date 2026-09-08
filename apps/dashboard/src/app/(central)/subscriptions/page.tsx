@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { SubscriptionsPage } from "@/features/subscriptions";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Suscripciones" };
+export const metadata: Metadata = { title: "Suscripciones" };
 
 export default function Page() {
-  return <ResourceScaffold title="Suscripciones" description="Suscripciones de cada gimnasio: ciclo, estado y cobros." />;
+  return <SubscriptionsPage />;
 }

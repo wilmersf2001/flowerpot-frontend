@@ -9,6 +9,12 @@ export {
 } from "./data-table";
 export { ResourceHeader } from "./resource-header";
 export { RowActions, type RowAction } from "./row-actions";
+export {
+  StatusBadge,
+  ACTIVE_MAP,
+  type StatusMap,
+  type StatusStyle,
+} from "./status-badge";
 export { AppDialog } from "./app-dialog";
 export { ConfirmDialog } from "./confirm-dialog";
 export { CopyRow } from "./copy-row";
