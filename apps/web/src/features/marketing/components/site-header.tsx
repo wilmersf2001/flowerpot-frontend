@@ -36,7 +36,7 @@ export function SiteHeader() {
           >
             <a href="https://admin.localhost:3001">Iniciar sesión</a>
           </Button>
-          <Button size="sm" className="rounded-[4px]" asChild>
+          <Button size="sm" className="rounded-lg" asChild>
             <a href="#planes">Empezar prueba</a>
           </Button>
         </div>

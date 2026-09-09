@@ -37,13 +37,13 @@ export function Hero() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" className="rounded-[4px]" asChild>
+              <Button size="lg" className="rounded-lg" asChild>
                 <a href="#planes">{HERO.primaryCta}</a>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-[4px]"
+                className="rounded-lg"
                 asChild
               >
                 <a href="#planes">{HERO.secondaryCta}</a>
@@ -93,7 +93,7 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="display-label absolute -right-3 -top-3 rounded-[4px] bg-primary px-3 py-1.5 text-[11px] text-primary-foreground">
+            <div className="display-label absolute -right-3 -top-3 rounded-lg bg-primary px-3 py-1.5 text-[11px] text-primary-foreground">
               99.9% uptime
             </div>
           </div>

@@ -19,13 +19,13 @@ export function CtaSection() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-              <Button size="lg" className="rounded-[4px]" asChild>
+              <Button size="lg" className="rounded-lg" asChild>
                 <a href="#planes">{FINAL_CTA.primaryCta}</a>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-[4px]"
+                className="rounded-lg"
                 asChild
               >
                 <a href="#">{FINAL_CTA.secondaryCta}</a>

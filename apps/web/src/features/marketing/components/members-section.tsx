@@ -36,7 +36,7 @@ export function MembersSection() {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <span className="display-label absolute right-3 top-3 rounded-[4px] bg-primary px-2.5 py-1 text-[11px] text-primary-foreground">
+              <span className="display-label absolute right-3 top-3 rounded-lg bg-primary px-2.5 py-1 text-[11px] text-primary-foreground">
                 {gym.members}
               </span>
             </div>

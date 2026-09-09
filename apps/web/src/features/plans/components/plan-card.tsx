@@ -27,7 +27,7 @@ export function PlanCard({
       )}
     >
       {featured ? (
-        <span className="display-label absolute -top-3 left-8 rounded-[4px] bg-primary px-3 py-1 text-[11px] text-primary-foreground">
+        <span className="display-label absolute -top-3 left-8 rounded-lg bg-primary px-3 py-1 text-[11px] text-primary-foreground">
           El más elegido
         </span>
       ) : null}

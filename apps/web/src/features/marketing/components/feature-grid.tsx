@@ -29,7 +29,7 @@ export function FeatureGrid() {
                 <span className="display-label text-[12px] text-muted-foreground">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <Icon className="size-[22px] text-primary" strokeWidth={2} />
+                <Icon className="size-5.5 text-primary" strokeWidth={2} />
               </div>
               <h3 className="display-label mt-6 text-[15px] text-foreground">
                 {title}

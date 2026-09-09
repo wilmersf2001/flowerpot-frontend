@@ -15,14 +15,14 @@ export function BrandMark({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="grid size-[30px] place-items-center rounded-[4px] bg-primary text-primary-foreground">
+      <span className="grid size-7.5 place-items-center rounded-lg bg-primary text-primary-foreground">
         <svg
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           strokeWidth={3}
           strokeLinecap="round"
-          className="size-[17px]"
+          className="size-4.25"
           aria-hidden
         >
           <path d="M4 8v8M20 8v8M8 6v12M16 6v12M4 12h16" />
