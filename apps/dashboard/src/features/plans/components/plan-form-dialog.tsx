@@ -3,8 +3,6 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ApiError } from "@repo/api-client";
-import { toast } from "@repo/ui/toast";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
 import {
@@ -13,6 +11,7 @@ import {
   TextField,
   TextareaField,
   useFieldBinder,
+  useResourceFormSubmit,
 } from "@/features/_shared";
 import { useCreatePlan, useUpdatePlan } from "../lib/plans.hooks";
 import {
@@ -20,6 +19,7 @@ import {
   PLAN_BILLING_PERIOD_LABELS,
 } from "../lib/plans.constants";
 import {
+  PLAN_FORM_FIELDS,
   planFormDefaults,
   planFormSchema,
   planToForm,
@@ -65,7 +65,6 @@ export function PlanFormDialog({
     control,
     handleSubmit,
     reset,
-    setError,
     register,
     formState: { errors, isSubmitting },
   } = form;
@@ -76,40 +75,29 @@ export function PlanFormDialog({
     if (open) reset(plan ? planToForm(plan) : planFormDefaults);
   }, [open, plan, reset]);
 
-  const onSubmit = handleSubmit(async (values) => {
-    try {
-      if (plan) {
-        await updatePlan.mutateAsync({
-          id: plan.id,
-          input: toUpdatePlanInput(values),
-        });
-        toast.success(`Plan "${values.name}" actualizado.`);
+  const onSubmit = handleSubmit(
+    useResourceFormSubmit<PlanForm, PlanRow>({
+      form,
+      fields: PLAN_FORM_FIELDS,
+      submit: (values) =>
+        plan
+          ? updatePlan.mutateAsync({
+              id: plan.id,
+              input: toUpdatePlanInput(values),
+            })
+          : createPlan.mutateAsync(toCreatePlanInput(values)),
+      successMessage: (values) =>
+        `Plan "${values.name}" ${isEdit ? "actualizado" : "creado"}.`,
+      errorMessage: isEdit
+        ? "No se pudo actualizar el plan."
+        : "No se pudo crear el plan.",
+      onSuccess: (result) => {
         onOpenChangeAction(false);
-        return;
-      }
-
-      const created = await createPlan.mutateAsync(toCreatePlanInput(values));
-      toast.success(`Plan "${values.name}" creado.`);
-      onOpenChangeAction(false);
-      onCreatedAction?.(created);
-    } catch (err) {
-      if (err instanceof ApiError && err.isValidationError && err.errors) {
-        for (const [field, messages] of Object.entries(err.errors)) {
-          if (field in planFormDefaults && messages?.[0]) {
-            setError(field as keyof PlanForm, { message: messages[0] });
-          }
-        }
-        return;
-      }
-      const message =
-        err instanceof ApiError
-          ? err.message
-          : isEdit
-            ? "No se pudo actualizar el plan."
-            : "No se pudo crear el plan.";
-      toast.error(message);
-    }
-  });
+        // El callback solo interesa en alta (crear -> abrir credenciales).
+        if (!isEdit) onCreatedAction?.(result);
+      },
+    }),
+  );
 
   return (
     <AppDialog

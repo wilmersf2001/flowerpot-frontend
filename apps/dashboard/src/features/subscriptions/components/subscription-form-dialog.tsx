@@ -3,8 +3,6 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ApiError } from "@repo/api-client";
-import { toast } from "@repo/ui/toast";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
 import {
@@ -14,6 +12,7 @@ import {
   TextField,
   TextareaField,
   useFieldBinder,
+  useResourceFormSubmit,
 } from "@/features/_shared";
 import { usePlanOptions } from "@/features/plans";
 import { useTenantOptions } from "@/features/tenants";
@@ -85,7 +84,6 @@ export function SubscriptionFormDialog({
     control,
     handleSubmit,
     reset,
-    setError,
     formState: { errors, isSubmitting },
   } = form;
   const bind = useFieldBinder(form, "subscription");
@@ -101,42 +99,27 @@ export function SubscriptionFormDialog({
     }
   }, [open, subscription, reset]);
 
-  const onSubmit = handleSubmit(async (values) => {
-    try {
-      if (subscription) {
-        await updateSubscription.mutateAsync({
-          id: subscription.id,
-          input: toUpdateSubscriptionInput(values),
-        });
-        toast.success(`Suscripción de "${values.tenant_id}" actualizada.`);
-        onOpenChangeAction(false);
-        return;
-      }
-
-      await createSubscription.mutateAsync(toCreateSubscriptionInput(values));
-      toast.success(`Suscripción de "${values.tenant_id}" creada.`);
-      onOpenChangeAction(false);
-    } catch (err) {
-      if (err instanceof ApiError && err.isValidationError && err.errors) {
-        for (const [field, messages] of Object.entries(err.errors)) {
-          if (
-            (SUBSCRIPTION_FORM_FIELDS as readonly string[]).includes(field) &&
-            messages?.[0]
-          ) {
-            setError(field as keyof SubscriptionForm, { message: messages[0] });
-          }
-        }
-        return;
-      }
-      const message =
-        err instanceof ApiError
-          ? err.message
-          : isEdit
-            ? "No se pudo actualizar la suscripción."
-            : "No se pudo crear la suscripción.";
-      toast.error(message);
-    }
-  });
+  const onSubmit = handleSubmit(
+    useResourceFormSubmit<SubscriptionForm, unknown>({
+      form,
+      fields: SUBSCRIPTION_FORM_FIELDS,
+      submit: (values) =>
+        subscription
+          ? updateSubscription.mutateAsync({
+              id: subscription.id,
+              input: toUpdateSubscriptionInput(values),
+            })
+          : createSubscription.mutateAsync(toCreateSubscriptionInput(values)),
+      successMessage: (values) =>
+        `Suscripción de "${values.tenant_id}" ${
+          isEdit ? "actualizada" : "creada"
+        }.`,
+      errorMessage: isEdit
+        ? "No se pudo actualizar la suscripción."
+        : "No se pudo crear la suscripción.",
+      onSuccess: () => onOpenChangeAction(false),
+    }),
+  );
 
   return (
     <AppDialog

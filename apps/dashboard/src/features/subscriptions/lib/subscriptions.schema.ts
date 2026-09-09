@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  enumFallback,
+  optionalText,
+  requiredText,
+} from "@/features/_shared/form-schema";
+import { toDateInputValue } from "@/features/_shared/format";
 import { SUBSCRIPTION_STATUSES } from "./subscriptions.constants";
 import type {
   CreateSubscriptionInput,
@@ -14,12 +20,12 @@ import type {
  */
 export const subscriptionFormSchema = z
   .object({
-    tenant_id: z.string().trim().min(1, "El gimnasio es obligatorio."),
-    plan_id: z.string().trim().min(1, "El plan es obligatorio."),
-    starts_at: z.string().trim().min(1, "La fecha de inicio es obligatoria."),
-    ends_at: z.string().trim().min(1, "La fecha de fin es obligatoria."),
+    tenant_id: requiredText("El gimnasio"),
+    plan_id: requiredText("El plan"),
+    starts_at: requiredText("La fecha de inicio", "f"),
+    ends_at: requiredText("La fecha de fin", "f"),
     status: z.enum(SUBSCRIPTION_STATUSES),
-    notes: z.string().trim().max(500, "Máximo 500 caracteres."),
+    notes: optionalText(500),
   })
   .refine(
     (value) =>
@@ -49,28 +55,17 @@ export const SUBSCRIPTION_FORM_FIELDS = [
   "ends_at",
   "status",
   "notes",
-] as const;
+] as const satisfies readonly (keyof SubscriptionForm)[];
 
-/** ISO / date-time -> `YYYY-MM-DD` para un `<input type="date">`. */
-function toDateInput(value: string): string {
-  if (!value) return "";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
-}
-
-function normalizeStatus(value: string): SubscriptionForm["status"] {
-  return (SUBSCRIPTION_STATUSES as readonly string[]).includes(value)
-    ? (value as SubscriptionForm["status"])
-    : "active";
-}
+const normalizeStatus = enumFallback(SUBSCRIPTION_STATUSES, "active");
 
 /** Prellena el formulario con los datos de una suscripción (modo edición). */
 export function subscriptionToForm(row: SubscriptionRow): SubscriptionForm {
   return {
     tenant_id: row.tenant_id ?? "",
     plan_id: row.plan_id != null ? String(row.plan_id) : "",
-    starts_at: toDateInput(row.starts_at),
-    ends_at: toDateInput(row.ends_at),
+    starts_at: toDateInputValue(row.starts_at),
+    ends_at: toDateInputValue(row.ends_at),
     status: normalizeStatus(row.status),
     notes: row.notes ?? "",
   };

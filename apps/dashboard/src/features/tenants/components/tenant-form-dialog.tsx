@@ -3,10 +3,13 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ApiError } from "@repo/api-client";
-import { toast } from "@repo/ui/toast";
 import { Button } from "@repo/ui/button";
-import { AppDialog, TextField, useFieldBinder } from "@/features/_shared";
+import {
+  AppDialog,
+  TextField,
+  useFieldBinder,
+  useResourceFormSubmit,
+} from "@/features/_shared";
 import { useCreateTenant } from "../lib/tenants.hooks";
 import { createTenantSchema, type CreateTenantForm } from "../lib/tenants.schema";
 import type { CreateTenantResult } from "../lib/tenants.types";
@@ -33,7 +36,6 @@ export function TenantFormDialog({
   const {
     handleSubmit,
     reset,
-    setError,
     formState: { isSubmitting },
   } = form;
   const bind = useFieldBinder(form, "tenant");
@@ -43,26 +45,21 @@ export function TenantFormDialog({
     if (open) reset({ id: "" });
   }, [open, reset]);
 
-  const onSubmit = handleSubmit(async (values) => {
-    try {
-      const result = await createTenant.mutateAsync(values);
-      toast.success(`Gimnasio "${values.id}" creado.`);
-      onOpenChangeAction(false);
-      onCreatedAction(result);
-    } catch (err) {
-      if (
-        err instanceof ApiError &&
-        err.isValidationError &&
-        err.errors?.id?.[0]
-      ) {
-        setError("id", { message: err.errors.id[0] });
-        return;
-      }
-      const message =
-        err instanceof ApiError ? err.message : "No se pudo crear el gimnasio.";
-      setError("id", { message });
-    }
-  });
+  const onSubmit = handleSubmit(
+    useResourceFormSubmit<CreateTenantForm, CreateTenantResult>({
+      form,
+      fields: ["id"],
+      submit: (values) => createTenant.mutateAsync(values),
+      successMessage: (values) => `Gimnasio "${values.id}" creado.`,
+      errorMessage: "No se pudo crear el gimnasio.",
+      // Diálogo de un solo campo: cualquier fallo se pinta en "id".
+      fallback: { field: "id" },
+      onSuccess: (result) => {
+        onOpenChangeAction(false);
+        onCreatedAction(result);
+      },
+    }),
+  );
 
   return (
     <AppDialog

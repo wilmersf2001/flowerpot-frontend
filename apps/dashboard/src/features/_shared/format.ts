@@ -20,3 +20,24 @@ export function formatDate(
     ? EM_DASH
     : date.toLocaleDateString("es-PE", options);
 }
+
+/**
+ * ISO / date-time / `Date` -> `YYYY-MM-DD` para un `<input type="date">`.
+ * Devuelve `""` (campo vacío) si el valor no es una fecha válida.
+ */
+export function toDateInputValue(value: unknown): string {
+  if (typeof value !== "string" && !(value instanceof Date)) return "";
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
+}
+
+/**
+ * Texto multilínea de un `<textarea>` -> lista de líneas sin vacíos ni
+ * espacios sobrantes. Inverso de `lines.join("\n")` al prellenar.
+ */
+export function splitLines(value: string): string[] {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}

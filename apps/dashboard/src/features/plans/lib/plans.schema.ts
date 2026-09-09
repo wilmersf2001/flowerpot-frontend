@@ -1,22 +1,17 @@
 import { z } from "zod";
+import {
+  boundedText,
+  enumFallback,
+  numericText,
+  optionalText,
+} from "@/features/_shared/form-schema";
+import { splitLines } from "@/features/_shared/format";
 import { PLAN_BILLING_PERIODS, PLAN_SLUG_PATTERN } from "./plans.constants";
 import type {
   CreatePlanInput,
   PlanRow,
   UpdatePlanInput,
 } from "./plans.types";
-
-/** Campo numérico del formulario: llega como texto y validamos que sea >= 0. */
-function numericField(label: string) {
-  return z
-    .string()
-    .trim()
-    .min(1, `${label} es obligatorio.`)
-    .refine(
-      (value) => Number.isFinite(Number(value)) && Number(value) >= 0,
-      `${label} debe ser un número válido.`,
-    );
-}
 
 /**
  * Formulario de plan (alta y edición). Todos los campos viven como texto (lo
@@ -25,28 +20,22 @@ function numericField(label: string) {
  * envían (el backend no los deja cambiar).
  */
 export const planFormSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "El nombre es obligatorio.")
-    .max(120, "Máximo 120 caracteres."),
-  slug: z
-    .string()
-    .trim()
-    .min(1, "El identificador es obligatorio.")
-    .max(120, "Máximo 120 caracteres.")
-    .regex(PLAN_SLUG_PATTERN, "Solo minúsculas, números y guion (-)."),
-  description: z.string().trim().max(500, "Máximo 500 caracteres."),
-  price: numericField("El precio"),
+  name: boundedText("El nombre", { max: 120 }),
+  slug: boundedText("El identificador", { max: 120 }).regex(
+    PLAN_SLUG_PATTERN,
+    "Solo minúsculas, números y guion (-).",
+  ),
+  description: optionalText(500),
+  price: numericText("El precio"),
   currency: z
     .string()
     .trim()
     .length(3, "Usa el código ISO de 3 letras (p. ej. PEN).")
     .transform((value) => value.toUpperCase()),
   billing_period: z.enum(PLAN_BILLING_PERIODS),
-  max_locations: numericField("El máximo de sedes"),
-  max_members: numericField("El máximo de miembros"),
-  sort_order: numericField("El orden"),
+  max_locations: numericText("El máximo de sedes"),
+  max_members: numericText("El máximo de miembros"),
+  sort_order: numericText("El orden"),
   /** Una característica por línea. */
   features: z.string(),
   is_active: z.boolean(),
@@ -68,19 +57,22 @@ export const planFormDefaults: PlanForm = {
   is_active: true,
 };
 
-/** Texto multilínea de características -> lista sin vacíos ni espacios sobrantes. */
-function splitFeatures(value: string): string[] {
-  return value
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-}
+/** Campos que el backend puede devolver como error de validación. */
+export const PLAN_FORM_FIELDS = [
+  "name",
+  "slug",
+  "description",
+  "price",
+  "currency",
+  "billing_period",
+  "max_locations",
+  "max_members",
+  "sort_order",
+  "features",
+  "is_active",
+] as const satisfies readonly (keyof PlanForm)[];
 
-function normalizeBillingPeriod(value: string): PlanForm["billing_period"] {
-  return (PLAN_BILLING_PERIODS as readonly string[]).includes(value)
-    ? (value as PlanForm["billing_period"])
-    : "monthly";
-}
+const normalizeBillingPeriod = enumFallback(PLAN_BILLING_PERIODS, "monthly");
 
 /** Prellena el formulario con los datos de un plan existente (modo edición). */
 export function planToForm(plan: PlanRow): PlanForm {
@@ -111,7 +103,7 @@ export function toCreatePlanInput(form: PlanForm): CreatePlanInput {
     billing_period: form.billing_period,
     max_locations: Number(form.max_locations),
     max_members: Number(form.max_members),
-    features: splitFeatures(form.features),
+    features: splitLines(form.features),
     sort_order: Number(form.sort_order),
   };
 }
@@ -127,7 +119,7 @@ export function toUpdatePlanInput(form: PlanForm): UpdatePlanInput {
     price_cents: Math.round(Number(form.price) * 100),
     max_locations: Number(form.max_locations),
     max_members: Number(form.max_members),
-    features: splitFeatures(form.features),
+    features: splitLines(form.features),
     sort_order: Number(form.sort_order),
     is_active: form.is_active,
   };
