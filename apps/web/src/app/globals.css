@@ -2,3 +2,90 @@
 
 /* Also scan this app's own source (relative to this file = apps/web/src). */
 @source "../";
+
+/*
+ * ── Dirección visual: "Iron & Lime" ──────────────────────────────────────
+ * El sitio público de Flowerpot es dark permanente (<html class="dark">).
+ * No usamos el `.dark` neutro de @repo/ui: lo re-tematizamos aquí para que
+ * "oscuro" signifique grafito casi negro + lima eléctrico como voltaje.
+ * "Flowerpot" = maceta = mamado/fuerte, no eco: nada de verde jardín.
+ * Estos overrides viven SOLO en apps/web; el dashboard no se toca.
+ */
+.dark {
+  --background: oklch(0.16 0.006 130);
+  --foreground: oklch(0.96 0.008 110);
+
+  --card: oklch(0.19 0.006 130);
+  --card-foreground: oklch(0.96 0.008 110);
+  --popover: oklch(0.19 0.006 130);
+  --popover-foreground: oklch(0.96 0.008 110);
+
+  /* Lima eléctrico. Uso deliberadamente escaso: CTAs, cifras, 1 acento/sección. */
+  --primary: oklch(0.9 0.19 122);
+  --primary-foreground: oklch(0.16 0.006 130);
+
+  --secondary: oklch(0.24 0.006 130);
+  --secondary-foreground: oklch(0.96 0.008 110);
+  --muted: oklch(0.24 0.006 130);
+  --muted-foreground: oklch(0.68 0.012 120);
+  --accent: oklch(0.24 0.008 122);
+  --accent-foreground: oklch(0.96 0.008 110);
+
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.28 0.006 130);
+  --input: oklch(0.28 0.006 130);
+  --ring: oklch(0.9 0.19 122);
+}
+
+/*
+ * Utilidades exclusivas del sitio público (marketing). Acabados visuales de
+ * la landing, no primitivas de producto.
+ */
+@theme {
+  /* Titulares: grotesca industrial, NO serif. */
+  --font-display: var(--font-display), "Archivo", ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+@layer components {
+  /* Titular condensado y pesado: el corte "hierro" de la dirección. */
+  .display-heading {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 82%;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  /* Etiqueta / eyebrow condensada. */
+  .display-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: 82%;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Halo radial de lima detrás del hero. Muy sutil. */
+  .bg-brand-glow {
+    background-image: radial-gradient(
+      55% 55% at 20% 0%,
+      color-mix(in oklab, var(--primary) 14%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  /* Grano fino para textura sin recargar. */
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  /* Rejilla con hairlines: los bordes de 1px hacen el trabajo, sin sombras. */
+  .hairline-grid {
+    background-color: var(--border);
+    gap: 1px;
+  }
+}

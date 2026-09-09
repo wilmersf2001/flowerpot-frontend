@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=Archivo+Narrow:wght@600;700&display=swap">
+  <style>
+    :root {
+      --bg: #0E0F0D;
+      --surface: #161814;
+      --surface-2: #1C1F1A;
+      --line: #2A2E27;
+      --brand: #C6F03D;
+      --ink: #F4F5F1;
+      --muted: #8B9082;
+      --dim: #5C6156;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Archivo", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover { color: #d6ff5c; }
+    .display {
+      font-family: "Archivo Black", "Archivo Narrow", system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 0.92;
+    }
+    .cond {
+      font-family: "Archivo Narrow", "Archivo", system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</helmet>
+
+<div style="max-width: 1240px; margin: 0 auto; padding: 0 40px;">
+
+  <!-- NAV -->
+  <nav style="display: flex; align-items: center; justify-content: space-between; padding: 26px 0; border-bottom: 1px solid var(--line);">
+    <div style="display: flex; align-items: center; gap: 40px;">
+      <div style="display: flex; align-items: center; gap: 11px;">
+        <div style="width: 30px; height: 30px; background: var(--brand); display: grid; place-items: center; border-radius: 3px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0E0F0D" stroke-width="3" stroke-linecap="round"><path d="M4 8v8M20 8v8M8 6v12M16 6v12M4 12h16"/></svg>
+        </div>
+        <span class="cond" style="font-family: 'Archivo Narrow'; font-weight: 700; font-size: 19px; letter-spacing: 0.04em;">FLOWERPOT</span>
+      </div>
+      <div style="display: flex; gap: 28px;">
+        <span class="cond" style="font-size: 13px; color: var(--muted); font-weight: 600;">Producto</span>
+        <span class="cond" style="font-size: 13px; color: var(--muted); font-weight: 600;">Seguridad</span>
+        <span class="cond" style="font-size: 13px; color: var(--muted); font-weight: 600;">Socios</span>
+        <span class="cond" style="font-size: 13px; color: var(--muted); font-weight: 600;">Planes</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <span class="cond" style="font-size: 13px; color: var(--muted); font-weight: 600;">Iniciar sesión</span>
+      <span class="cond" style="font-size: 13px; font-weight: 700; background: var(--brand); color: #0E0F0D; padding: 9px 18px; border-radius: 3px;">Empezar prueba</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; padding: 72px 0 64px; align-items: end;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px;">
+        <span style="width: 34px; height: 2px; background: var(--brand);"></span>
+        <span class="cond" style="font-size: 12px; color: var(--brand); font-weight: 700; letter-spacing: 0.14em;">Software de gestión para gimnasios · Perú</span>
+      </div>
+      <h1 class="display" style="font-size: 92px; margin: 0;">
+        Tu gimnasio<br>en su <span style="color: var(--brand);">mejor<br>forma</span>
+      </h1>
+      <p style="font-size: 17px; line-height: 1.55; color: var(--muted); max-width: 440px; margin: 30px 0 34px;">
+        Socios, membresías, cobros, control de acceso y caja en una sola plataforma. Multi-sede, datos cifrados y soporte 24/7.
+      </p>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="cond" style="font-size: 15px; font-weight: 700; background: var(--brand); color: #0E0F0D; padding: 15px 28px; border-radius: 3px;">Empezar prueba gratis</span>
+        <span class="cond" style="font-size: 15px; font-weight: 700; color: var(--ink); border: 1px solid var(--line); padding: 15px 28px; border-radius: 3px;">Ver planes</span>
+      </div>
+      <p style="font-size: 12px; color: var(--dim); margin-top: 18px; letter-spacing: 0.02em;">14 días gratis · sin tarjeta · migración asistida</p>
+    </div>
+
+    <div style="position: relative;">
+      <div style="aspect-ratio: 3/4; background: linear-gradient(160deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; position: relative;">
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(255,255,255,0.02) 27px, rgba(255,255,255,0.02) 28px);"></div>
+        <div style="position: absolute; left: 22px; right: 22px; bottom: 22px;">
+          <div class="cond" style="font-size: 11px; color: var(--dim); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px;">AFORO EN VIVO · SEDE MIRAFLORES</div>
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <span class="display" style="font-size: 54px; color: var(--brand);">68</span>
+            <span class="cond" style="font-size: 14px; color: var(--muted); font-weight: 600;">/ 120</span>
+          </div>
+          <div style="height: 4px; background: var(--line); border-radius: 2px; margin-top: 10px; overflow: hidden;">
+            <div style="width: 57%; height: 100%; background: var(--brand);"></div>
+          </div>
+        </div>
+        <svg style="position: absolute; top: 26px; left: 24px;" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--dim)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <div style="position: absolute; top: -14px; right: -14px; background: var(--brand); color: #0E0F0D; padding: 8px 14px; border-radius: 3px;" class="cond">
+        <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em;">99.9% UPTIME</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <section style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+    <div style="padding: 26px 0; border-right: 1px solid var(--line);">
+      <div class="display" style="font-size: 40px;">120<span style="color: var(--brand);">+</span></div>
+      <div class="cond" style="font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; margin-top: 4px;">Gimnasios activos</div>
+    </div>
+    <div style="padding: 26px 0 26px 28px; border-right: 1px solid var(--line);">
+      <div class="display" style="font-size: 40px;">48<span style="color: var(--brand);">k</span></div>
+      <div class="cond" style="font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; margin-top: 4px;">Socios gestionados</div>
+    </div>
+    <div style="padding: 26px 0 26px 28px; border-right: 1px solid var(--line);">
+      <div class="display" style="font-size: 40px;">&lt;5<span style="color: var(--brand);">min</span></div>
+      <div class="cond" style="font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; margin-top: 4px;">Primera respuesta</div>
+    </div>
+    <div style="padding: 26px 0 26px 28px;">
+      <div class="display" style="font-size: 40px;">24<span style="color: var(--brand);">/7</span></div>
+      <div class="cond" style="font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; margin-top: 4px;">Soporte real</div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section style="padding: 76px 0 90px;">
+    <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; margin-bottom: 52px; align-items: end;">
+      <h2 class="display" style="font-size: 52px; margin: 0;">Todo lo que<br>hace mover<br>tu gimnasio</h2>
+      <p style="font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 420px; margin: 0 0 6px;">
+        Deja las hojas de cálculo y los cuadernos. Flowerpot ordena la operación diaria para que te dediques a que la gente entrene.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line);">
+      <!-- card 1 -->
+      <div style="background: var(--bg); padding: 32px 26px 36px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="cond" style="font-size: 12px; color: var(--dim); font-weight: 700;">01</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="cond" style="font-size: 19px; font-weight: 700; margin: 22px 0 10px;">Socios y membresías</h3>
+        <p style="font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0;">Altas en segundos, planes, congelamientos y vencimientos. Sabes al toque quién está al día.</p>
+      </div>
+      <!-- card 2 -->
+      <div style="background: var(--bg); padding: 32px 26px 36px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="cond" style="font-size: 12px; color: var(--dim); font-weight: 700;">02</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><path d="M13 4h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3M2 12h13M9 8l4 4-4 4"/></svg>
+        </div>
+        <h3 class="cond" style="font-size: 19px; font-weight: 700; margin: 22px 0 10px;">Control de acceso</h3>
+        <p style="font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0;">Torniquete, QR o huella. Solo entra quien tiene membresía activa; el resto queda registrado.</p>
+      </div>
+      <!-- card 3 -->
+      <div style="background: var(--bg); padding: 32px 26px 36px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="cond" style="font-size: 12px; color: var(--dim); font-weight: 700;">03</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        </div>
+        <h3 class="cond" style="font-size: 19px; font-weight: 700; margin: 22px 0 10px;">Cobros y caja</h3>
+        <p style="font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0;">Cobra con Yape, tarjeta o efectivo. Cierre de caja diario cuadrado y sin sustos.</p>
+      </div>
+      <!-- card 4 -->
+      <div style="background: var(--bg); padding: 32px 26px 36px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="cond" style="font-size: 12px; color: var(--dim); font-weight: 700;">04</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <h3 class="cond" style="font-size: 19px; font-weight: 700; margin: 22px 0 10px;">Asistencia y aforo</h3>
+        <p style="font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0;">Mira el aforo en vivo, horas pico y qué sede rinde más. Decide con datos, no con corazonadas.</p>
+      </div>
+      <!-- card 5 -->
+      <div style="background: var(--bg); padding: 32px 26px 36px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="cond" style="font-size: 12px; color: var(--dim); font-weight: 700;">05</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><path d="M3 3v18h18M19 9l-5 5-4-4-3 3"/></svg>
+        </div>
+        <h3 class="cond" style="font-size: 19px; font-weight: 700; margin: 22px 0 10px;">Reportes de negocio</h3>
+        <p style="font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0;">Ingresos, retención y proyección de renovaciones. El pulso de tu gimnasio, actualizado solo.</p>
+      </div>
+      <!-- card 6 -->
+      <div style="background: var(--bg); padding: 32px 26px 36px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span class="cond" style="font-size: 12px; color: var(--dim); font-weight: 700;">06</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/></svg>
+        </div>
+        <h3 class="cond" style="font-size: 19px; font-weight: 700; margin: 22px 0 10px;">Multi-sede real</h3>
+        <p style="font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0;">Una cuenta, todas tus sedes. Permisos por local y consolidado del grupo en una vista.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1240,"height":1900}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

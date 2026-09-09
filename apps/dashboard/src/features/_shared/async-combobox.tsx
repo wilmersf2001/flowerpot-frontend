@@ -57,7 +57,9 @@ export function AsyncCombobox({
 
   const options = React.useMemo(() => {
     if (!selectedOption) return source.options;
-    if (source.options.some((option) => option.value === selectedOption.value)) {
+    if (
+      source.options.some((option) => option.value === selectedOption.value)
+    ) {
       return source.options;
     }
     return [selectedOption, ...source.options];
@@ -90,11 +92,13 @@ export function AsyncCombobox({
             "flex h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm",
             "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
             "disabled:cursor-not-allowed disabled:opacity-50",
-            "aria-[invalid=true]:border-destructive aria-[invalid=true]:ring-destructive",
+            "aria-invalid:border-destructive aria-invalid:ring-destructive",
             className,
           )}
         >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+          <span
+            className={cn("truncate", !selected && "text-muted-foreground")}
+          >
             {selected ? selected.label : placeholder}
           </span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
@@ -102,7 +106,7 @@ export function AsyncCombobox({
       </PopoverTrigger>
       <PopoverContent
         id={listId}
-        className="w-[var(--radix-popover-trigger-width)] p-0"
+        className="w-(--radix-popover-trigger-width) p-0"
       >
         <Command shouldFilter={false}>
           <CommandInput

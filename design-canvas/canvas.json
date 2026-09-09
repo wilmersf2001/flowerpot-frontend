@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1240, "h": 1900, "title": "Opción A — Iron & Lime" },
+    { "file": "Molten.dc.html", "x": 1400, "y": 0, "w": 1240, "h": 1750, "title": "Opción B — Molten" },
+    { "file": "SteelCourt.dc.html", "x": 2800, "y": 0, "w": 1240, "h": 1650, "title": "Opción C — Steel Court" }
+  ],
+  "annotations": [
+    { "id": "note-a", "x": 0, "y": -150, "w": 460, "text": "OPCIÓN A — IRON & LIME\nFondo casi negro + verde lima eléctrico como \"voltaje\", usado con moderación (CTAs, números, 1 detalle por sección). Tipografía Archivo Black condensada. Hero asimétrico 60/40, headline gigante a la izquierda. Es el verde \"flowerpot = mamado\", no el verde eco." },
+    { "id": "note-b", "x": 1400, "y": -150, "w": 460, "text": "OPCIÓN B — MOLTEN\nCarbón cálido + naranja fundido de marca. Sensación de forja / calentar motores, sin nada de verde. Oswald en titulares. Hero 50/50 con gráfico de ingresos. Stats en tarjetas. La más \"masculina energética\"." },
+    { "id": "note-c", "x": 2800, "y": -150, "w": 460, "text": "OPCIÓN C — STEEL COURT\nAzul acero + un rojo señal SOLO para el CTA principal (1 acción por pantalla). Chivo Black. Estética club premium / performance, más sobria y aspiracional, menos box de crossfit. Panel de producto en el hero." }
+  ],
+  "launch": { "view": "canvas" }
+}
