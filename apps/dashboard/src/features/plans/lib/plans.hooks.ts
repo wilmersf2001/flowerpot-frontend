@@ -5,6 +5,8 @@ import {
   useMutation,
 } from "@tanstack/react-query";
 import type { Paginated } from "@repo/types";
+import type { ComboboxOption } from "@repo/ui/combobox";
+import { useAsyncOptions } from "@/features/_shared/use-async-options";
 import { plansApi } from "./plans.api";
 import { planKeys } from "./plans.keys";
 import {
@@ -22,6 +24,28 @@ export function usePlans(params: PlanListParams = {}) {
     // Al cambiar de página o de búsqueda, conserva la tabla anterior
     // visible mientras llega la nueva (sin parpadeo a "Cargando…").
     placeholderData: keepPreviousData,
+  });
+}
+
+/** Fila de plan -> opción de combobox (nombre + precio como texto secundario). */
+const toPlanOption = (plan: PlanRow): ComboboxOption => ({
+  value: plan.id,
+  label: plan.name,
+  hint: plan.price_formatted || undefined,
+  keywords: [plan.slug],
+});
+
+/**
+ * Adaptador para `AsyncCombobox`: planes paginados por scroll, filtrados por
+ * `search`. Único filtro que expone hoy `GET /plans`.
+ */
+export function usePlanOptions(enabled = true) {
+  return useAsyncOptions<PlanRow>({
+    queryKey: planKeys.options,
+    fetchPage: ({ search, page }) =>
+      plansApi.list({ search, page, perPage: 20 }),
+    toOption: toPlanOption,
+    enabled,
   });
 }
 

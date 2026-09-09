@@ -2,6 +2,7 @@ export { PlansPage } from "./plans-page";
 
 export {
   usePlans,
+  usePlanOptions,
   useCreatePlan,
   useUpdatePlan,
   useDeletePlan,

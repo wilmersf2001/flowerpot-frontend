@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ApiError } from "@repo/api-client";
 import { toast } from "@repo/ui/toast";
 import { Button } from "@repo/ui/button";
-import { Input } from "@repo/ui/input";
-import { Label } from "@repo/ui/label";
-import { AppDialog } from "@/features/_shared";
-import { usePlans } from "@/features/plans";
-import { useTenants } from "@/features/tenants";
+import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
+import {
+  AppDialog,
+  AsyncCombobox,
+  Field,
+  TextField,
+  TextareaField,
+  useFieldBinder,
+} from "@/features/_shared";
+import { usePlanOptions } from "@/features/plans";
+import { useTenantOptions } from "@/features/tenants";
 import {
   useCreateSubscription,
   useUpdateSubscription,
@@ -31,8 +37,12 @@ import {
 import type { SubscriptionRow } from "../lib/subscriptions.types";
 
 const FORM_ID = "subscription-form";
-const SELECT_CLASS =
-  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+
+/** Estados: lista fija -> `Combobox` sin buscador. */
+const STATUS_OPTIONS: ComboboxOption[] = SUBSCRIPTION_STATUSES.map((status) => ({
+  value: status,
+  label: SUBSCRIPTION_STATUS_LABELS[status],
+}));
 
 /**
  * Diálogo de suscripción. Sin `subscription` es "Nueva suscripción" (POST);
@@ -52,23 +62,33 @@ export function SubscriptionFormDialog({
   const createSubscription = useCreateSubscription();
   const updateSubscription = useUpdateSubscription();
 
-  // Opciones de los selects. Traemos una página grande: el alta de una
-  // suscripción es puntual y el número de gimnasios/planes es acotado.
-  const tenants = useTenants({ perPage: 100 });
-  const plans = usePlans({ perPage: 100 });
-  const tenantRows = tenants.data?.data ?? [];
-  const planRows = plans.data?.data ?? [];
+  // Selects asíncronos: buscan y paginan por scroll contra el `list()` del
+  // modelo. El de gimnasio solo se usa en alta (en edición es de solo lectura).
+  const tenantOptions = useTenantOptions(!isEdit);
+  const planOptions = usePlanOptions();
 
+  // Modo edición: el plan contratado puede no venir en la 1ª página de
+  // resultados, así que damos su etiqueta a mano desde la fila.
+  const selectedPlanOption: ComboboxOption | null = subscription
+    ? {
+        value: String(subscription.plan_id),
+        label: subscription.plan_name,
+        hint: subscription.plan_price_formatted || undefined,
+      }
+    : null;
+
+  const form = useForm<SubscriptionForm>({
+    resolver: zodResolver(subscriptionFormSchema),
+    defaultValues: subscriptionFormDefaults,
+  });
   const {
-    register,
+    control,
     handleSubmit,
     reset,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<SubscriptionForm>({
-    resolver: zodResolver(subscriptionFormSchema),
-    defaultValues: subscriptionFormDefaults,
-  });
+  } = form;
+  const bind = useFieldBinder(form, "subscription");
 
   // Cada vez que se abre, sincroniza con la suscripción (edición) o limpia.
   useEffect(() => {
@@ -157,89 +177,65 @@ export function SubscriptionFormDialog({
         className="flex flex-col gap-4"
         noValidate
       >
-        <Field
-          label="Gimnasio"
-          htmlFor="subscription-tenant"
-          error={errors.tenant_id?.message}
-          hint={isEdit ? "No se puede cambiar." : undefined}
-        >
-          {isEdit ? (
-            <Input
-              id="subscription-tenant"
-              readOnly
-              className="text-muted-foreground"
-              {...register("tenant_id")}
+        {isEdit ? (
+          <TextField
+            {...bind("tenant_id")}
+            label="Gimnasio"
+            readOnly
+            hint="No se puede cambiar."
+          />
+        ) : (
+          <Field
+            label="Gimnasio"
+            htmlFor="subscription-tenant"
+            error={errors.tenant_id?.message}
+          >
+            <Controller
+              control={control}
+              name="tenant_id"
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="subscription-tenant"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  source={tenantOptions}
+                  placeholder="Selecciona un gimnasio"
+                  searchPlaceholder="Buscar gimnasio…"
+                  emptyText="Sin gimnasios."
+                  aria-invalid={errors.tenant_id ? true : undefined}
+                />
+              )}
             />
-          ) : (
-            <select
-              id="subscription-tenant"
-              className={SELECT_CLASS}
-              disabled={tenants.isPending}
-              aria-invalid={errors.tenant_id ? true : undefined}
-              {...register("tenant_id")}
-            >
-              <option value="">
-                {tenants.isPending ? "Cargando…" : "Selecciona un gimnasio"}
-              </option>
-              {tenantRows.map((tenant) => (
-                <option key={tenant.id} value={tenant.id}>
-                  {tenant.id}
-                </option>
-              ))}
-            </select>
-          )}
-        </Field>
+          </Field>
+        )}
 
         <Field
           label="Plan"
           htmlFor="subscription-plan"
           error={errors.plan_id?.message}
         >
-          <select
-            id="subscription-plan"
-            className={SELECT_CLASS}
-            disabled={plans.isPending}
-            aria-invalid={errors.plan_id ? true : undefined}
-            {...register("plan_id")}
-          >
-            <option value="">
-              {plans.isPending ? "Cargando…" : "Selecciona un plan"}
-            </option>
-            {planRows.map((plan) => (
-              <option key={plan.id} value={plan.id}>
-                {plan.name}
-                {plan.price_formatted ? ` · ${plan.price_formatted}` : ""}
-              </option>
-            ))}
-          </select>
+          <Controller
+            control={control}
+            name="plan_id"
+            render={({ field }) => (
+              <AsyncCombobox
+                id="subscription-plan"
+                value={field.value}
+                onValueChange={field.onChange}
+                source={planOptions}
+                selectedOption={selectedPlanOption}
+                placeholder="Selecciona un plan"
+                searchPlaceholder="Buscar plan…"
+                emptyText="Sin planes."
+                aria-invalid={errors.plan_id ? true : undefined}
+              />
+            )}
+          />
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <Field
-            label="Inicio"
-            htmlFor="subscription-starts-at"
-            error={errors.starts_at?.message}
-          >
-            <Input
-              id="subscription-starts-at"
-              type="date"
-              aria-invalid={errors.starts_at ? true : undefined}
-              {...register("starts_at")}
-            />
-          </Field>
-
-          <Field
-            label="Fin"
-            htmlFor="subscription-ends-at"
-            error={errors.ends_at?.message}
-          >
-            <Input
-              id="subscription-ends-at"
-              type="date"
-              aria-invalid={errors.ends_at ? true : undefined}
-              {...register("ends_at")}
-            />
-          </Field>
+          <TextField {...bind("starts_at")} label="Inicio" type="date" />
+          <TextField {...bind("ends_at")} label="Fin" type="date" />
         </div>
 
         <Field
@@ -247,62 +243,28 @@ export function SubscriptionFormDialog({
           htmlFor="subscription-status"
           error={errors.status?.message}
         >
-          <select
-            id="subscription-status"
-            className={SELECT_CLASS}
-            aria-invalid={errors.status ? true : undefined}
-            {...register("status")}
-          >
-            {SUBSCRIPTION_STATUSES.map((status) => (
-              <option key={status} value={status}>
-                {SUBSCRIPTION_STATUS_LABELS[status]}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field
-          label="Notas"
-          htmlFor="subscription-notes"
-          error={errors.notes?.message}
-          hint="Opcional."
-        >
-          <textarea
-            id="subscription-notes"
-            rows={3}
-            placeholder="Acuerdo comercial, descuentos, contacto…"
-            className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            {...register("notes")}
+          <Controller
+            control={control}
+            name="status"
+            render={({ field }) => (
+              <Combobox
+                id="subscription-status"
+                value={field.value}
+                onValueChange={field.onChange}
+                options={STATUS_OPTIONS}
+                aria-invalid={errors.status ? true : undefined}
+              />
+            )}
           />
         </Field>
+
+        <TextareaField
+          {...bind("notes")}
+          label="Notas"
+          hint="Opcional."
+          placeholder="Acuerdo comercial, descuentos, contacto…"
+        />
       </form>
     </AppDialog>
-  );
-}
-
-/** Campo del formulario: etiqueta + control + error/pista. */
-function Field({
-  label,
-  htmlFor,
-  error,
-  hint,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  error?: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-      {error ? (
-        <p className="text-xs text-destructive">{error}</p>
-      ) : hint ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
-      ) : null}
-    </div>
   );
 }

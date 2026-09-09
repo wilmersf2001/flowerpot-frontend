@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ApiError } from "@repo/api-client";
 import { toast } from "@repo/ui/toast";
 import { Button } from "@repo/ui/button";
-import { Input } from "@repo/ui/input";
-import { Label } from "@repo/ui/label";
-import { AppDialog } from "@/features/_shared";
+import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
+import {
+  AppDialog,
+  Field,
+  TextField,
+  TextareaField,
+  useFieldBinder,
+} from "@/features/_shared";
 import { useCreatePlan, useUpdatePlan } from "../lib/plans.hooks";
 import {
   PLAN_BILLING_PERIODS,
@@ -25,6 +30,11 @@ import {
 import type { PlanRow } from "../lib/plans.types";
 
 const FORM_ID = "plan-form";
+
+/** Periodos de facturación: lista fija -> `Combobox` sin buscador. */
+const BILLING_PERIOD_OPTIONS: ComboboxOption[] = PLAN_BILLING_PERIODS.map(
+  (period) => ({ value: period, label: PLAN_BILLING_PERIOD_LABELS[period] }),
+);
 
 /**
  * Diálogo de plan. Sin `plan` es "Nuevo plan" (POST); con `plan` es
@@ -47,16 +57,19 @@ export function PlanFormDialog({
   const createPlan = useCreatePlan();
   const updatePlan = useUpdatePlan();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<PlanForm>({
+  const form = useForm<PlanForm>({
     resolver: zodResolver(planFormSchema),
     defaultValues: planFormDefaults,
   });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setError,
+    register,
+    formState: { errors, isSubmitting },
+  } = form;
+  const bind = useFieldBinder(form, "plan");
 
   // Cada vez que se abre, sincroniza con el plan (edición) o limpia (alta).
   useEffect(() => {
@@ -137,85 +150,46 @@ export function PlanFormDialog({
         className="flex flex-col gap-4"
         noValidate
       >
-        <Field label="Nombre" htmlFor="plan-name" error={errors.name?.message}>
-          <Input
-            id="plan-name"
-            placeholder="Plan Pro"
-            autoComplete="off"
-            autoFocus
-            aria-invalid={errors.name ? true : undefined}
-            {...register("name")}
-          />
-        </Field>
+        <TextField {...bind("name")} label="Nombre" placeholder="Plan Pro" autoFocus />
 
-        <Field
+        <TextField
+          {...bind("slug")}
           label="Identificador"
-          htmlFor="plan-slug"
-          error={errors.slug?.message}
+          placeholder="plan-pro"
+          readOnly={isEdit}
           hint={
             isEdit
               ? "No se puede cambiar."
               : "Minúsculas, números y guion. No se puede cambiar después."
           }
-        >
-          <Input
-            id="plan-slug"
-            placeholder="plan-pro"
-            autoComplete="off"
-            readOnly={isEdit}
-            aria-invalid={errors.slug ? true : undefined}
-            className={isEdit ? "text-muted-foreground" : undefined}
-            {...register("slug")}
-          />
-        </Field>
+        />
 
-        <Field
+        <TextField
+          {...bind("description")}
           label="Descripción"
-          htmlFor="plan-description"
-          error={errors.description?.message}
-        >
-          <Input
-            id="plan-description"
-            placeholder="Para gimnasios en crecimiento"
-            autoComplete="off"
-            aria-invalid={errors.description ? true : undefined}
-            {...register("description")}
-          />
-        </Field>
+          placeholder="Para gimnasios en crecimiento"
+        />
 
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Precio" htmlFor="plan-price" error={errors.price?.message}>
-            <Input
-              id="plan-price"
-              type="number"
-              inputMode="decimal"
-              min={0}
-              step="0.01"
-              placeholder="99.90"
-              aria-invalid={errors.price ? true : undefined}
-              {...register("price")}
-            />
-          </Field>
+          <TextField
+            {...bind("price")}
+            label="Precio"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            step="0.01"
+            placeholder="99.90"
+          />
 
-          <Field
+          <TextField
+            {...bind("currency")}
             label="Moneda"
-            htmlFor="plan-currency"
-            error={errors.currency?.message}
+            placeholder="PEN"
+            maxLength={3}
+            className="uppercase"
+            readOnly={isEdit}
             hint={isEdit ? "No se puede cambiar." : undefined}
-          >
-            <Input
-              id="plan-currency"
-              placeholder="PEN"
-              autoComplete="off"
-              maxLength={3}
-              readOnly={isEdit}
-              className={
-                isEdit ? "uppercase text-muted-foreground" : "uppercase"
-              }
-              aria-invalid={errors.currency ? true : undefined}
-              {...register("currency")}
-            />
-          </Field>
+          />
         </div>
 
         <Field
@@ -224,88 +198,60 @@ export function PlanFormDialog({
           error={errors.billing_period?.message}
           hint={isEdit ? "No se puede cambiar." : undefined}
         >
-          <select
-            id="plan-billing-period"
-            disabled={isEdit}
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-            aria-invalid={errors.billing_period ? true : undefined}
-            {...register("billing_period")}
-          >
-            {PLAN_BILLING_PERIODS.map((period) => (
-              <option key={period} value={period}>
-                {PLAN_BILLING_PERIOD_LABELS[period]}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Field
-            label="Máx. sedes"
-            htmlFor="plan-max-locations"
-            error={errors.max_locations?.message}
-            hint="0 = ilimitado"
-          >
-            <Input
-              id="plan-max-locations"
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              aria-invalid={errors.max_locations ? true : undefined}
-              {...register("max_locations")}
-            />
-          </Field>
-
-          <Field
-            label="Máx. miembros"
-            htmlFor="plan-max-members"
-            error={errors.max_members?.message}
-            hint="0 = ilimitado"
-          >
-            <Input
-              id="plan-max-members"
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              aria-invalid={errors.max_members ? true : undefined}
-              {...register("max_members")}
-            />
-          </Field>
-        </div>
-
-        <Field
-          label="Características"
-          htmlFor="plan-features"
-          error={errors.features?.message}
-          hint="Una por línea."
-        >
-          <textarea
-            id="plan-features"
-            rows={3}
-            placeholder={"Reportes avanzados\nSoporte prioritario"}
-            className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            {...register("features")}
+          <Controller
+            control={control}
+            name="billing_period"
+            render={({ field }) => (
+              <Combobox
+                id="plan-billing-period"
+                value={field.value}
+                onValueChange={field.onChange}
+                options={BILLING_PERIOD_OPTIONS}
+                disabled={isEdit}
+                aria-invalid={errors.billing_period ? true : undefined}
+              />
+            )}
           />
         </Field>
 
-        <Field
-          label="Orden"
-          htmlFor="plan-sort-order"
-          error={errors.sort_order?.message}
-          hint="Menor número aparece primero."
-        >
-          <Input
-            id="plan-sort-order"
+        <div className="grid grid-cols-2 gap-4">
+          <TextField
+            {...bind("max_locations")}
+            label="Máx. sedes"
             type="number"
             inputMode="numeric"
             min={0}
             step="1"
-            aria-invalid={errors.sort_order ? true : undefined}
-            {...register("sort_order")}
+            hint="0 = ilimitado"
           />
-        </Field>
+
+          <TextField
+            {...bind("max_members")}
+            label="Máx. miembros"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            step="1"
+            hint="0 = ilimitado"
+          />
+        </div>
+
+        <TextareaField
+          {...bind("features")}
+          label="Características"
+          hint="Una por línea."
+          placeholder={"Reportes avanzados\nSoporte prioritario"}
+        />
+
+        <TextField
+          {...bind("sort_order")}
+          label="Orden"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          step="1"
+          hint="Menor número aparece primero."
+        />
 
         {isEdit ? (
           <label className="flex items-center gap-2 text-sm">
@@ -319,32 +265,5 @@ export function PlanFormDialog({
         ) : null}
       </form>
     </AppDialog>
-  );
-}
-
-/** Campo del formulario: etiqueta + control + error/pista. */
-function Field({
-  label,
-  htmlFor,
-  error,
-  hint,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  error?: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-      {error ? (
-        <p className="text-xs text-destructive">{error}</p>
-      ) : hint ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
-      ) : null}
-    </div>
   );
 }

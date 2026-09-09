@@ -6,4 +6,6 @@ export const tenantKeys = {
   lists: () => [...tenantKeys.all, "list"] as const,
   list: (params: TenantListParams) =>
     [...tenantKeys.lists(), params] as const,
+  /** Combobox asíncrono: list paginado por scroll, keyeado por texto. */
+  options: (search: string) => [...tenantKeys.all, "options", search] as const,
 };
