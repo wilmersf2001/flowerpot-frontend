@@ -29,7 +29,7 @@ export function usePlans(params: PlanListParams = {}) {
 
 /** Fila de plan -> opción de combobox (nombre + precio como texto secundario). */
 const toPlanOption = (plan: PlanRow): ComboboxOption => ({
-  value: plan.id,
+  value: String(plan.id),
   label: plan.name,
   hint: plan.price_formatted || undefined,
   keywords: [plan.slug],
