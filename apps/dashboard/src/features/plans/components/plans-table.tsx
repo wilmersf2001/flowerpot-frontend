@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Switch } from "@repo/ui/switch";
 import { toast } from "@repo/ui/toast";
 import {
@@ -59,14 +59,12 @@ export function PlansTable({
   rows,
   isLoading,
   onEditAction,
-  onDeleteAction,
   pagination,
   emptyMessage = "Aún no hay planes. Crea el primero.",
 }: {
   rows: PlanRow[];
   isLoading: boolean;
   onEditAction: (plan: PlanRow) => void;
-  onDeleteAction: (plan: PlanRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
@@ -128,13 +126,6 @@ export function PlansTable({
               label: "Editar",
               icon: Pencil,
               onSelect: () => onEditAction(row),
-            },
-            {
-              label: "Eliminar",
-              icon: Trash2,
-              variant: "destructive",
-              separatorBefore: true,
-              onSelect: () => onDeleteAction(row),
             },
           ]}
         />

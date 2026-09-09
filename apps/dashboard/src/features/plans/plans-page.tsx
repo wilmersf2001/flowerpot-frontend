@@ -13,7 +13,6 @@ import { usePlans } from "./lib/plans.hooks";
 import { PlansTable } from "./components/plans-table";
 import { PlanFormDialog } from "./components/plan-form-dialog";
 import { PlanCredentialsDialog } from "./components/plan-credentials-dialog";
-import { DeletePlanDialog } from "./components/delete-plan-dialog";
 
 export function PlansPage() {
   const [search, setSearch] = useState("");
@@ -28,7 +27,6 @@ export function PlansPage() {
   const [editing, setEditing] = useState<PlanRow | "new" | null>(null);
   // Plan recién creado: dispara el diálogo de resumen.
   const [created, setCreated] = useState<PlanRow | null>(null);
-  const [toDelete, setToDelete] = useState<PlanRow | null>(null);
 
   function handleSearch(value: string) {
     setSearch(value);
@@ -70,7 +68,6 @@ export function PlansPage() {
           rows={meta?.data ?? []}
           isLoading={plans.isPending}
           onEditAction={setEditing}
-          onDeleteAction={setToDelete}
           emptyMessage={
             debouncedSearch
               ? "Ningún plan coincide con la búsqueda."
@@ -99,12 +96,6 @@ export function PlansPage() {
       <PlanCredentialsDialog
         result={created}
         onCloseAction={() => setCreated(null)}
-      />
-      <DeletePlanDialog
-        plan={toDelete}
-        onOpenChangeAction={(open) => {
-          if (!open) setToDelete(null);
-        }}
       />
     </div>
   );

@@ -10,6 +10,7 @@ import {
   Field,
   TextField,
   TextareaField,
+  slugify,
   useFieldBinder,
   useResourceFormSubmit,
 } from "@/features/_shared";
@@ -66,6 +67,8 @@ export function PlanFormDialog({
     handleSubmit,
     reset,
     register,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = form;
   const bind = useFieldBinder(form, "plan");
@@ -74,6 +77,12 @@ export function PlanFormDialog({
   useEffect(() => {
     if (open) reset(plan ? planToForm(plan) : planFormDefaults);
   }, [open, plan, reset]);
+
+  // En alta el identificador se deriva del nombre; el usuario no lo edita.
+  const nameValue = watch("name");
+  useEffect(() => {
+    if (!isEdit) setValue("slug", slugify(nameValue ?? ""));
+  }, [isEdit, nameValue, setValue]);
 
   const onSubmit = handleSubmit(
     useResourceFormSubmit<PlanForm, PlanRow>({
@@ -138,17 +147,22 @@ export function PlanFormDialog({
         className="flex flex-col gap-4"
         noValidate
       >
-        <TextField {...bind("name")} label="Nombre" placeholder="Plan Pro" autoFocus />
+        <TextField
+          {...bind("name")}
+          label="Nombre"
+          placeholder="Plan Pro"
+          autoFocus
+        />
 
         <TextField
           {...bind("slug")}
           label="Identificador"
           placeholder="plan-pro"
-          readOnly={isEdit}
+          readOnly
           hint={
             isEdit
               ? "No se puede cambiar."
-              : "Minúsculas, números y guion. No se puede cambiar después."
+              : "Se genera a partir del nombre. No se puede cambiar después."
           }
         />
 

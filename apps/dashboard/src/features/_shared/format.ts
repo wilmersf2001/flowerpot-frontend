@@ -41,3 +41,17 @@ export function splitLines(value: string): string[] {
     .map((line) => line.trim())
     .filter(Boolean);
 }
+
+/**
+ * Texto libre -> identificador URL-safe: minúsculas, sin acentos, y cada
+ * grupo de caracteres no alfanuméricos colapsado a un solo guion (sin
+ * guiones al inicio ni al final). Ej.: `"Plan Pro ½"` -> `"plan-pro"`.
+ */
+export function slugify(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}

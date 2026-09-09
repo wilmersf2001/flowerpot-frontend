@@ -97,15 +97,6 @@ export function useTogglePlanActive() {
         queryClient.setQueryData(key, page);
       }
     },
-    onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: planKeys.all }),
-  });
-}
-
-export function useDeletePlan() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => plansApi.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: planKeys.all }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: planKeys.all }),
   });
 }

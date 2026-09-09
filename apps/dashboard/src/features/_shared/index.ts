@@ -23,6 +23,7 @@ export {
   useFieldBinder,
   type FieldBinding,
 } from "./form-field";
+export { DateField } from "./date-field";
 export { ConfirmDialog } from "./confirm-dialog";
 export { CopyRow } from "./copy-row";
 export { SearchInput } from "./search-input";
@@ -37,6 +38,7 @@ export {
   formatDate,
   toDateInputValue,
   splitLines,
+  slugify,
   EM_DASH,
 } from "./format";
 export {

@@ -50,19 +50,59 @@ type RowActionEntry = RowAction | false | null | undefined;
  *   />
  * )}
  * ```
+ *
+ * Presentación: hasta `inlineThreshold` acciones (por defecto 3) —y siempre que
+ * todas tengan `icon`— se pintan como botones-icono sueltos con tooltip nativo
+ * (`title`). A partir de ahí, o si a alguna le falta el icono, se colapsan en el
+ * menú "⋯" con icono + texto.
  */
 export function RowActions({
   label,
   actions,
   align = "end",
+  inlineThreshold = 3,
 }: {
   /** Texto accesible del disparador, p. ej. `Acciones de ${row.id}`. */
   label: string;
   actions: RowActionEntry[];
   align?: "start" | "center" | "end";
+  /** Nº máximo de acciones que se muestran como iconos sueltos (default 3). */
+  inlineThreshold?: number;
 }) {
   const visible = actions.filter((a): a is RowAction => Boolean(a));
   if (visible.length === 0) return null;
+
+  // Modo inline: pocas acciones y todas con icono → botones-icono con tooltip.
+  const canInline =
+    visible.length <= inlineThreshold && visible.every((a) => a.icon);
+
+  if (canInline) {
+    return (
+      <div className="flex items-center justify-end gap-1">
+        {visible.map((action) => {
+          const Icon = action.icon!;
+          return (
+            <Button
+              key={action.label}
+              variant="ghost"
+              size="icon"
+              disabled={action.disabled}
+              onClick={action.onSelect}
+              title={action.label}
+              aria-label={action.label}
+              className={
+                action.variant === "destructive"
+                  ? "text-destructive hover:text-destructive"
+                  : undefined
+              }
+            >
+              <Icon className="size-4" />
+            </Button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <DropdownMenu>

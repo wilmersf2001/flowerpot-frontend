@@ -5,7 +5,6 @@ export {
   usePlanOptions,
   useCreatePlan,
   useUpdatePlan,
-  useDeletePlan,
 } from "./lib/plans.hooks";
 export { plansApi } from "./lib/plans.api";
 export type {

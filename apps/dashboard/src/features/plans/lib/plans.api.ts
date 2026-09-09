@@ -25,10 +25,7 @@ async function create(input: CreatePlanInput): Promise<PlanRow> {
   return unwrapEnvelope<PlanRow>(data);
 }
 
-async function update(
-  id: string,
-  input: UpdatePlanInput,
-): Promise<PlanRow> {
+async function update(id: string, input: UpdatePlanInput): Promise<PlanRow> {
   const { data } = await apiClient.put<unknown>(
     `${PLANS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -36,8 +33,4 @@ async function update(
   return unwrapEnvelope<PlanRow>(data);
 }
 
-async function remove(id: string): Promise<void> {
-  await apiClient.delete(`${PLANS_ENDPOINT}/${encodeURIComponent(id)}`);
-}
-
-export const plansApi = { list, create, update, remove };
+export const plansApi = { list, create, update };

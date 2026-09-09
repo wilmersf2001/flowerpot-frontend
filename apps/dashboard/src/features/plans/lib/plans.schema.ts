@@ -7,11 +7,7 @@ import {
 } from "@/features/_shared/form-schema";
 import { splitLines } from "@/features/_shared/format";
 import { PLAN_BILLING_PERIODS, PLAN_SLUG_PATTERN } from "./plans.constants";
-import type {
-  CreatePlanInput,
-  PlanRow,
-  UpdatePlanInput,
-} from "./plans.types";
+import type { CreatePlanInput, PlanRow, UpdatePlanInput } from "./plans.types";
 
 /**
  * Formulario de plan (alta y edición). Todos los campos viven como texto (lo
@@ -78,7 +74,7 @@ const normalizeBillingPeriod = enumFallback(PLAN_BILLING_PERIODS, "monthly");
 export function planToForm(plan: PlanRow): PlanForm {
   return {
     name: plan.name,
-    slug: plan.id,
+    slug: plan.slug,
     description: plan.description ?? "",
     price: (Number(plan.price_cents) / 100).toString(),
     currency: plan.currency,
