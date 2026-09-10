@@ -18,8 +18,10 @@ export function Sidebar({
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r bg-sidebar p-4 text-sidebar-foreground md:flex">
       <div className="mb-6 px-2">
-        <span className="text-sm font-bold tracking-tight">Flowerpot</span>
-        <p className="text-xs text-muted-foreground">
+        <span className="display-heading text-lg text-primary">
+          Flowerpot
+        </span>
+        <p className="display-label mt-1 text-[10px] text-muted-foreground">
           {subtitle ?? PANEL_LABEL[panel]}
         </p>
       </div>

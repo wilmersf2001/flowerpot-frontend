@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Badge } from "@repo/ui/badge";
 import { currentPanel } from "@/lib/panel";
 import { LoginForm } from "./login-form";
 
@@ -15,18 +16,16 @@ export default async function LoginPage() {
   return (
     <main
       data-panel={panel.kind}
-      className="grid min-h-svh place-items-center px-6"
+      className="bg-brand-glow relative grid min-h-svh place-items-center px-6"
     >
-      <div className="w-full max-w-sm rounded-xl border bg-card p-6 shadow">
-        <span
-          className={
-            isTenant
-              ? "inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700"
-              : "inline-block rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700"
-          }
-        >
-          {isTenant ? `Gimnasio · ${panel.slug}` : "Administración central"}
+      <div className="relative w-full max-w-sm rounded-xl border bg-card p-6 shadow">
+        <span className="display-heading text-sm text-primary">
+          Flowerpot
         </span>
+
+        <Badge tone={isTenant ? "success" : "neutral"} className="mt-3">
+          {isTenant ? `Gimnasio · ${panel.slug}` : "Administración central"}
+        </Badge>
 
         <h1 className="mt-3 text-lg font-semibold tracking-tight">
           {isTenant ? "Ingresar a tu gimnasio" : "Ingresar a Flowerpot"}

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Section, PlaceholderImage } from "@/features/_shared";
 import {
   SECURITY_POINTS,
@@ -67,6 +69,14 @@ export function SecuritySection() {
           ))}
         </ul>
       </div>
+
+      <Link
+        href="/seguridad"
+        className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-primary transition-opacity hover:opacity-80"
+      >
+        Cómo aislamos y protegemos tus datos, en detalle
+        <ArrowRight className="size-4" />
+      </Link>
     </Section>
   );
 }

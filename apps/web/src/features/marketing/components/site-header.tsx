@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@repo/ui/button";
 import { Container } from "@/features/_shared";
+import { ADMIN_URL } from "@/lib/site";
 import { NAV_LINKS } from "../lib/marketing.content";
 import { BrandMark } from "./brand-mark";
 
@@ -34,7 +35,7 @@ export function SiteHeader() {
             className="hidden sm:inline-flex"
             asChild
           >
-            <a href="https://admin.localhost:3001">Iniciar sesión</a>
+            <a href={ADMIN_URL}>Iniciar sesión</a>
           </Button>
           <Button size="sm" className="rounded-lg" asChild>
             <a href="#planes">Empezar prueba</a>

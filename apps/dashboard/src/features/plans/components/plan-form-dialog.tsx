@@ -79,6 +79,7 @@ export function PlanFormDialog({
   }, [open, plan, reset]);
 
   // En alta el identificador se deriva del nombre; el usuario no lo edita.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const nameValue = watch("name");
   useEffect(() => {
     if (!isEdit) setValue("slug", slugify(nameValue ?? ""));

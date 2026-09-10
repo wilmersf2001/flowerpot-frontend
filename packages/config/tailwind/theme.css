@@ -128,4 +128,45 @@
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Titulares de marca ("Iron & Lime"). Cada app registra su propia fuente
+     Archivo vía next/font bajo esta misma variable --font-display; si el app
+     no la carga, cae a la pila de sans-serif del sistema. */
+  --font-display: var(--font-display), "Archivo", ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+/*
+ * Utilidades tipográficas de marca, compartidas por todas las apps: única
+ * fuente de la verdad para no repetir estas reglas en cada `globals.css` de
+ * app. Ver docs/paleta-colores.md §3.
+ */
+@layer components {
+  /* Titular condensado y pesado: el corte "hierro" de la dirección. */
+  .display-heading {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 82%;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  /* Etiqueta / eyebrow condensada. */
+  .display-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: 82%;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Halo radial de lima, muy sutil: acento de marca sobre superficies clave
+     (hero de la landing, pantalla de login del dashboard). */
+  .bg-brand-glow {
+    background-image: radial-gradient(
+      55% 55% at 20% 0%,
+      color-mix(in oklab, var(--primary) 13%, transparent) 0%,
+      transparent 70%
+    );
+  }
 }

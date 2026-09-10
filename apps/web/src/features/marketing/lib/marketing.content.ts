@@ -236,15 +236,16 @@ export const FOOTER = {
     {
       title: "Producto",
       links: [
-        { label: "Funciones", href: "#producto" },
-        { label: "Seguridad", href: "#seguridad" },
-        { label: "Planes", href: "#planes" },
+        { label: "Funciones", href: "/#producto" },
+        { label: "Seguridad", href: "/seguridad" },
+        { label: "Planes", href: "/#planes" },
+        { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
       ],
     },
     {
       title: "Empresa",
       links: [
-        { label: "Socios", href: "#socios" },
+        { label: "Socios", href: "/#socios" },
         { label: "Contacto", href: "#" },
         { label: "Estado del servicio", href: "#" },
       ],

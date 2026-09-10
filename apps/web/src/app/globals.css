@@ -41,43 +41,11 @@
 
 /*
  * Utilidades exclusivas del sitio público (marketing). Acabados visuales de
- * la landing, no primitivas de producto.
+ * la landing, no primitivas de producto. `.display-heading`, `.display-label`
+ * y `.bg-brand-glow` viven en `@repo/config/tailwind/theme.css` (compartidas
+ * con el dashboard) — no se repiten aquí.
  */
-@theme {
-  /* Titulares: grotesca industrial, NO serif. */
-  --font-display: var(--font-display), "Archivo", ui-sans-serif, system-ui,
-    sans-serif;
-}
-
 @layer components {
-  /* Titular condensado y pesado: el corte "hierro" de la dirección. */
-  .display-heading {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-stretch: 82%;
-    letter-spacing: -0.02em;
-    line-height: 0.95;
-    text-transform: uppercase;
-  }
-
-  /* Etiqueta / eyebrow condensada. */
-  .display-label {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-stretch: 82%;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  /* Halo radial de lima detrás del hero. Muy sutil. */
-  .bg-brand-glow {
-    background-image: radial-gradient(
-      55% 55% at 20% 0%,
-      color-mix(in oklab, var(--primary) 14%, transparent) 0%,
-      transparent 70%
-    );
-  }
-
   /* Grano fino para textura sin recargar. */
   .bg-grain {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
