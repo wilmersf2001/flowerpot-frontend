@@ -18,7 +18,11 @@ export function unwrapEnvelope<T>(body: unknown): T {
  */
 export function unwrapPaginated<T>(body: unknown): Paginated<T> {
   const node = unwrapEnvelope<unknown>(body);
-  const page = (node ?? {}) as Partial<Paginated<T>>;
+  // Algunos endpoints devuelven el array de filas sin envolver en un objeto
+  // paginado (sin `data`/`current_page`/…). Se trata como una única página.
+  const page = (Array.isArray(node) ? { data: node } : (node ?? {})) as Partial<
+    Paginated<T>
+  >;
   const data = Array.isArray(page.data) ? (page.data as T[]) : [];
 
   return {

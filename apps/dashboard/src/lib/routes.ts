@@ -25,6 +25,7 @@ export const ROUTES = {
     attendance: "/attendance",
     checkIn: "/check-in",
     staff: "/staff",
+    users: "/users",
     branches: "/branches",
     cashRegister: "/cash-register",
   },

@@ -27,6 +27,7 @@ const TENANT_NAV: NavItem[] = [
   { href: ROUTES.tenant.attendance, label: "Asistencia", icon: "calendarCheck" },
   { href: ROUTES.tenant.checkIn, label: "Check-in", icon: "qrCode" },
   { href: ROUTES.tenant.staff, label: "Personal", icon: "userCog" },
+  { href: ROUTES.tenant.users, label: "Usuarios", icon: "shieldCheck" },
   { href: ROUTES.tenant.branches, label: "Sedes", icon: "building" },
   { href: ROUTES.tenant.cashRegister, label: "Caja", icon: "wallet" },
 ];
