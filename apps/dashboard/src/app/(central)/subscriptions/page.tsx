@@ -1,4 +1,4 @@
-import { SubscriptionsPage } from "@/features/subscriptions";
+import { SubscriptionsPage } from "@/features/central/subscriptions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Suscripciones" };

@@ -15,8 +15,8 @@ import {
   useFieldBinder,
   useResourceFormSubmit,
 } from "@/features/_shared";
-import { usePlanOptions } from "@/features/plans";
-import { useTenantOptions } from "@/features/tenants";
+import { usePlanOptions } from "@/features/central/plans";
+import { useTenantOptions } from "@/features/central/tenants";
 import {
   useCreateSubscription,
   useUpdateSubscription,
@@ -39,10 +39,12 @@ import type { SubscriptionRow } from "../lib/subscriptions.types";
 const FORM_ID = "subscription-form";
 
 /** Estados: lista fija -> `Combobox` sin buscador. */
-const STATUS_OPTIONS: ComboboxOption[] = SUBSCRIPTION_STATUSES.map((status) => ({
-  value: status,
-  label: SUBSCRIPTION_STATUS_LABELS[status],
-}));
+const STATUS_OPTIONS: ComboboxOption[] = SUBSCRIPTION_STATUSES.map(
+  (status) => ({
+    value: status,
+    label: SUBSCRIPTION_STATUS_LABELS[status],
+  }),
+);
 
 /**
  * Diálogo de suscripción. Sin `subscription` es "Nueva suscripción" (POST);

@@ -71,6 +71,19 @@ export function RoleFormDialog({
     setValue("permissions", next, { shouldDirty: true, shouldValidate: true });
   }
 
+  // Los nombres de permiso llevan puntos (p.ej. "leads.view"); si se le pasara
+  // ese string a `setValue("permissions.leads.view", ...)`, RHF lo interpreta
+  // como ruta anidada (permissions.leads.view) en vez de la clave plana del
+  // record, desincronizando el checkbox del valor real. Por eso se reemplaza
+  // el objeto completo, igual que `toggleGroup`.
+  function togglePermission(name: string, checked: boolean) {
+    setValue(
+      "permissions",
+      { ...permissions, [name]: checked },
+      { shouldDirty: true, shouldValidate: true },
+    );
+  }
+
   const onSubmit = handleSubmit(
     useResourceFormSubmit<RoleForm, RoleRow>({
       form,
@@ -164,11 +177,7 @@ export function RoleFormDialog({
                             className="size-4 rounded border-input"
                             checked={Boolean(permissions[permission.name])}
                             onChange={(event) =>
-                              setValue(
-                                `permissions.${permission.name}`,
-                                event.target.checked,
-                                { shouldDirty: true, shouldValidate: true },
-                              )
+                              togglePermission(permission.name, event.target.checked)
                             }
                           />
                           {permission.label}

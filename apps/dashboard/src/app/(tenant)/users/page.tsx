@@ -1,4 +1,4 @@
-import { UsersPage } from "@/features/users";
+import { UsersPage } from "@/features/tenant/users";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Usuarios" };
