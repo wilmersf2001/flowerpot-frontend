@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { MembershipsPage } from "@/features/tenant/memberships";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Membresías" };
+export const metadata: Metadata = { title: "Membresías" };
 
 export default function Page() {
-  return <ResourceScaffold title="Membresías" description="Planes de membresía, vigencias y congelamientos." />;
+  return <MembershipsPage />;
 }

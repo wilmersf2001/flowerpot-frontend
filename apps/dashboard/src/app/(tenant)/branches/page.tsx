@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { BranchesPage } from "@/features/tenant/branches";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Sedes" };
+export const metadata: Metadata = { title: "Sedes" };
 
 export default function Page() {
-  return <ResourceScaffold title="Sedes" description="Sedes del gimnasio y su configuración." />;
+  return <BranchesPage />;
 }

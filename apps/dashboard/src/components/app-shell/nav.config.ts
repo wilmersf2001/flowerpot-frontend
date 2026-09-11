@@ -23,6 +23,11 @@ const CENTRAL_NAV: NavItem[] = [
 const TENANT_NAV: NavItem[] = [
   { href: ROUTES.tenant.members, label: "Socios", icon: "users" },
   { href: ROUTES.tenant.memberships, label: "Membresías", icon: "ticket" },
+  {
+    href: ROUTES.tenant.membershipPlans,
+    label: "Planes de membresía",
+    icon: "layers",
+  },
   { href: ROUTES.tenant.payments, label: "Pagos", icon: "banknote" },
   { href: ROUTES.tenant.attendance, label: "Asistencia", icon: "calendarCheck" },
   { href: ROUTES.tenant.checkIn, label: "Check-in", icon: "qrCode" },

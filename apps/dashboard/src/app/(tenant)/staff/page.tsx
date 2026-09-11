@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { StaffPage } from "@/features/tenant/staff";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Personal" };
+export const metadata: Metadata = { title: "Personal" };
 
 export default function Page() {
-  return <ResourceScaffold title="Personal" description="Recepcionistas, entrenadores y roles." />;
+  return <StaffPage />;
 }

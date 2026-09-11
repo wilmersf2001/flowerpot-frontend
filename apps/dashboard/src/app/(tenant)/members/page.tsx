@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { MembersPage } from "@/features/tenant/members";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Socios" };
+export const metadata: Metadata = { title: "Socios" };
 
 export default function Page() {
-  return <ResourceScaffold title="Socios" description="Padrón de socios del gimnasio." />;
+  return <MembersPage />;
 }

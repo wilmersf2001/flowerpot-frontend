@@ -34,6 +34,7 @@ export {
   type UseAsyncOptionsConfig,
 } from "./use-async-options";
 export { AsyncCombobox, type AsyncComboboxProps } from "./async-combobox";
+export { MultiCombobox, type MultiComboboxProps } from "./multi-combobox";
 export {
   formatDate,
   toDateInputValue,

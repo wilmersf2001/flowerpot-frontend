@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { AttendancePage } from "@/features/tenant/attendance";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Asistencia" };
+export const metadata: Metadata = { title: "Asistencia" };
 
 export default function Page() {
-  return <ResourceScaffold title="Asistencia" description="Historial de asistencia de socios." />;
+  return <AttendancePage />;
 }

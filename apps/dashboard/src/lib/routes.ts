@@ -21,6 +21,7 @@ export const ROUTES = {
   tenant: {
     members: "/members",
     memberships: "/memberships",
+    membershipPlans: "/membership-plans",
     payments: "/payments",
     attendance: "/attendance",
     checkIn: "/check-in",
