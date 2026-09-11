@@ -1,5 +1,6 @@
 import { Badge } from "@repo/ui/badge";
 import type { PanelTarget } from "@/lib/domain";
+import { BranchSwitcher } from "@/components/branch";
 import { LogoutButton } from "@/components/logout-button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
@@ -15,7 +16,10 @@ export function Topbar({ panel }: { panel: PanelTarget }) {
           Flowerpot
         </span>
         {panel.kind === "tenant" ? (
-          <Badge tone="success">Gimnasio · {panel.slug}</Badge>
+          <>
+            <Badge tone="success">Gimnasio · {panel.slug}</Badge>
+            <BranchSwitcher />
+          </>
         ) : (
           <Badge tone="neutral">SaaS</Badge>
         )}

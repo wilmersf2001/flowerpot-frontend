@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { BranchProvider } from "@/components/branch";
 import { currentPanel } from "@/lib/panel";
 
 /**
@@ -11,5 +12,9 @@ export default async function TenantLayout({
   children: React.ReactNode;
 }) {
   const panel = await currentPanel();
-  return <AppShell panel={panel}>{children}</AppShell>;
+  return (
+    <BranchProvider>
+      <AppShell panel={panel}>{children}</AppShell>
+    </BranchProvider>
+  );
 }

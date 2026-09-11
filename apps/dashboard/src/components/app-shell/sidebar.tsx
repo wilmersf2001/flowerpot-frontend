@@ -1,5 +1,5 @@
 import type { PanelKind } from "@/lib/session";
-import { NAV_BY_PANEL } from "./nav.config";
+import type { NavItem } from "./nav.config";
 import { SidebarNav } from "./sidebar-nav";
 
 const PANEL_LABEL: Record<PanelKind, string> = {
@@ -9,9 +9,11 @@ const PANEL_LABEL: Record<PanelKind, string> = {
 
 export function Sidebar({
   panel,
+  items,
   subtitle,
 }: {
   panel: PanelKind;
+  items: NavItem[];
   /** Texto bajo la marca; por defecto el nombre del panel. */
   subtitle?: string;
 }) {
@@ -25,7 +27,7 @@ export function Sidebar({
           {subtitle ?? PANEL_LABEL[panel]}
         </p>
       </div>
-      <SidebarNav items={NAV_BY_PANEL[panel]} />
+      <SidebarNav items={items} />
     </aside>
   );
 }
