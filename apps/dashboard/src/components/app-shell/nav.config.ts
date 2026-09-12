@@ -41,6 +41,7 @@ const TENANT_NAV: NavItem[] = [
     permission: "plans.view",
   },
   { href: ROUTES.tenant.payments, label: "Pagos", icon: "banknote", permission: "payments.view" },
+  { href: ROUTES.tenant.expenses, label: "Gastos", icon: "receipt", permission: "expenses.view" },
   {
     href: ROUTES.tenant.attendance,
     label: "Asistencia",

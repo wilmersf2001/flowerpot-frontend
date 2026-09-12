@@ -23,6 +23,7 @@ export const ROUTES = {
     memberships: "/memberships",
     membershipPlans: "/membership-plans",
     payments: "/payments",
+    expenses: "/expenses",
     attendance: "/attendance",
     checkIn: "/check-in",
     staff: "/staff",

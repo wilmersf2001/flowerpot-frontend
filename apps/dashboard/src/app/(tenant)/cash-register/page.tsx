@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { CashRegisterPage } from "@/features/tenant/cash-register";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Caja" };
+export const metadata: Metadata = { title: "Caja" };
 
 export default function Page() {
-  return <ResourceScaffold title="Caja" description="Apertura, arqueo y cierre de caja por turno." />;
+  return <CashRegisterPage />;
 }
