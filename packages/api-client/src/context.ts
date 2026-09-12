@@ -26,14 +26,22 @@ export function readTenantFromContext(): string | null {
 
 /**
  * Called when the API answers 401 (session missing/expired). There is no
- * client-side token to clear; we just bounce the browser to `/login`, where
- * `proxy.ts` takes over. A hard navigation (not `router.push`) is deliberate:
- * it drops all in-memory state of the expired session.
+ * client-side token to clear, but the httpOnly session cookie is still set
+ * (the API rejected the token, it didn't expire the cookie) — `proxy.ts`
+ * only checks that the cookie *exists*, so navigating to `/login` without
+ * clearing it first makes the middleware bounce us straight back to the
+ * panel's landing route, which hits the API again, gets another 401, and
+ * loops forever. So: clear the cookie via `/api/auth/logout` first, then do
+ * a hard navigation (not `router.push`, to drop all in-memory state).
  *
  * No-op on the server and when we're already on `/login` (avoids a loop).
  */
 export function handleUnauthorized(): void {
   if (typeof window === "undefined") return;
   if (window.location.pathname === "/login") return;
-  window.location.assign("/login");
+  fetch("/api/auth/logout", { method: "POST", credentials: "include" })
+    .catch(() => {})
+    .finally(() => {
+      window.location.assign("/login");
+    });
 }

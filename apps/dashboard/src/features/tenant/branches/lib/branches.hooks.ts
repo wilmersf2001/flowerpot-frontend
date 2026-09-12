@@ -2,9 +2,21 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import type { Paginated } from "@repo/types";
 import type { ComboboxOption } from "@repo/ui/combobox";
 import { useAsyncOptions } from "@/features/_shared/use-async-options";
+import { authKeys } from "@/features/tenant/auth";
 import { branchesApi } from "./branches.api";
 import { branchKeys } from "./branches.keys";
 import { BranchListParams, BranchRow, CreateBranchInput, UpdateBranchInput } from "./branches.types";
+
+/**
+ * `BranchProvider` (el switcher de sede) lee las sedes desde `/auth/me`, no
+ * desde este listado — así que cada mutación que cambia sedes debe invalidar
+ * también `authKeys.me()` o el switcher queda desactualizado hasta un reload
+ * completo (esa query tiene `staleTime` de 5 min y no se refresca sola).
+ */
+function invalidateBranchesAndCurrentUser(queryClient: ReturnType<typeof useQueryClient>): void {
+  queryClient.invalidateQueries({ queryKey: branchKeys.all });
+  queryClient.invalidateQueries({ queryKey: authKeys.me() });
+}
 
 /** Lista paginada de sedes, con búsqueda opcional (`search`). */
 export function useBranches(params: BranchListParams = {}) {
@@ -19,7 +31,7 @@ export function useCreateBranch() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateBranchInput) => branchesApi.create(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: branchKeys.all }),
+    onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
 
@@ -28,7 +40,7 @@ export function useUpdateBranch() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateBranchInput }) =>
       branchesApi.update(id, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: branchKeys.all }),
+    onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
 
@@ -36,7 +48,7 @@ export function useDeleteBranch() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => branchesApi.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: branchKeys.all }),
+    onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
 
@@ -44,7 +56,7 @@ export function useRestoreBranch() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => branchesApi.restore(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: branchKeys.all }),
+    onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
 
@@ -78,7 +90,7 @@ export function useToggleBranchActive() {
         queryClient.setQueryData(key, page);
       }
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: branchKeys.all }),
+    onSettled: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
 

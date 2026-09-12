@@ -32,6 +32,7 @@ async function list(params: AttendanceListParams = {}): Promise<Paginated<Attend
       page: params.page ?? 1,
       per_page: params.perPage ?? ATTENDANCE_PER_PAGE,
       search: search ? search : undefined,
+      branch_id: params.branchId ? Number(params.branchId) : undefined,
     },
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);

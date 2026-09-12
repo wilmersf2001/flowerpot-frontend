@@ -31,6 +31,8 @@ export interface MemberListParams {
   page?: number;
   perPage?: number;
   search?: string;
+  /** Sede activa (switcher global). `useMembers` la inyecta; no la pasa la página. */
+  branchId?: string | null;
 }
 
 /** Cuerpo de `POST /members` (`StoreMemberRequest`). */
@@ -46,6 +48,8 @@ export interface CreateMemberInput {
   emergency_contact_name?: string | null;
   emergency_contact_phone?: string | null;
   notes?: string | null;
+  /** Sede activa al momento de crear el socio (`useCreateMember` la inyecta). */
+  branch_id?: number | null;
 }
 
 /** Cuerpo de `PATCH /members/{id}` (`UpdateMemberRequest`). */

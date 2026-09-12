@@ -6,4 +6,6 @@ export const membershipKeys = {
   lists: () => [...membershipKeys.all, "list"] as const,
   list: (params: MembershipListParams) =>
     [...membershipKeys.lists(), params] as const,
+  /** Combobox asíncrono: list paginado por scroll, keyeado por texto. */
+  options: (search: string) => [...membershipKeys.all, "options", search] as const,
 };

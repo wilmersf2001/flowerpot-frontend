@@ -12,11 +12,7 @@ import {
   useFieldBinder,
   useResourceFormSubmit,
 } from "@/features/_shared";
-import {
-  useCreateAttendance,
-  useMemberOptions,
-  useBranchOptions,
-} from "../lib/attendance.hooks";
+import { useCreateAttendance, useMemberOptions } from "../lib/attendance.hooks";
 import {
   ATTENDANCE_FORM_FIELDS,
   attendanceFormDefaults,
@@ -42,7 +38,6 @@ export function AttendanceFormDialog({
 }) {
   const createAttendance = useCreateAttendance();
   const memberOptions = useMemberOptions(open);
-  const branchOptions = useBranchOptions(open);
 
   const form = useForm<AttendanceForm>({
     resolver: zodResolver(attendanceFormSchema),
@@ -110,25 +105,6 @@ export function AttendanceFormDialog({
                 searchPlaceholder="Buscar por nombre o DNI…"
                 emptyText="Sin socios."
                 aria-invalid={errors.member_id ? true : undefined}
-              />
-            )}
-          />
-        </Field>
-
-        <Field label="Sede" htmlFor="attendance-branch" error={errors.branch_id?.message}>
-          <Controller
-            control={control}
-            name="branch_id"
-            render={({ field }) => (
-              <AsyncCombobox
-                id="attendance-branch"
-                value={field.value}
-                onValueChange={field.onChange}
-                source={branchOptions}
-                placeholder="Selecciona una sede"
-                searchPlaceholder="Buscar sede…"
-                emptyText="Sin sedes."
-                aria-invalid={errors.branch_id ? true : undefined}
               />
             )}
           />

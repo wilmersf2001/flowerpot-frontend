@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { PaymentsPage } from "@/features/tenant/payments";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Pagos" };
+export const metadata: Metadata = { title: "Pagos" };
 
 export default function Page() {
-  return <ResourceScaffold title="Pagos" description="Cobros de membresías y otros conceptos." />;
+  return <PaymentsPage />;
 }

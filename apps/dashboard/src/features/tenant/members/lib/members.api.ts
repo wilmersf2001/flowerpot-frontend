@@ -38,6 +38,7 @@ async function list(params: MemberListParams = {}): Promise<Paginated<MemberRow>
       page: params.page ?? 1,
       per_page: params.perPage ?? MEMBERS_PER_PAGE,
       search: search ? search : undefined,
+      branch_id: params.branchId ? Number(params.branchId) : undefined,
     },
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);

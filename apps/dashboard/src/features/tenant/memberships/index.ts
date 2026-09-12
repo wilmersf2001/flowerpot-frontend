@@ -4,6 +4,7 @@ export {
   useMemberships,
   useCreateMembership,
   useUpdateMembership,
+  useMembershipOptions,
 } from "./lib/memberships.hooks";
 export { membershipsApi } from "./lib/memberships.api";
 export type {
