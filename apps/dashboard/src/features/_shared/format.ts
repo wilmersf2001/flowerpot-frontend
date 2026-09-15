@@ -44,6 +44,25 @@ export function formatDate(
 }
 
 /**
+ * Formatea una fecha con hora (string ISO o `Date`) a `es-PE` legible.
+ * A diferencia de `formatDate`, usa `toLocaleString` para poder combinar
+ * `dateStyle` y `timeStyle` (que `toLocaleDateString` no admite juntos y
+ * lanza `TypeError` en tiempo de ejecución).
+ * Devuelve `—` si el valor no es una fecha válida.
+ */
+export function formatDateTime(
+  value: unknown,
+  options: Intl.DateTimeFormatOptions = { dateStyle: "short", timeStyle: "short" },
+): string {
+  if (typeof value !== "string" && !(value instanceof Date)) return EM_DASH;
+  const date = toCalendarDate(value);
+  if (Number.isNaN(date.getTime())) return EM_DASH;
+  return DATE_ONLY_RE.test(typeof value === "string" ? value : "")
+    ? date.toLocaleString("es-PE", { ...options, timeZone: "UTC" })
+    : date.toLocaleString("es-PE", options);
+}
+
+/**
  * ISO / date-time / `Date` -> `YYYY-MM-DD` para un `<input type="date">`.
  * Devuelve `""` (campo vacío) si el valor no es una fecha válida.
  */

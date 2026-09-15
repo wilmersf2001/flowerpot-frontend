@@ -4,14 +4,18 @@ import { Ban, TrendingDown, TrendingUp } from "lucide-react";
 import {
   DataTable,
   EM_DASH,
+  formatDateTime,
   RowActions,
   StatusBadge,
-  formatDate,
   type Column,
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
-import { cashCategoryLabel, cashPaymentMethodLabel, formatSoles } from "../lib/cash-register.constants";
+import {
+  cashCategoryLabel,
+  cashPaymentMethodLabel,
+  formatSoles,
+} from "../lib/cash-register.constants";
 import type { CashMovementRow } from "../lib/cash-register.types";
 
 const VOIDED_MAP: StatusMap = {
@@ -24,7 +28,10 @@ const columns: Column<CashMovementRow>[] = [
     header: "Fecha",
     cell: (row) => (
       <span className="tabular-nums text-muted-foreground">
-        {formatDate(row.movement_at, { dateStyle: "short", timeStyle: "short" })}
+        {formatDateTime(row.movement_at, {
+          dateStyle: "short",
+          timeStyle: "short",
+        })}
       </span>
     ),
   },
@@ -59,7 +66,9 @@ const columns: Column<CashMovementRow>[] = [
     key: "amount",
     header: "Monto",
     cell: (row) => (
-      <span className={`tabular-nums ${row.type === "income" ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
+      <span
+        className={`tabular-nums ${row.type === "income" ? "text-emerald-600 dark:text-emerald-400" : ""}`}
+      >
         {row.type === "expense" ? "-" : "+"}
         {formatSoles(row.amount)}
       </span>
@@ -69,18 +78,25 @@ const columns: Column<CashMovementRow>[] = [
     key: "payment_method",
     header: "Método",
     cell: (row) => (
-      <span className="text-muted-foreground">{cashPaymentMethodLabel(row.payment_method)}</span>
+      <span className="text-muted-foreground">
+        {cashPaymentMethodLabel(row.payment_method)}
+      </span>
     ),
   },
   {
     key: "recorded_by_name",
     header: "Registrado por",
-    cell: (row) => <span className="text-muted-foreground">{row.recorded_by_name || EM_DASH}</span>,
+    cell: (row) => (
+      <span className="text-muted-foreground">
+        {row.recorded_by_name || EM_DASH}
+      </span>
+    ),
   },
   {
     key: "is_voided",
     header: "Estado",
-    cell: (row) => (row.is_voided ? <StatusBadge value={true} map={VOIDED_MAP} /> : EM_DASH),
+    cell: (row) =>
+      row.is_voided ? <StatusBadge value={true} map={VOIDED_MAP} /> : EM_DASH,
   },
 ];
 

@@ -26,7 +26,7 @@ export function useCurrentCashRegisterSummary(enabled = true) {
   const { selectedBranchId } = useSelectedBranch();
   return useQuery({
     queryKey: cashRegisterKeys.currentSummary(selectedBranchId),
-    queryFn: () => cashRegisterApi.currentSummary(),
+    queryFn: () => cashRegisterApi.currentSummary(selectedBranchId),
     enabled: enabled && selectedBranchId != null,
   });
 }
@@ -36,7 +36,7 @@ export function useCurrentCashMovements(params: CashMovementListParams = {}, ena
   const { selectedBranchId } = useSelectedBranch();
   return useQuery({
     queryKey: cashRegisterKeys.currentMovements(selectedBranchId, params),
-    queryFn: () => cashRegisterApi.currentMovements(params),
+    queryFn: () => cashRegisterApi.currentMovements(params, selectedBranchId),
     placeholderData: keepPreviousData,
     enabled: enabled && selectedBranchId != null,
   });

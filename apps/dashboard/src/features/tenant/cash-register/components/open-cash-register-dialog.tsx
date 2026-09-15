@@ -4,7 +4,13 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
-import { AppDialog, TextField, TextareaField, useFieldBinder, useResourceFormSubmit } from "@/features/_shared";
+import {
+  AppDialog,
+  TextField,
+  TextareaField,
+  useFieldBinder,
+  useResourceFormSubmit,
+} from "@/features/_shared";
 import { useOpenCashRegister } from "../lib/cash-register.hooks";
 import {
   OPEN_CASH_REGISTER_FORM_FIELDS,
@@ -46,7 +52,8 @@ export function OpenCashRegisterDialog({
     useResourceFormSubmit<OpenCashRegisterForm, CashRegisterRow>({
       form,
       fields: OPEN_CASH_REGISTER_FORM_FIELDS,
-      submit: (values) => openCashRegister.mutateAsync(toOpenCashRegisterInput(values)),
+      submit: (values) =>
+        openCashRegister.mutateAsync(toOpenCashRegisterInput(values)),
       successMessage: () => "Caja abierta.",
       errorMessage: "No se pudo abrir la caja.",
       onSuccess: () => onOpenChangeAction(false),
@@ -76,9 +83,14 @@ export function OpenCashRegisterDialog({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form
+        id={FORM_ID}
+        onSubmit={onSubmit}
+        className="flex flex-col gap-4"
+        noValidate
+      >
         <TextField
-          {...bind("opening_amount")}
+          {...bind("opening_balance")}
           label="Monto de apertura"
           type="number"
           step="0.01"

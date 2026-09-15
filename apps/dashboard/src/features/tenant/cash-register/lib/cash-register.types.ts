@@ -18,7 +18,7 @@ export interface CashRegisterRow {
   opened_by: string | null;
   closed_by: string | null;
   status: CashRegisterStatus;
-  opening_amount: number;
+  opening_balance: number;
   closing_amount: number | null;
   current_balance: number;
   difference: number | null;
@@ -45,7 +45,7 @@ export interface CashRegisterListParams {
 /** Cuerpo de `POST /cash-register/open` (`OpenCashRegisterRequest`). */
 export interface OpenCashRegisterInput {
   branch_id?: number | null;
-  opening_amount: number;
+  opening_balance: number;
   notes?: string | null;
 }
 
@@ -57,26 +57,43 @@ export interface CloseCashRegisterInput {
 
 /** `GET /cash-register/current/summary` y `GET /cash-registers/{id}/summary`. */
 export interface CashRegisterSummary {
-  cash_register: {
+  register: {
     id: string;
     status: CashRegisterStatus;
-    opening_amount: number;
-    current_balance: number;
+    branch_id: string;
+    branch_name?: string;
+    opening_balance: number;
+    opening_notes: string | null;
     opened_at: string;
+    closed_at: string | null;
+    opened_by: { id: string; name: string } | null;
+    closed_by: { id: string; name: string } | null;
   };
-  summary: {
+  totals: {
     total_income: number;
-    total_expense: number;
+    total_expenses: number;
     net_movement: number;
-    expected_cash: number;
-    movements_count: number;
-    movements_count_income: number;
-    movements_count_expense: number;
-    by_payment_method: Record<string, number>;
-    by_income_category: Record<string, number>;
-    by_expense_category: Record<string, number>;
-    automatic_movements: number;
-    manual_movements: number;
+    cash_income: number;
+    cash_expenses: number;
+    expected_cash_balance: number;
+    closing_balance: number | null;
+    expected_cash: number | null;
+    cash_difference: number | null;
+    difference_type: string | null;
+  };
+  movements_count: {
+    total: number;
+    income: number;
+    expenses: number;
+    automatic: number;
+    voided: number;
+  };
+  income_by_method: Record<string, number>;
+  income_by_category: Record<string, number>;
+  expense_by_category: Record<string, number>;
+  channel_split: {
+    physical_cash: number;
+    digital: number;
   };
 }
 

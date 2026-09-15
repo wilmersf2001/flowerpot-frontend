@@ -1,7 +1,10 @@
 "use client";
 
 import { formatSoles } from "../lib/cash-register.constants";
-import type { CashRegisterRow, CashRegisterSummary } from "../lib/cash-register.types";
+import type {
+  CashRegisterRow,
+  CashRegisterSummary,
+} from "../lib/cash-register.types";
 
 /** Tarjetas de balance/ingresos/egresos de la caja actual. */
 export function CashRegisterSummaryCard({
@@ -14,10 +17,22 @@ export function CashRegisterSummaryCard({
   isLoading: boolean;
 }) {
   const items = [
-    { label: "Apertura", value: register.opening_amount },
-    { label: "Ingresos", value: summary?.summary.total_income ?? 0, tone: "text-emerald-600 dark:text-emerald-400" },
-    { label: "Egresos", value: summary?.summary.total_expense ?? 0, tone: "text-red-600 dark:text-red-400" },
-    { label: "Balance actual", value: register.current_balance, emphasis: true },
+    { label: "Apertura", value: register.opening_balance },
+    {
+      label: "Ingresos",
+      value: summary?.totals.total_income ?? 0,
+      tone: "text-emerald-600 dark:text-emerald-400",
+    },
+    {
+      label: "Egresos",
+      value: summary?.totals.total_expenses ?? 0,
+      tone: "text-red-600 dark:text-red-400",
+    },
+    {
+      label: "Balance actual",
+      value: register.current_balance,
+      emphasis: true,
+    },
   ];
 
   return (

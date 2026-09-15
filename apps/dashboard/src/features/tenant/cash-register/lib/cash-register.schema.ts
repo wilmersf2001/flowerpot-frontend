@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { boundedText, numericText, optionalText } from "@/features/_shared/form-schema";
+import {
+  boundedText,
+  numericText,
+  optionalText,
+} from "@/features/_shared/form-schema";
 import { CASH_PAYMENT_METHODS } from "./cash-register.constants";
 import type {
   CloseCashRegisterInput,
@@ -10,25 +14,27 @@ import type {
 
 /** Formulario de apertura de caja (`POST /cash-register/open`). */
 export const openCashRegisterFormSchema = z.object({
-  opening_amount: numericText("El monto de apertura", { min: 0 }),
+  opening_balance: numericText("El monto de apertura", { min: 0 }),
   notes: optionalText(500),
 });
 
 export type OpenCashRegisterForm = z.infer<typeof openCashRegisterFormSchema>;
 
 export const openCashRegisterFormDefaults: OpenCashRegisterForm = {
-  opening_amount: "",
+  opening_balance: "",
   notes: "",
 };
 
 export const OPEN_CASH_REGISTER_FORM_FIELDS = [
-  "opening_amount",
+  "opening_balance",
   "notes",
 ] as const satisfies readonly (keyof OpenCashRegisterForm)[];
 
-export function toOpenCashRegisterInput(form: OpenCashRegisterForm): OpenCashRegisterInput {
+export function toOpenCashRegisterInput(
+  form: OpenCashRegisterForm,
+): OpenCashRegisterInput {
   return {
-    opening_amount: Number(form.opening_amount),
+    opening_balance: Number(form.opening_balance),
     notes: form.notes || undefined,
   };
 }
@@ -51,7 +57,9 @@ export const CLOSE_CASH_REGISTER_FORM_FIELDS = [
   "notes",
 ] as const satisfies readonly (keyof CloseCashRegisterForm)[];
 
-export function toCloseCashRegisterInput(form: CloseCashRegisterForm): CloseCashRegisterInput {
+export function toCloseCashRegisterInput(
+  form: CloseCashRegisterForm,
+): CloseCashRegisterInput {
   return {
     closing_amount: Number(form.closing_amount),
     notes: form.notes || undefined,
@@ -96,7 +104,9 @@ export const CASH_MOVEMENT_FORM_FIELDS = [
   "movement_at",
 ] as const satisfies readonly (keyof CashMovementForm)[];
 
-export function toCreateCashMovementInput(form: CashMovementForm): CreateCashMovementInput {
+export function toCreateCashMovementInput(
+  form: CashMovementForm,
+): CreateCashMovementInput {
   return {
     type: form.type,
     category: form.category,
@@ -115,12 +125,16 @@ export const voidCashMovementFormSchema = z.object({
 
 export type VoidCashMovementForm = z.infer<typeof voidCashMovementFormSchema>;
 
-export const voidCashMovementFormDefaults: VoidCashMovementForm = { void_reason: "" };
+export const voidCashMovementFormDefaults: VoidCashMovementForm = {
+  void_reason: "",
+};
 
 export const VOID_CASH_MOVEMENT_FORM_FIELDS = [
   "void_reason",
 ] as const satisfies readonly (keyof VoidCashMovementForm)[];
 
-export function toVoidCashMovementInput(form: VoidCashMovementForm): VoidCashMovementInput {
+export function toVoidCashMovementInput(
+  form: VoidCashMovementForm,
+): VoidCashMovementInput {
   return { void_reason: form.void_reason };
 }

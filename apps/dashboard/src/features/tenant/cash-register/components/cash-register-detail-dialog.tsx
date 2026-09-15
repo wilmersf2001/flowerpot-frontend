@@ -2,11 +2,17 @@
 
 import { useState } from "react";
 import { AppDialog, formatDate } from "@/features/_shared";
-import { useCashRegisterHistoryMovements, useCashRegisterHistorySummary } from "../lib/cash-register.hooks";
+import {
+  useCashRegisterHistoryMovements,
+  useCashRegisterHistorySummary,
+} from "../lib/cash-register.hooks";
 import { formatSoles } from "../lib/cash-register.constants";
 import { CashMovementsTable } from "./cash-movements-table";
 import { VoidCashMovementDialog } from "./void-cash-movement-dialog";
-import type { CashMovementRow, CashRegisterRow } from "../lib/cash-register.types";
+import type {
+  CashMovementRow,
+  CashRegisterRow,
+} from "../lib/cash-register.types";
 
 /**
  * Detalle de una caja histórica: resumen + movimientos. Se puede anular un
@@ -41,12 +47,19 @@ export function CashRegisterDetailDialog({
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: "Apertura", value: register?.opening_amount ?? 0 },
-              { label: "Ingresos", value: summary.data?.summary.total_income ?? 0 },
-              { label: "Egresos", value: summary.data?.summary.total_expense ?? 0 },
+              { label: "Apertura", value: register?.opening_balance ?? 0 },
+              {
+                label: "Ingresos",
+                value: summary.data?.totals.total_income ?? 0,
+              },
+              {
+                label: "Egresos",
+                value: summary.data?.totals.total_expenses ?? 0,
+              },
               {
                 label: "Cierre",
-                value: register?.closing_amount ?? register?.current_balance ?? 0,
+                value:
+                  register?.closing_amount ?? register?.current_balance ?? 0,
               },
             ].map((item) => (
               <div key={item.label} className="rounded-xl border p-3">
