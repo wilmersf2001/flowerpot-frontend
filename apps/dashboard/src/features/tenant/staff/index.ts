@@ -2,6 +2,7 @@ export { StaffPage } from "./staff-page";
 
 export {
   useStaff,
+  useStaffOptions,
   useCreateStaff,
   useUpdateStaff,
   useDeleteStaff,

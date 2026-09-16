@@ -50,6 +50,12 @@ const TENANT_NAV: NavItem[] = [
   },
   { href: ROUTES.tenant.checkIn, label: "Check-in", icon: "qrCode", permission: "checkin.view" },
   { href: ROUTES.tenant.staff, label: "Personal", icon: "userCog", permission: "staff.view" },
+  {
+    href: ROUTES.tenant.instructors,
+    label: "Instructores",
+    icon: "graduationCap",
+    permission: "instructors.view",
+  },
   { href: ROUTES.tenant.users, label: "Usuarios", icon: "shieldCheck", permission: "users.view" },
   { href: ROUTES.tenant.branches, label: "Sedes", icon: "building", permission: "branches.view" },
   {

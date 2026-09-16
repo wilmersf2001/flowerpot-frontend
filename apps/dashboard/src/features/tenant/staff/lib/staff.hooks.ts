@@ -1,5 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Paginated } from "@repo/types";
+import type { ComboboxOption } from "@repo/ui/combobox";
+import { useAsyncOptions } from "@/features/_shared/use-async-options";
 import { staffApi } from "./staff.api";
 import { staffKeys } from "./staff.keys";
 import { CreateStaffInput, StaffListParams, StaffRow, UpdateStaffInput } from "./staff.types";
@@ -81,5 +83,21 @@ export function useToggleStaffActive() {
       }
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: staffKeys.all }),
+  });
+}
+
+const toStaffOption = (staff: StaffRow): ComboboxOption => ({
+  value: staff.id,
+  label: staff.full_name,
+  hint: staff.dni,
+});
+
+/** Opciones asíncronas de personal (buscador por nombre/DNI) para combobox. */
+export function useStaffOptions(enabled = true) {
+  return useAsyncOptions<StaffRow>({
+    queryKey: staffKeys.options,
+    fetchPage: ({ search, page }) => staffApi.list({ search, page, perPage: 20 }),
+    toOption: toStaffOption,
+    enabled,
   });
 }

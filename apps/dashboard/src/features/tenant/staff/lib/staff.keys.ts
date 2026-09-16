@@ -5,4 +5,5 @@ export const staffKeys = {
   all: ["staff"] as const,
   lists: () => [...staffKeys.all, "list"] as const,
   list: (params: StaffListParams) => [...staffKeys.lists(), params] as const,
+  options: (search: string) => [...staffKeys.all, "options", search] as const,
 };
