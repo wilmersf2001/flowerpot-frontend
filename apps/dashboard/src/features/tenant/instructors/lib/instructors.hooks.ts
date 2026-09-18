@@ -1,5 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Paginated } from "@repo/types";
+import type { ComboboxOption } from "@repo/ui/combobox";
+import { useAsyncOptions } from "@/features/_shared/use-async-options";
 import { instructorsApi } from "./instructors.api";
 import { instructorKeys } from "./instructors.keys";
 import { CreateInstructorInput, InstructorListParams, InstructorRow, UpdateInstructorInput } from "./instructors.types";
@@ -82,5 +84,21 @@ export function useToggleInstructorActive() {
       }
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: instructorKeys.all }),
+  });
+}
+
+const toInstructorOption = (instructor: InstructorRow): ComboboxOption => ({
+  value: instructor.id,
+  label: instructor.staff?.full_name ?? "Instructor",
+  hint: instructor.staff?.dni,
+});
+
+/** Opciones asíncronas de instructor (buscador por nombre o DNI) para combobox. */
+export function useInstructorOptions(enabled = true) {
+  return useAsyncOptions<InstructorRow>({
+    queryKey: instructorKeys.options,
+    fetchPage: ({ search, page }) => instructorsApi.list({ search, page, perPage: 20 }),
+    toOption: toInstructorOption,
+    enabled,
   });
 }

@@ -56,6 +56,12 @@ const TENANT_NAV: NavItem[] = [
     icon: "graduationCap",
     permission: "instructors.view",
   },
+  {
+    href: ROUTES.tenant.classes,
+    label: "Clases",
+    icon: "dumbbell",
+    permission: "classes.view",
+  },
   { href: ROUTES.tenant.users, label: "Usuarios", icon: "shieldCheck", permission: "users.view" },
   { href: ROUTES.tenant.branches, label: "Sedes", icon: "building", permission: "branches.view" },
   {
