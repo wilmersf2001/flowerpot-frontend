@@ -14,6 +14,7 @@ export {
   useCashRegisterCatalog,
 } from "./lib/cash-register.hooks";
 export { cashRegisterApi } from "./lib/cash-register.api";
+export { cashRegisterKeys } from "./lib/cash-register.keys";
 export type {
   CashRegisterRow,
   CashRegisterListParams,

@@ -62,6 +62,19 @@ const TENANT_NAV: NavItem[] = [
     icon: "dumbbell",
     permission: "classes.view",
   },
+  {
+    href: ROUTES.tenant.inventory,
+    label: "Inventario",
+    icon: "package",
+    permission: "inventory.view",
+  },
+  {
+    href: ROUTES.tenant.equipment,
+    label: "Equipos",
+    icon: "wrench",
+    permission: "equipment.view",
+  },
+  { href: ROUTES.tenant.sales, label: "Ventas", icon: "shoppingCart", permission: "store.view" },
   { href: ROUTES.tenant.users, label: "Usuarios", icon: "shieldCheck", permission: "users.view" },
   { href: ROUTES.tenant.branches, label: "Sedes", icon: "building", permission: "branches.view" },
   {

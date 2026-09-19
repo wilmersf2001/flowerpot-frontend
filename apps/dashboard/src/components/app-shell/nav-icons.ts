@@ -7,14 +7,17 @@ import {
   Dumbbell,
   GraduationCap,
   Layers,
+  Package,
   QrCode,
   Receipt,
   Settings,
   ShieldCheck,
+  ShoppingCart,
   Ticket,
   UserCog,
   Users,
   Wallet,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -32,14 +35,17 @@ export const NAV_ICONS = {
   dumbbell: Dumbbell,
   graduationCap: GraduationCap,
   layers: Layers,
+  package: Package,
   qrCode: QrCode,
   receipt: Receipt,
   settings: Settings,
   shieldCheck: ShieldCheck,
+  shoppingCart: ShoppingCart,
   ticket: Ticket,
   userCog: UserCog,
   users: Users,
   wallet: Wallet,
+  wrench: Wrench,
 } satisfies Record<string, LucideIcon>;
 
 export type NavIconName = keyof typeof NAV_ICONS;

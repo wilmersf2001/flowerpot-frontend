@@ -84,6 +84,17 @@ export function splitLines(value: string): string[] {
 }
 
 /**
+ * Formatea un monto (número o string numérico) como moneda `es-PE`. Sin
+ * moneda propia por recurso, se usa soles (`PEN`) como referencia visual.
+ * Devuelve `—` si el valor no es un número válido.
+ */
+export function formatMoney(value: unknown, currency = "PEN"): string {
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) return EM_DASH;
+  return n.toLocaleString("es-PE", { style: "currency", currency });
+}
+
+/**
  * Texto libre -> identificador URL-safe: minúsculas, sin acentos, y cada
  * grupo de caracteres no alfanuméricos colapsado a un solo guion (sin
  * guiones al inicio ni al final). Ej.: `"Plan Pro ½"` -> `"plan-pro"`.
