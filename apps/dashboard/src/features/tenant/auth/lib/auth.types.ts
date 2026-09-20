@@ -7,6 +7,16 @@ export interface CurrentUserBranch {
   name: string;
 }
 
+/** Estado del plan contratado por el gimnasio (tenant), tal como lo expone `/auth/me`. */
+export interface CurrentUserSubscription {
+  plan: string;
+  status: string;
+  isTrial: boolean;
+  startsAt: string;
+  endsAt: string;
+  daysRemaining: number;
+}
+
 export interface CurrentUser {
   id: string;
   name: string;
@@ -15,4 +25,6 @@ export interface CurrentUser {
   isOwner: boolean;
   permissions: string[];
   branches: CurrentUserBranch[];
+  /** `null` en el panel central, donde no hay un tenant/plan asociado al usuario. */
+  subscription: CurrentUserSubscription | null;
 }

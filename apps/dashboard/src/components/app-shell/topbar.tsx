@@ -3,6 +3,7 @@ import type { PanelTarget } from "@/lib/domain";
 import { BranchSwitcher } from "@/components/branch";
 import { LogoutButton } from "@/components/logout-button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { PlanBadge } from "./plan-badge";
 
 /**
  * Barra superior: visible siempre (en móvil es la única forma de ver el panel y
@@ -18,6 +19,7 @@ export function Topbar({ panel }: { panel: PanelTarget }) {
         {panel.kind === "tenant" ? (
           <>
             <Badge tone="success">Gimnasio · {panel.slug}</Badge>
+            <PlanBadge />
             <BranchSwitcher />
           </>
         ) : (

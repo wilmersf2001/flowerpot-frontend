@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
+import { authKeys } from "@/features/tenant/auth";
 
 const FormSchema = z.object({
   email: z.string().email("Correo inválido."),
@@ -22,6 +24,7 @@ export function LoginForm({
   afterLoginPath?: string;
 }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -47,6 +50,11 @@ export function LoginForm({
     }
 
     if (res.ok) {
+      // Fuerza a `useCurrentUser` a pedir `/auth/me` de nuevo: sin esto, el
+      // caché de react-query (staleTime 5 min) podría servir permisos/plan de
+      // una sesión anterior en la misma pestaña (p. ej. tras cerrar sesión e
+      // ingresar con otra cuenta) en vez de los recién emitidos por el login.
+      await queryClient.invalidateQueries({ queryKey: authKeys.me() });
       router.replace(afterLoginPath);
       router.refresh();
       return;
