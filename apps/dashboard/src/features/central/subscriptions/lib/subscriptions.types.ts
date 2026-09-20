@@ -11,8 +11,6 @@ export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
 export interface CreateSubscriptionInput {
   tenant_id: string;
   plan_id: number;
-  starts_at: string;
-  ends_at: string;
   status?: SubscriptionStatus;
   notes?: string;
 }
@@ -23,9 +21,16 @@ export interface CreateSubscriptionInput {
  */
 export interface UpdateSubscriptionInput {
   plan_id?: number;
-  starts_at?: string;
-  ends_at?: string;
   status?: SubscriptionStatus;
+  notes?: string;
+}
+
+/**
+ * Cuerpo de `POST /subscriptions/{subscription}/renew`. Sin `plan_id` el
+ * backend repite el plan actual.
+ */
+export interface RenewSubscriptionInput {
+  plan_id?: number;
   notes?: string;
 }
 

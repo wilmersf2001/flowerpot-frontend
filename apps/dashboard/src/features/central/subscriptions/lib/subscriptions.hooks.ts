@@ -8,6 +8,7 @@ import { subscriptionsApi } from "./subscriptions.api";
 import { subscriptionKeys } from "./subscriptions.keys";
 import {
   CreateSubscriptionInput,
+  RenewSubscriptionInput,
   SubscriptionListParams,
   UpdateSubscriptionInput,
 } from "./subscriptions.types";
@@ -38,6 +39,17 @@ export function useUpdateSubscription() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateSubscriptionInput }) =>
       subscriptionsApi.update(id, input),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
+  });
+}
+
+/** Renovación (`POST /subscriptions/{id}/renew`). Sin plan, repite el actual. */
+export function useRenewSubscription() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: RenewSubscriptionInput }) =>
+      subscriptionsApi.renew(id, input),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.all }),
   });

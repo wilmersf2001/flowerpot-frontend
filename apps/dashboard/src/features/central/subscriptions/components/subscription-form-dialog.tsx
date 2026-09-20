@@ -8,7 +8,6 @@ import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
 import {
   AppDialog,
   AsyncCombobox,
-  DateField,
   Field,
   TextField,
   TextareaField,
@@ -218,21 +217,6 @@ export function SubscriptionFormDialog({
             )}
           />
         </Field>
-
-        <div className="grid grid-cols-2 gap-4">
-          <DateField
-            form={form}
-            name="starts_at"
-            idPrefix="subscription"
-            label="Inicio"
-          />
-          <DateField
-            form={form}
-            name="ends_at"
-            idPrefix="subscription"
-            label="Fin"
-          />
-        </div>
 
         <Field
           label="Estado"

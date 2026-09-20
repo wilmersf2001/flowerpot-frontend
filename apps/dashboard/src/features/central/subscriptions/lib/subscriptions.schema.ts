@@ -4,10 +4,10 @@ import {
   optionalText,
   requiredText,
 } from "@/features/_shared/form-schema";
-import { toDateInputValue } from "@/features/_shared/format";
 import { SUBSCRIPTION_STATUSES } from "./subscriptions.constants";
 import type {
   CreateSubscriptionInput,
+  RenewSubscriptionInput,
   SubscriptionRow,
   UpdateSubscriptionInput,
 } from "./subscriptions.types";
@@ -18,31 +18,18 @@ import type {
  * normalizan al cuerpo real de la API. En edición, `tenant_id` se muestra
  * pero no se envía (el backend no lo deja cambiar).
  */
-export const subscriptionFormSchema = z
-  .object({
-    tenant_id: requiredText("El gimnasio"),
-    plan_id: requiredText("El plan"),
-    starts_at: requiredText("La fecha de inicio", "f"),
-    ends_at: requiredText("La fecha de fin", "f"),
-    status: z.enum(SUBSCRIPTION_STATUSES),
-    notes: optionalText(500),
-  })
-  .refine(
-    (value) =>
-      !value.starts_at || !value.ends_at || value.ends_at >= value.starts_at,
-    {
-      message: "La fecha de fin no puede ser anterior a la de inicio.",
-      path: ["ends_at"],
-    },
-  );
+export const subscriptionFormSchema = z.object({
+  tenant_id: requiredText("El gimnasio"),
+  plan_id: requiredText("El plan"),
+  status: z.enum(SUBSCRIPTION_STATUSES),
+  notes: optionalText(500),
+});
 
 export type SubscriptionForm = z.infer<typeof subscriptionFormSchema>;
 
 export const subscriptionFormDefaults: SubscriptionForm = {
   tenant_id: "",
   plan_id: "",
-  starts_at: "",
-  ends_at: "",
   status: "active",
   notes: "",
 };
@@ -51,11 +38,41 @@ export const subscriptionFormDefaults: SubscriptionForm = {
 export const SUBSCRIPTION_FORM_FIELDS = [
   "tenant_id",
   "plan_id",
-  "starts_at",
-  "ends_at",
   "status",
   "notes",
 ] as const satisfies readonly (keyof SubscriptionForm)[];
+
+/**
+ * Formulario de renovación (`POST /subscriptions/{id}/renew`). Ambos campos
+ * son opcionales: sin `plan_id` el backend repite el plan actual.
+ */
+export const renewSubscriptionFormSchema = z.object({
+  plan_id: optionalText(20),
+  notes: optionalText(500),
+});
+
+export type RenewSubscriptionForm = z.infer<typeof renewSubscriptionFormSchema>;
+
+export const renewSubscriptionFormDefaults: RenewSubscriptionForm = {
+  plan_id: "",
+  notes: "",
+};
+
+/** Campos que el backend puede devolver como error de validación. */
+export const RENEW_SUBSCRIPTION_FORM_FIELDS = [
+  "plan_id",
+  "notes",
+] as const satisfies readonly (keyof RenewSubscriptionForm)[];
+
+/** Convierte el formulario de renovación al cuerpo de `POST .../renew`. */
+export function toRenewSubscriptionInput(
+  form: RenewSubscriptionForm,
+): RenewSubscriptionInput {
+  return {
+    plan_id: form.plan_id ? Number(form.plan_id) : undefined,
+    notes: form.notes || undefined,
+  };
+}
 
 const normalizeStatus = enumFallback(SUBSCRIPTION_STATUSES, "active");
 
@@ -64,8 +81,6 @@ export function subscriptionToForm(row: SubscriptionRow): SubscriptionForm {
   return {
     tenant_id: row.tenant_id ?? "",
     plan_id: row.plan_id != null ? String(row.plan_id) : "",
-    starts_at: toDateInputValue(row.starts_at),
-    ends_at: toDateInputValue(row.ends_at),
     status: normalizeStatus(row.status),
     notes: row.notes ?? "",
   };
@@ -78,8 +93,6 @@ export function toCreateSubscriptionInput(
   return {
     tenant_id: form.tenant_id,
     plan_id: Number(form.plan_id),
-    starts_at: form.starts_at,
-    ends_at: form.ends_at,
     status: form.status,
     notes: form.notes || undefined,
   };
@@ -94,8 +107,6 @@ export function toUpdateSubscriptionInput(
 ): UpdateSubscriptionInput {
   return {
     plan_id: Number(form.plan_id),
-    starts_at: form.starts_at,
-    ends_at: form.ends_at,
     status: form.status,
     notes: form.notes || undefined,
   };

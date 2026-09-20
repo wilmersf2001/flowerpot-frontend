@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil } from "lucide-react";
+import { Pencil, RefreshCw } from "lucide-react";
 import {
   DataTable,
   RowActions,
@@ -74,12 +74,14 @@ export function SubscriptionsTable({
   rows,
   isLoading,
   onEditAction,
+  onRenewAction,
   pagination,
   emptyMessage = "Aún no hay suscripciones. Crea la primera.",
 }: {
   rows: SubscriptionRow[];
   isLoading: boolean;
   onEditAction: (subscription: SubscriptionRow) => void;
+  onRenewAction: (subscription: SubscriptionRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
@@ -98,6 +100,11 @@ export function SubscriptionsTable({
               label: "Editar",
               icon: Pencil,
               onSelect: () => onEditAction(row),
+            },
+            {
+              label: "Renovar",
+              icon: RefreshCw,
+              onSelect: () => onRenewAction(row),
             },
           ]}
         />

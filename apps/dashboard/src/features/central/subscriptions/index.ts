@@ -4,6 +4,7 @@ export {
   useSubscriptions,
   useCreateSubscription,
   useUpdateSubscription,
+  useRenewSubscription,
 } from "./lib/subscriptions.hooks";
 export { subscriptionsApi } from "./lib/subscriptions.api";
 export type {
@@ -12,4 +13,5 @@ export type {
   SubscriptionStatus,
   CreateSubscriptionInput,
   UpdateSubscriptionInput,
+  RenewSubscriptionInput,
 } from "./lib/subscriptions.types";

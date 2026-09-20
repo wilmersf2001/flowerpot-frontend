@@ -12,6 +12,7 @@ import type { SubscriptionRow } from "./lib/subscriptions.types";
 import { useSubscriptions } from "./lib/subscriptions.hooks";
 import { SubscriptionsTable } from "./components/subscriptions-table";
 import { SubscriptionFormDialog } from "./components/subscription-form-dialog";
+import { RenewSubscriptionDialog } from "./components/renew-subscription-dialog";
 
 /** Pantalla de suscripciones: lista + búsqueda + paginación + alta + edición. */
 export function SubscriptionsPage() {
@@ -25,6 +26,8 @@ export function SubscriptionsPage() {
 
   // Diálogo de alta/edición: "new" para crear, una fila para editar, null cerrado.
   const [editing, setEditing] = useState<SubscriptionRow | "new" | null>(null);
+  // Diálogo de renovación: la fila a renovar, null cerrado.
+  const [renewing, setRenewing] = useState<SubscriptionRow | null>(null);
 
   function handleSearch(value: string) {
     setSearch(value);
@@ -66,6 +69,7 @@ export function SubscriptionsPage() {
           rows={meta?.data ?? []}
           isLoading={subscriptions.isPending}
           onEditAction={setEditing}
+          onRenewAction={setRenewing}
           emptyMessage={
             debouncedSearch
               ? "Ninguna suscripción coincide con la búsqueda."
@@ -88,6 +92,14 @@ export function SubscriptionsPage() {
         subscription={editing === "new" ? null : editing}
         onOpenChangeAction={(open) => {
           if (!open) setEditing(null);
+        }}
+      />
+
+      <RenewSubscriptionDialog
+        open={renewing !== null}
+        subscription={renewing}
+        onOpenChangeAction={(open) => {
+          if (!open) setRenewing(null);
         }}
       />
     </div>

@@ -38,7 +38,11 @@ export function Calendar({
         dropdowns: "flex items-center justify-center gap-1.5",
         dropdown_root:
           "relative inline-flex h-8 items-center rounded-md border border-input px-2 text-sm shadow-sm hover:bg-accent hover:text-accent-foreground focus-within:ring-1 focus-within:ring-ring",
-        dropdown: "absolute inset-0 z-10 cursor-pointer appearance-none opacity-0",
+        // Aunque el <select> es invisible (opacity-0), el navegador pinta su
+        // lista nativa de opciones con el bg/color que tenga el elemento, así
+        // que hay que fijarlos aquí para que respeten el tema oscuro.
+        dropdown:
+          "absolute inset-0 z-10 cursor-pointer appearance-none bg-background text-foreground opacity-0",
         nav: "absolute inset-x-0 top-0 flex h-9 items-center justify-between",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),

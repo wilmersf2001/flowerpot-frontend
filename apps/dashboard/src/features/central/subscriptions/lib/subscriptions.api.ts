@@ -6,6 +6,7 @@ import {
 } from "./subscriptions.constants";
 import {
   CreateSubscriptionInput,
+  RenewSubscriptionInput,
   SubscriptionListParams,
   SubscriptionRow,
   UpdateSubscriptionInput,
@@ -43,4 +44,15 @@ async function update(
   return unwrapEnvelope<SubscriptionRow>(data);
 }
 
-export const subscriptionsApi = { list, create, update };
+async function renew(
+  id: string,
+  input: RenewSubscriptionInput,
+): Promise<SubscriptionRow> {
+  const { data } = await apiClient.post<unknown>(
+    `${SUBSCRIPTIONS_ENDPOINT}/${encodeURIComponent(id)}/renew`,
+    input,
+  );
+  return unwrapEnvelope<SubscriptionRow>(data);
+}
+
+export const subscriptionsApi = { list, create, update, renew };
