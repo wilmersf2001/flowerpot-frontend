@@ -65,14 +65,19 @@ export function MembershipFormDialog({
   const createMembership = useCreateMembership();
   const updateMembership = useUpdateMembership();
 
-  // Selects asíncronos: solo se usan en alta (en edición van de solo lectura).
-  const memberOptions = useMemberOptions(!isEdit);
-  const planOptions = useMembershipPlanOptions(!isEdit);
+  // Selects asíncronos: solo se usan en alta (en edición van de solo lectura)
+  // y solo mientras el diálogo está abierto, para no precargar en cada visita
+  // a la página aunque el usuario nunca abra el formulario.
+  const memberOptions = useMemberOptions(open && !isEdit);
+  const planOptions = useMembershipPlanOptions(open && !isEdit);
 
   // Modo edición: el socio/plan pueden no venir en la 1ª página de
   // resultados, así que damos su etiqueta a mano desde la fila.
   const selectedMemberOption: ComboboxOption | null = membership
-    ? { value: membership.member_id, label: membership.member_name || membership.member_id }
+    ? {
+        value: membership.member_id,
+        label: membership.member_name || membership.member_id,
+      }
     : null;
   const selectedPlanOption: ComboboxOption | null = membership
     ? {
@@ -112,8 +117,7 @@ export function MembershipFormDialog({
               input: toUpdateMembershipInput(values),
             })
           : createMembership.mutateAsync(toCreateMembershipInput(values)),
-      successMessage: () =>
-        `Membresía ${isEdit ? "actualizada" : "creada"}.`,
+      successMessage: () => `Membresía ${isEdit ? "actualizada" : "creada"}.`,
       errorMessage: isEdit
         ? "No se pudo actualizar la membresía."
         : "No se pudo crear la membresía.",

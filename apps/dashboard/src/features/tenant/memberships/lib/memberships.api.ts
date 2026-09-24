@@ -13,7 +13,6 @@ import {
 
 /** El backend manda varios campos numéricos como texto. */
 function toMembershipRow(raw: Record<string, unknown>): MembershipRow {
-  const member = raw.member as Record<string, unknown> | undefined;
   return {
     id: String(raw.id),
     member_id: String(raw.member_id),
@@ -30,7 +29,7 @@ function toMembershipRow(raw: Record<string, unknown>): MembershipRow {
     status: String(raw.status ?? ""),
     notes: String(raw.notes ?? ""),
     created_at: String(raw.created_at ?? ""),
-    member_name: member ? String(member.full_name ?? "") : undefined,
+    member_name: raw.member_name != null ? String(raw.member_name) : undefined,
   };
 }
 
