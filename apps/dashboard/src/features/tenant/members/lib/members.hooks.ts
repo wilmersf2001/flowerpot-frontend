@@ -29,7 +29,7 @@ export function useMembers(params: MemberListParams = {}) {
   const { selectedBranchId } = useSelectedBranch();
   const listParams: MemberListParams = {
     ...params,
-    branchId: selectedBranchId,
+    branch_id: selectedBranchId,
   };
   return useQuery({
     queryKey: memberKeys.list(listParams),

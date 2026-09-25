@@ -1,3 +1,5 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface MembershipPlanRow {
   id: number;
   name: string;
@@ -11,18 +13,12 @@ export interface MembershipPlanRow {
   sort_order: number;
 }
 
-export interface MembershipPlanListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface MembershipPlanListParams extends BaseListParams {
   is_active?: "1" | "0";
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
-export type MembershipPlanFilters = Omit<
-  MembershipPlanListParams,
-  "page" | "perPage" | "search"
->;
+export type MembershipPlanFilters = ListFilters<MembershipPlanListParams>;
 
 export interface CreateMembershipPlanInput {
   name: string;

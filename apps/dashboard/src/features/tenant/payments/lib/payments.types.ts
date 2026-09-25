@@ -1,12 +1,13 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { PAYMENT_METHODS } from "./payments.constants";
 
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 /** Fila de `GET /payments` — `PaymentResource`. */
 export interface PaymentRow {
-  id: string;
-  membership_id: string;
-  member_id: string;
+  id: number;
+  membership_id: number;
+  member_id: number;
 
   // Montos (soles, no céntimos).
   amount: number;
@@ -22,22 +23,20 @@ export interface PaymentRow {
   gateway_transaction_id?: string;
   gateway_status?: string;
 
-  notes: string;
+  notes: string | null;
   paid_at: string | null;
   created_at: string;
   updated_at: string;
 
-  /** Solo si el backend cargó la relación (`whenLoaded`). */
-  member_name?: string;
-  member_dni?: string;
-  plan_name?: string;
+  /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
+  member?: { full_name: string; dni: string };
+  membership?: { plan_name: string };
 }
 
-export interface PaymentListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type PaymentListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type PaymentFilters = ListFilters<PaymentListParams>;
 
 /**
  * Cuerpo de `POST /payments` (`StorePaymentRequest`). `payment_method`

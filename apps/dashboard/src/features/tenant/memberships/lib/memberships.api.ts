@@ -4,6 +4,7 @@ import {
   unwrapPaginated,
   type Paginated,
 } from "@repo/api-client";
+import { buildListParams } from "@/features/_shared/list-params";
 import {
   MEMBERSHIPS_ENDPOINT,
   MEMBERSHIPS_PER_PAGE,
@@ -18,13 +19,8 @@ import type {
 async function list(
   params: MembershipListParams = {},
 ): Promise<Paginated<MembershipRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(MEMBERSHIPS_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? MEMBERSHIPS_PER_PAGE,
-      search: search ? search : undefined,
-    },
+    params: buildListParams(params, MEMBERSHIPS_PER_PAGE),
   });
   return unwrapPaginated<MembershipRow>(data);
 }

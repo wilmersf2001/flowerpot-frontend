@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import {
   MEMBERSHIP_PLANS_ENDPOINT,
   MEMBERSHIP_PLANS_PER_PAGE,
@@ -14,15 +15,8 @@ import {
 async function list(
   params: MembershipPlanListParams = {},
 ): Promise<Paginated<MembershipPlanRow>> {
-  const { page: pageNumber = 1, perPage, search, ...filters } = params;
-  const term = search?.trim();
   const { data } = await apiClient.get<unknown>(MEMBERSHIP_PLANS_ENDPOINT, {
-    params: {
-      page: pageNumber,
-      per_page: perPage ?? MEMBERSHIP_PLANS_PER_PAGE,
-      search: term ? term : undefined,
-      ...filters, // filtros extra (is_active, …): basta declararlos en MembershipPlanListParams
-    },
+    params: buildListParams(params, MEMBERSHIP_PLANS_PER_PAGE),
   });
   return unwrapPaginated<MembershipPlanRow>(data);
 }

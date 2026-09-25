@@ -1,3 +1,4 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import {
   MEMBERSHIP_CREATE_STATUSES,
   MEMBERSHIP_STATUSES,
@@ -27,11 +28,11 @@ export interface UpdateMembershipInput {
   notes?: string | null;
 }
 
-export interface MembershipListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+/** Sin filtros extra por ahora: declara aquí los que soporte `GET /memberships`. */
+export type MembershipListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type MembershipFilters = ListFilters<MembershipListParams>;
 
 /** Fila de `GET /memberships` — `MembershipResource`, tal cual la manda la API. */
 export interface MembershipRow {

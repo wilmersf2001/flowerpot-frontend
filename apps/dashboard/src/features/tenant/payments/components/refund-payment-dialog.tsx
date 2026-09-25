@@ -37,7 +37,7 @@ export function RefundPaymentDialog({
     <ConfirmDialog
       open={payment !== null}
       onOpenChange={onOpenChangeAction}
-      title={`Reembolsar pago de "${payment?.member_name ?? ""}"`}
+      title={`Reembolsar pago de "${payment?.member?.full_name ?? ""}"`}
       description={
         payment
           ? `Se devolverá ${formatSoles(payment.amount_paid)}. Esta acción no se puede deshacer.`

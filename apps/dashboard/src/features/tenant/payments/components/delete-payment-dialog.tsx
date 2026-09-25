@@ -32,7 +32,7 @@ export function DeletePaymentDialog({
     <ConfirmDialog
       open={payment !== null}
       onOpenChange={onOpenChangeAction}
-      title={`Eliminar pago de "${payment?.member_name ?? ""}"`}
+      title={`Eliminar pago de "${payment?.member?.full_name ?? ""}"`}
       description="El pago y sus abonos se eliminarán. Esta acción no se puede deshacer."
       confirmLabel="Eliminar"
       destructive

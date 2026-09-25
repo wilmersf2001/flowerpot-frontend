@@ -1,3 +1,4 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { MEMBER_GENDERS } from "./members.constants";
 
 export type MemberGender = (typeof MEMBER_GENDERS)[number];
@@ -27,13 +28,13 @@ export interface MemberRow {
   active_membership?: { status: string; plan_name: string } | null;
 }
 
-export interface MemberListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface MemberListParams extends BaseListParams {
   /** Sede activa (switcher global). `useMembers` la inyecta; no la pasa la página. */
-  branchId?: string | null;
+  branch_id?: string | null;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type MemberFilters = ListFilters<MemberListParams>;
 
 /** Cuerpo de `POST /members` (`StoreMemberRequest`). */
 export interface CreateMemberInput {

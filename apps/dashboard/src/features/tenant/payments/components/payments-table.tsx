@@ -26,17 +26,17 @@ const PAYMENT_STATUS_MAP: StatusMap = {
 
 const columns: Column<PaymentRow>[] = [
   {
-    key: "member_name",
+    key: "member",
     header: "Socio",
     cell: (row) => (
-      <span className="font-medium">{row.member_name || row.member_id}</span>
+      <span className="font-medium">{row.member?.full_name || row.member_id}</span>
     ),
   },
   {
-    key: "plan_name",
+    key: "membership",
     header: "Membresía",
     cell: (row) => (
-      <span className="text-muted-foreground">{row.plan_name || row.membership_id}</span>
+      <span className="text-muted-foreground">{row.membership?.plan_name || row.membership_id}</span>
     ),
   },
   {
@@ -111,7 +111,7 @@ export function PaymentsTable({
       pagination={pagination}
       rowActions={(row) => (
         <RowActions
-          label={`Acciones del pago de ${row.member_name || row.member_id}`}
+          label={`Acciones del pago de ${row.member?.full_name || row.member_id}`}
           actions={[
             row.balance_due > 0 &&
               row.status !== "refunded" && {
