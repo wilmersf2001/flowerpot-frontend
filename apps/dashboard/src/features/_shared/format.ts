@@ -117,6 +117,44 @@ export function fromCents(cents: unknown): number {
 }
 
 /**
+ * Monedas que el sistema puede manejar (código ISO 4217 de 3 letras).
+ * Espejo de `config('currencies.supported')` en el backend: misma lista,
+ * mismo símbolo y mismos decimales. Si el backend agrega una moneda, hay que
+ * agregarla aquí también (no hay endpoint que la sirva; es config estática
+ * en ambos lados).
+ */
+export const SUPPORTED_CURRENCIES = {
+  PEN: { symbol: "S/. ", name: "Sol Peruano", decimals: 2 },
+  USD: { symbol: "$ ", name: "Dólar Americano", decimals: 2 },
+  EUR: { symbol: "€ ", name: "Euro", decimals: 2 },
+} as const satisfies Record<
+  string,
+  { symbol: string; name: string; decimals: number }
+>;
+
+/** Código ISO de una moneda soportada (`"PEN" | "USD" | "EUR"`). */
+export type SupportedCurrency = keyof typeof SUPPORTED_CURRENCIES;
+
+/** Moneda por defecto para formularios nuevos (`config('currencies.default')`). */
+export const DEFAULT_CURRENCY: SupportedCurrency = "PEN";
+
+/** `true` si `currency` es uno de los códigos que el sistema soporta. */
+export function isSupportedCurrency(
+  currency: string,
+): currency is SupportedCurrency {
+  return currency in SUPPORTED_CURRENCIES;
+}
+
+/**
+ * `SUPPORTED_CURRENCIES` como `{ value, label }` para un `Combobox`
+ * (`@repo/ui/combobox`). Lista fija -> se calcula una sola vez al cargar el
+ * módulo, no en cada render.
+ */
+export const CURRENCY_OPTIONS = Object.entries(SUPPORTED_CURRENCIES).map(
+  ([code, { name }]) => ({ value: code, label: `${code} — ${name}` }),
+);
+
+/**
  * Texto libre -> identificador URL-safe: minúsculas, sin acentos, y cada
  * grupo de caracteres no alfanuméricos colapsado a un solo guion (sin
  * guiones al inicio ni al final). Ej.: `"Plan Pro ½"` -> `"plan-pro"`.

@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
+import { Combobox } from "@repo/ui/combobox";
 import {
   AppDialog,
+  CURRENCY_OPTIONS,
+  Field,
   TextField,
   useFieldBinder,
   useResourceFormSubmit,
@@ -50,9 +53,10 @@ export function MembershipPlanFormDialog({
     defaultValues: membershipPlanFormDefaults,
   });
   const {
+    control,
     reset,
     register,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = form;
   const bind = useFieldBinder(form, "membership-plan");
 
@@ -144,15 +148,27 @@ export function MembershipPlanFormDialog({
             placeholder="99.90"
           />
 
-          <TextField
-            {...bind("currency")}
+          <Field
             label="Moneda"
-            placeholder="PEN"
-            maxLength={3}
-            className="uppercase"
-            readOnly={isEdit}
+            htmlFor="membership-plan-currency"
+            error={errors.currency?.message}
             hint={isEdit ? "No se puede cambiar." : undefined}
-          />
+          >
+            <Controller
+              control={control}
+              name="currency"
+              render={({ field }) => (
+                <Combobox
+                  id="membership-plan-currency"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  options={CURRENCY_OPTIONS}
+                  disabled={isEdit}
+                  aria-invalid={errors.currency ? true : undefined}
+                />
+              )}
+            />
+          </Field>
         </div>
 
         <TextField
