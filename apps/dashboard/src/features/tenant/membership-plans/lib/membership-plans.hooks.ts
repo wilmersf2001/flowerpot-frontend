@@ -11,6 +11,7 @@ import { membershipPlansApi } from "./membership-plans.api";
 import { membershipPlanKeys } from "./membership-plans.keys";
 import {
   CreateMembershipPlanInput,
+  MembershipPlanFilters,
   MembershipPlanListParams,
   MembershipPlanRow,
   UpdateMembershipPlanInput,
@@ -27,7 +28,7 @@ export function useMembershipPlans(params: MembershipPlanListParams = {}) {
 
 /** Fila de plan -> opción de combobox (nombre + precio como texto secundario). */
 const toMembershipPlanOption = (plan: MembershipPlanRow): ComboboxOption => ({
-  value: plan.id,
+  value: String(plan.id),
   label: plan.name,
   hint: plan.price_formatted || undefined,
 });
@@ -36,11 +37,14 @@ const toMembershipPlanOption = (plan: MembershipPlanRow): ComboboxOption => ({
  * Adaptador para `AsyncCombobox`: planes de membresía paginados por scroll,
  * filtrados por `search`. Lo usa el formulario de alta de `memberships`.
  */
-export function useMembershipPlanOptions(enabled = true) {
+export function useMembershipPlanOptions(
+  enabled = true,
+  filters: MembershipPlanFilters = {},
+) {
   return useAsyncOptions<MembershipPlanRow>({
-    queryKey: membershipPlanKeys.options,
+    queryKey: (search) => membershipPlanKeys.options(search, filters),
     fetchPage: ({ search, page }) =>
-      membershipPlansApi.list({ search, page, perPage: 20 }),
+      membershipPlansApi.list({ search, page, perPage: 20, ...filters }),
     toOption: toMembershipPlanOption,
     enabled,
   });
@@ -63,7 +67,7 @@ export function useUpdateMembershipPlan() {
       id,
       input,
     }: {
-      id: string;
+      id: number;
       input: UpdateMembershipPlanInput;
     }) => membershipPlansApi.update(id, input),
     onSuccess: () =>
@@ -79,7 +83,7 @@ export function useUpdateMembershipPlan() {
 export function useToggleMembershipPlanActive() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+    mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) =>
       membershipPlansApi.update(id, { is_active: isActive }),
     onMutate: async ({ id, isActive }) => {
       await queryClient.cancelQueries({ queryKey: membershipPlanKeys.lists() });

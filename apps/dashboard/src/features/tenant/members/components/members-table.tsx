@@ -90,18 +90,18 @@ const baseColumns: Column<MemberRow>[] = [
     ),
   },
   {
-    key: "active_membership_status",
+    key: "active_membership",
     header: "Membresía",
     cell: (row) =>
-      row.active_membership_status ? (
+      row.active_membership ? (
         <div className="flex flex-col gap-1">
           <StatusBadge
-            value={row.active_membership_status}
+            value={row.active_membership.status}
             map={MEMBERSHIP_STATUS_MAP}
           />
-          {row.active_membership_plan_name ? (
+          {row.active_membership.plan_name ? (
             <span className="text-xs text-muted-foreground">
-              {row.active_membership_plan_name}
+              {row.active_membership.plan_name}
             </span>
           ) : null}
         </div>

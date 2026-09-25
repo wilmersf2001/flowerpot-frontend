@@ -33,24 +33,19 @@ export interface MembershipListParams {
   search?: string;
 }
 
-/** Fila de `GET /memberships` — `MembershipResource`. */
+/** Fila de `GET /memberships` — `MembershipResource`, tal cual la manda la API. */
 export interface MembershipRow {
-  id: string;
-  member_id: string;
-  membership_plan_id: string;
-  /** Datos históricos del plan. */
+  id: number;
+  member_id: number;
+  member_name?: string;
   plan_name: string;
-  plan_price_cents: number;
   plan_price_formatted: string;
-  plan_duration_days: number;
-  /** Vigencia. */
   starts_at: string;
   ends_at: string;
   days_remaining: number;
   is_expired: boolean;
   status: string;
-  notes: string;
-  created_at: string;
-  /** Solo si el backend cargó la relación (`whenLoaded`). */
-  member_name?: string;
+  /** Aún no los expone `MembershipResource`; el formulario de edición los lee. */
+  membership_plan_id?: number;
+  notes?: string | null;
 }

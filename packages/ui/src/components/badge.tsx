@@ -14,7 +14,7 @@ import { cn } from "../lib/utils";
  * este componente con un mapa configurable.
  */
 const badgeVariants = cva(
-  "inline-flex items-center rounded-md border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex w-fit shrink-0 items-center whitespace-nowrap rounded-md border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       tone: {

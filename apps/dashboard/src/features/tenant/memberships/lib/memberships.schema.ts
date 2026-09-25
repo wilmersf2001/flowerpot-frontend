@@ -50,8 +50,8 @@ const normalizeCreateStatus = enumFallback(MEMBERSHIP_CREATE_STATUSES, "active")
 /** Prellena el formulario con los datos de una membresía (modo edición). */
 export function membershipToForm(row: MembershipRow): MembershipForm {
   return {
-    member_id: row.member_id,
-    membership_plan_id: row.membership_plan_id,
+    member_id: String(row.member_id),
+    membership_plan_id: String(row.membership_plan_id ?? ""),
     starts_at: toDateInputValue(row.starts_at),
     status: normalizeStatus(row.status),
     notes: row.notes ?? "",

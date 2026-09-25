@@ -69,19 +69,21 @@ export function MembershipFormDialog({
   // y solo mientras el diálogo está abierto, para no precargar en cada visita
   // a la página aunque el usuario nunca abra el formulario.
   const memberOptions = useMemberOptions(open && !isEdit);
-  const planOptions = useMembershipPlanOptions(open && !isEdit);
+  const planOptions = useMembershipPlanOptions(open && !isEdit, {
+    is_active: "1",
+  });
 
   // Modo edición: el socio/plan pueden no venir en la 1ª página de
   // resultados, así que damos su etiqueta a mano desde la fila.
   const selectedMemberOption: ComboboxOption | null = membership
     ? {
-        value: membership.member_id,
-        label: membership.member_name || membership.member_id,
+        value: String(membership.member_id),
+        label: membership.member_name || String(membership.member_id),
       }
     : null;
   const selectedPlanOption: ComboboxOption | null = membership
     ? {
-        value: membership.membership_plan_id,
+        value: String(membership.membership_plan_id ?? ""),
         label: membership.plan_name,
         hint: membership.plan_price_formatted || undefined,
       }

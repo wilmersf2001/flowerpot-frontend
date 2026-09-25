@@ -68,14 +68,14 @@ export function memberToForm(member: MemberRow): MemberForm {
     first_name: member.first_name,
     last_name: member.last_name,
     dni: member.dni,
-    email: member.email,
-    phone: member.phone,
+    email: member.email ?? "",
+    phone: member.phone ?? "",
     birth_date: member.birth_date ? member.birth_date.slice(0, 10) : "",
     gender: normalizeGender(member.gender ?? ""),
-    photo_url: member.photo_url,
-    emergency_contact_name: member.emergency_contact_name,
-    emergency_contact_phone: member.emergency_contact_phone,
-    notes: member.notes,
+    photo_url: member.photo_url ?? "",
+    emergency_contact_name: member.emergency_contact_name ?? "",
+    emergency_contact_phone: member.emergency_contact_phone ?? "",
+    notes: member.notes ?? "",
   };
 }
 

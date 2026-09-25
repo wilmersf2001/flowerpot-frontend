@@ -24,8 +24,8 @@ export function useMemberships(params: MembershipListParams = {}) {
 
 /** Fila de membresía -> opción de combobox (socio + plan como texto secundario). */
 const toMembershipOption = (membership: MembershipRow): ComboboxOption => ({
-  value: membership.id,
-  label: membership.member_name || membership.member_id,
+  value: String(membership.id),
+  label: membership.member_name || String(membership.member_id),
   hint: membership.plan_name || undefined,
 });
 
@@ -56,7 +56,7 @@ export function useCreateMembership() {
 export function useUpdateMembership() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateMembershipInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateMembershipInput }) =>
       membershipsApi.update(id, input),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: membershipKeys.all }),

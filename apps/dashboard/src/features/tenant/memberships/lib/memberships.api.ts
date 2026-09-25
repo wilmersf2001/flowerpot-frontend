@@ -1,37 +1,19 @@
-import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
-import { Paginated } from "@repo/types";
+import {
+  apiClient,
+  unwrapEnvelope,
+  unwrapPaginated,
+  type Paginated,
+} from "@repo/api-client";
 import {
   MEMBERSHIPS_ENDPOINT,
   MEMBERSHIPS_PER_PAGE,
 } from "./memberships.constants";
-import {
+import type {
   CreateMembershipInput,
   MembershipListParams,
   MembershipRow,
   UpdateMembershipInput,
 } from "./memberships.types";
-
-/** El backend manda varios campos numéricos como texto. */
-function toMembershipRow(raw: Record<string, unknown>): MembershipRow {
-  return {
-    id: String(raw.id),
-    member_id: String(raw.member_id),
-    membership_plan_id: String(raw.membership_plan_id),
-    plan_name: String(raw.plan_name ?? ""),
-    plan_price_cents: Number(raw.plan_price_cents ?? 0),
-    plan_price_formatted: String(raw.plan_price_formatted ?? ""),
-    plan_duration_days: Number(raw.plan_duration_days ?? 0),
-    starts_at: String(raw.starts_at ?? ""),
-    ends_at: String(raw.ends_at ?? ""),
-    days_remaining: Number(raw.days_remaining ?? 0),
-    is_expired:
-      raw.is_expired === true || raw.is_expired === "true" || raw.is_expired === 1,
-    status: String(raw.status ?? ""),
-    notes: String(raw.notes ?? ""),
-    created_at: String(raw.created_at ?? ""),
-    member_name: raw.member_name != null ? String(raw.member_name) : undefined,
-  };
-}
 
 async function list(
   params: MembershipListParams = {},
@@ -44,24 +26,23 @@ async function list(
       search: search ? search : undefined,
     },
   });
-  const page = unwrapPaginated<Record<string, unknown>>(data);
-  return { ...page, data: page.data.map(toMembershipRow) };
+  return unwrapPaginated<MembershipRow>(data);
 }
 
 async function create(input: CreateMembershipInput): Promise<MembershipRow> {
   const { data } = await apiClient.post<unknown>(MEMBERSHIPS_ENDPOINT, input);
-  return toMembershipRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<MembershipRow>(data);
 }
 
 async function update(
-  id: string,
+  id: number,
   input: UpdateMembershipInput,
 ): Promise<MembershipRow> {
   const { data } = await apiClient.patch<unknown>(
     `${MEMBERSHIPS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
   );
-  return toMembershipRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<MembershipRow>(data);
 }
 
 export const membershipsApi = { list, create, update };

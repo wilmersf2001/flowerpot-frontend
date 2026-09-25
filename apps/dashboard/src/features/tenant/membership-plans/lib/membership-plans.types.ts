@@ -1,5 +1,5 @@
 export interface MembershipPlanRow {
-  id: string;
+  id: number;
   name: string;
   description: string;
   price_cents: number;
@@ -15,7 +15,14 @@ export interface MembershipPlanListParams {
   page?: number;
   perPage?: number;
   search?: string;
+  is_active?: "1" | "0";
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type MembershipPlanFilters = Omit<
+  MembershipPlanListParams,
+  "page" | "perPage" | "search"
+>;
 
 export interface CreateMembershipPlanInput {
   name: string;

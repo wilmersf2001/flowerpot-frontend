@@ -1,4 +1,4 @@
-import { MembershipPlanListParams } from "./membership-plans.types";
+import { MembershipPlanFilters, MembershipPlanListParams } from "./membership-plans.types";
 
 /** Fábrica de query-keys de React Query para el módulo de planes de membresía. */
 export const membershipPlanKeys = {
@@ -7,5 +7,6 @@ export const membershipPlanKeys = {
   list: (params: MembershipPlanListParams) =>
     [...membershipPlanKeys.lists(), params] as const,
   /** Combobox asíncrono: list paginado por scroll, keyeado por texto. */
-  options: (search: string) => [...membershipPlanKeys.all, "options", search] as const,
+  options: (search: string, filters: MembershipPlanFilters = {}) =>
+    [...membershipPlanKeys.all, "options", filters, search] as const,
 };

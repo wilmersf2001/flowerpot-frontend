@@ -2,29 +2,29 @@ import type { MEMBER_GENDERS } from "./members.constants";
 
 export type MemberGender = (typeof MEMBER_GENDERS)[number];
 
+/** Fila de `GET /members` — `MemberResource`, tal cual la manda la API. */
 export interface MemberRow {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
   full_name: string;
   dni: string;
-  email: string;
-  phone: string;
+  email: string | null;
+  phone: string | null;
   birth_date: string | null;
   age: number | null;
   gender: MemberGender | null;
-  photo_url: string;
+  photo_url: string | null;
   qr_code: string;
   is_active: boolean;
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
-  notes: string;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  notes: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
   /** Membresía activa, si el backend la cargó (`whenLoaded`). */
-  active_membership_status: string | null;
-  active_membership_plan_name: string | null;
+  active_membership?: { status: string; plan_name: string } | null;
 }
 
 export interface MemberListParams {
