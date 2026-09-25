@@ -94,6 +94,28 @@ export function formatMoney(value: unknown, currency = "PEN"): string {
   return n.toLocaleString("es-PE", { style: "currency", currency });
 }
 
+/** Centavos por unidad monetaria. El backend guarda todo precio en `*_cents`. */
+const CENTS_PER_UNIT = 100;
+
+/**
+ * Convierte un monto en la unidad principal (lo que escribe el usuario,
+ * p. ej. `99.90` soles) a centavos (lo que espera la API en `*_cents`).
+ * Redondea para evitar arrastrar errores de punto flotante (`0.1 + 0.2`).
+ */
+export function toCents(amount: unknown): number {
+  const n = typeof amount === "number" ? amount : Number(amount);
+  return Number.isFinite(n) ? Math.round(n * CENTS_PER_UNIT) : 0;
+}
+
+/**
+ * Convierte centavos (lo que devuelve la API en `*_cents`) a la unidad
+ * principal, para precargar un `<input>` de precio. Inverso de `toCents`.
+ */
+export function fromCents(cents: unknown): number {
+  const n = typeof cents === "number" ? cents : Number(cents);
+  return Number.isFinite(n) ? n / CENTS_PER_UNIT : 0;
+}
+
 /**
  * Texto libre -> identificador URL-safe: minúsculas, sin acentos, y cada
  * grupo de caracteres no alfanuméricos colapsado a un solo guion (sin

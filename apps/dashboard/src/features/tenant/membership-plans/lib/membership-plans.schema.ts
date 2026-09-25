@@ -4,6 +4,7 @@ import {
   numericText,
   optionalText,
 } from "@/features/_shared/form-schema";
+import { fromCents, toCents } from "@/features/_shared/format";
 import type {
   CreateMembershipPlanInput,
   MembershipPlanRow,
@@ -60,7 +61,7 @@ export function membershipPlanToForm(
   return {
     name: plan.name,
     description: plan.description ?? "",
-    price: (plan.price_cents / 100).toString(),
+    price: fromCents(plan.price_cents).toString(),
     currency: plan.currency,
     duration_days: String(plan.duration_days),
     sort_order: String(plan.sort_order),
@@ -76,7 +77,7 @@ export function toCreateMembershipPlanInput(
     name: form.name,
     description: form.description,
     // El backend guarda el precio en centavos.
-    price_cents: Math.round(Number(form.price) * 100),
+    price_cents: toCents(form.price),
     currency: form.currency,
     duration_days: Number(form.duration_days),
     sort_order: Number(form.sort_order),
@@ -93,7 +94,7 @@ export function toUpdateMembershipPlanInput(
   return {
     name: form.name,
     description: form.description,
-    price_cents: Math.round(Number(form.price) * 100),
+    price_cents: toCents(form.price),
     duration_days: Number(form.duration_days),
     sort_order: Number(form.sort_order),
     is_active: form.is_active,

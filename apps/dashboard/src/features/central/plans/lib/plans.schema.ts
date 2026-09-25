@@ -5,7 +5,7 @@ import {
   numericText,
   optionalText,
 } from "@/features/_shared/form-schema";
-import { splitLines } from "@/features/_shared/format";
+import { fromCents, splitLines, toCents } from "@/features/_shared/format";
 import { PLAN_BILLING_PERIODS, PLAN_SLUG_PATTERN } from "./plans.constants";
 import type { CreatePlanInput, PlanRow, UpdatePlanInput } from "./plans.types";
 
@@ -76,7 +76,7 @@ export function planToForm(plan: PlanRow): PlanForm {
     name: plan.name,
     slug: plan.slug,
     description: plan.description ?? "",
-    price: (Number(plan.price_cents) / 100).toString(),
+    price: fromCents(plan.price_cents).toString(),
     currency: plan.currency,
     billing_period: normalizeBillingPeriod(plan.billing_period),
     max_locations: String(plan.max_locations),
@@ -94,7 +94,7 @@ export function toCreatePlanInput(form: PlanForm): CreatePlanInput {
     slug: form.slug,
     description: form.description,
     // El backend guarda el precio en centavos.
-    price_cents: Math.round(Number(form.price) * 100),
+    price_cents: toCents(form.price),
     currency: form.currency,
     billing_period: form.billing_period,
     max_locations: Number(form.max_locations),
@@ -112,7 +112,7 @@ export function toUpdatePlanInput(form: PlanForm): UpdatePlanInput {
   return {
     name: form.name,
     description: form.description,
-    price_cents: Math.round(Number(form.price) * 100),
+    price_cents: toCents(form.price),
     max_locations: Number(form.max_locations),
     max_members: Number(form.max_members),
     features: splitLines(form.features),
