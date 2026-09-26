@@ -1,4 +1,5 @@
 export { MembershipPlansPage } from "./membership-plans-page";
+export { MembershipPlansRootPage } from "./membership-plans-root-page";
 
 export {
   useMembershipPlans,

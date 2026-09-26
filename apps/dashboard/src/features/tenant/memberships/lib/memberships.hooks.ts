@@ -7,6 +7,7 @@ import {
   CreateMembershipInput,
   MembershipListParams,
   MembershipRow,
+  UpdateMembershipBranchesInput,
   UpdateMembershipInput,
 } from "./memberships.types";
 
@@ -48,6 +49,21 @@ export function useCreateMembership() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateMembershipInput) => membershipsApi.create(input),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: membershipKeys.all }),
+  });
+}
+
+export function useUpdateMembershipBranches() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      input,
+    }: {
+      id: number;
+      input: UpdateMembershipBranchesInput;
+    }) => membershipsApi.updateBranches(id, input),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: membershipKeys.all }),
   });

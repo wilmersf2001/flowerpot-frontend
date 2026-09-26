@@ -49,4 +49,16 @@ export interface MembershipRow {
   /** Aún no los expone `MembershipResource`; el formulario de edición los lee. */
   membership_plan_id?: number;
   notes?: string | null;
+  /** Modo de acceso a sedes del plan; solo `limited` permite cambiar de sede. */
+  branch_access?: "all" | "specific" | "limited";
+  /** Tope de sedes elegibles (planes `limited`). */
+  max_branches?: number | null;
+  /** Sedes elegidas por el cliente. */
+  branches?: { id: number; name: string }[];
+}
+
+/** Cuerpo de `PUT /memberships/{id}/branches` (`UpdateMembershipBranchesRequest`). */
+export interface UpdateMembershipBranchesInput {
+  /** Reemplaza las sedes elegidas: de 1 a `max_branches`, sin repetir. */
+  branches: number[];
 }

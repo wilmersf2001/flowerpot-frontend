@@ -11,6 +11,7 @@ import {
 import type { MembershipRow } from "./lib/memberships.types";
 import { useMemberships } from "./lib/memberships.hooks";
 import { MembershipsTable } from "./components/memberships-table";
+import { MembershipBranchesDialog } from "./components/membership-branches-dialog";
 import { MembershipFormDialog } from "./components/membership-form-dialog";
 
 /** Pantalla de membresías: lista + búsqueda + paginación + alta + edición. */
@@ -24,6 +25,7 @@ export function MembershipsPage() {
 
   // Diálogo de alta/edición: "new" para crear, una fila para editar, null cerrado.
   const [editing, setEditing] = useState<MembershipRow | "new" | null>(null);
+  const [changingBranches, setChangingBranches] = useState<MembershipRow | null>(null);
 
   function handleSearch(value: string) {
     setSearch(value);
@@ -65,6 +67,7 @@ export function MembershipsPage() {
           rows={meta?.data ?? []}
           isLoading={memberships.isPending}
           onEditAction={setEditing}
+          onChangeBranchesAction={setChangingBranches}
           emptyMessage={
             debouncedSearch
               ? "Ninguna membresía coincide con la búsqueda."
@@ -87,6 +90,12 @@ export function MembershipsPage() {
         membership={editing === "new" ? null : editing}
         onOpenChangeAction={(open) => {
           if (!open) setEditing(null);
+        }}
+      />
+      <MembershipBranchesDialog
+        membership={changingBranches}
+        onOpenChangeAction={(open) => {
+          if (!open) setChangingBranches(null);
         }}
       />
     </div>

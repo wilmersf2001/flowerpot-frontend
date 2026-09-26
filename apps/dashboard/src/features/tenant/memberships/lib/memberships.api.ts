@@ -13,6 +13,7 @@ import type {
   CreateMembershipInput,
   MembershipListParams,
   MembershipRow,
+  UpdateMembershipBranchesInput,
   UpdateMembershipInput,
 } from "./memberships.types";
 
@@ -41,4 +42,16 @@ async function update(
   return unwrapEnvelope<MembershipRow>(data);
 }
 
-export const membershipsApi = { list, create, update };
+/** Reemplaza las sedes elegidas de una membresía de plan `limited`. */
+async function updateBranches(
+  id: number,
+  input: UpdateMembershipBranchesInput,
+): Promise<MembershipRow> {
+  const { data } = await apiClient.put<unknown>(
+    `${MEMBERSHIPS_ENDPOINT}/${encodeURIComponent(id)}/branches`,
+    input,
+  );
+  return unwrapEnvelope<MembershipRow>(data);
+}
+
+export const membershipsApi = { list, create, update, updateBranches };

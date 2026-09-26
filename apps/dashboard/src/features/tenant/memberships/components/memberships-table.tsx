@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil } from "lucide-react";
+import { MapPin, Pencil } from "lucide-react";
 import {
   DataTable,
   RowActions,
@@ -76,12 +76,14 @@ export function MembershipsTable({
   rows,
   isLoading,
   onEditAction,
+  onChangeBranchesAction,
   pagination,
   emptyMessage = "Aún no hay membresías. Crea la primera.",
 }: {
   rows: MembershipRow[];
   isLoading: boolean;
   onEditAction: (membership: MembershipRow) => void;
+  onChangeBranchesAction: (membership: MembershipRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
@@ -101,6 +103,16 @@ export function MembershipsTable({
               icon: Pencil,
               onSelect: () => onEditAction(row),
             },
+            // Solo los planes `limited` dejan cambiar de sede (el backend valida).
+            ...(row.branch_access === "all" || row.branch_access === "specific"
+              ? []
+              : [
+                  {
+                    label: "Cambiar sedes",
+                    icon: MapPin,
+                    onSelect: () => onChangeBranchesAction(row),
+                  },
+                ]),
           ]}
         />
       )}
