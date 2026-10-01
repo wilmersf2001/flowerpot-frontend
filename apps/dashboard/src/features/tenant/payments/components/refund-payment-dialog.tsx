@@ -28,7 +28,10 @@ export function RefundPaymentDialog({
       toast.success("Devolución procesada.");
       onOpenChangeAction(false);
     } catch (err) {
-      const message = err instanceof ApiError ? err.message : "No se pudo procesar la devolución.";
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : "No se pudo procesar la devolución.";
       toast.error(message);
     }
   }
@@ -37,7 +40,7 @@ export function RefundPaymentDialog({
     <ConfirmDialog
       open={payment !== null}
       onOpenChange={onOpenChangeAction}
-      title={`Reembolsar pago de "${payment?.member?.full_name ?? ""}"`}
+      title={`Reembolsar pago de "${payment?.member_name ?? ""}"`}
       description={
         payment
           ? `Se devolverá ${formatSoles(payment.amount_paid)}. Esta acción no se puede deshacer.`

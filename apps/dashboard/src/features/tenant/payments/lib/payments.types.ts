@@ -1,13 +1,19 @@
-import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
-import type { PAYMENT_METHODS } from "./payments.constants";
+import type {
+  BaseListParams,
+  ListFilters,
+} from "@/features/_shared/list-params";
+import type { PAYMENT_METHODS, PAYMENT_STATUSES } from "./payments.constants";
 
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
 /** Fila de `GET /payments` — `PaymentResource`. */
 export interface PaymentRow {
   id: number;
   membership_id: number;
   member_id: number;
+  member_name?: string;
+  membership_plan_name?: string;
 
   // Montos (soles, no céntimos).
   amount: number;
@@ -17,7 +23,7 @@ export interface PaymentRow {
   net_amount: number;
 
   gateway: string;
-  status: string;
+  status: PaymentStatus;
 
   // Solo si el gateway es Culqi.
   gateway_transaction_id?: string;

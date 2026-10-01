@@ -25,6 +25,8 @@ export type ComboboxOption = {
   disabled?: boolean;
   /** Términos extra por los que el buscador debe encontrar la opción. */
   keywords?: string[];
+  /** Datos extra del modelo origen que el formulario puede necesitar al elegirla. */
+  data?: Record<string, string>;
 };
 
 export type ComboboxProps = {

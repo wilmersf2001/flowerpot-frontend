@@ -1,11 +1,15 @@
-import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+import type {
+  BaseListParams,
+  ListFilters,
+} from "@/features/_shared/list-params";
 import {
   MEMBERSHIP_CREATE_STATUSES,
   MEMBERSHIP_STATUSES,
 } from "./memberships.constants";
 
 export type MembershipStatus = (typeof MEMBERSHIP_STATUSES)[number];
-export type MembershipCreateStatus = (typeof MEMBERSHIP_CREATE_STATUSES)[number];
+export type MembershipCreateStatus =
+  (typeof MEMBERSHIP_CREATE_STATUSES)[number];
 
 /**
  * Cuerpo de `POST /memberships` (`StoreMembershipRequest`). El backend calcula
@@ -29,7 +33,9 @@ export interface UpdateMembershipInput {
 }
 
 /** Sin filtros extra por ahora: declara aquí los que soporte `GET /memberships`. */
-export type MembershipListParams = BaseListParams;
+export interface MembershipListParams extends BaseListParams {
+  without_payment?: 1;
+}
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
 export type MembershipFilters = ListFilters<MembershipListParams>;
@@ -41,6 +47,8 @@ export interface MembershipRow {
   member_name?: string;
   plan_name: string;
   plan_price_formatted: string;
+  /** Precio numérico del plan; si la API no lo manda se lee de `plan_price_formatted`. */
+  plan_price_cents?: number;
   starts_at: string;
   ends_at: string;
   days_remaining: number;

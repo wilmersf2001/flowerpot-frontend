@@ -16,7 +16,8 @@ import type { AsyncOptions } from "./use-async-options";
 
 export type AsyncComboboxProps = {
   value: string;
-  onValueChange: (value: string) => void;
+  /** Recibe también la opción elegida (para leer su `data`). */
+  onValueChange: (value: string, option: ComboboxOption) => void;
   /** Resultado de `useAsyncOptions` (lo llama el padre). */
   source: AsyncOptions;
   /**
@@ -134,7 +135,7 @@ export function AsyncCombobox({
                     value={option.value}
                     disabled={option.disabled}
                     onSelect={() => {
-                      onValueChange(option.value);
+                      onValueChange(option.value, option);
                       handleOpenChange(false);
                     }}
                   >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
@@ -16,7 +16,10 @@ import {
   useResourceFormSubmit,
 } from "@/features/_shared";
 import { useCreatePayment, useMembershipOptions } from "../lib/payments.hooks";
-import { PAYMENT_METHODS, PAYMENT_METHOD_LABELS } from "../lib/payments.constants";
+import {
+  PAYMENT_METHODS,
+  PAYMENT_METHOD_LABELS,
+} from "../lib/payments.constants";
 import {
   PAYMENT_FORM_FIELDS,
   paymentFormDefaults,
@@ -28,10 +31,12 @@ import type { PaymentRow } from "../lib/payments.types";
 
 const FORM_ID = "payment-form";
 
-const PAYMENT_METHOD_OPTIONS: ComboboxOption[] = PAYMENT_METHODS.map((method) => ({
-  value: method,
-  label: PAYMENT_METHOD_LABELS[method],
-}));
+const PAYMENT_METHOD_OPTIONS: ComboboxOption[] = PAYMENT_METHODS.map(
+  (method) => ({
+    value: method,
+    label: PAYMENT_METHOD_LABELS[method],
+  }),
+);
 
 /**
  * Diálogo de registro manual de pago (`payments.create_manual`). Solo alta:
@@ -47,7 +52,7 @@ export function PaymentFormDialog({
   onOpenChangeAction: (open: boolean) => void;
 }) {
   const createPayment = useCreatePayment();
-  const membershipOptions = useMembershipOptions(open);
+  const membershipOptions = useMembershipOptions(open, { without_payment: 1 });
 
   const form = useForm<PaymentForm>({
     resolver: zodResolver(paymentFormSchema),
@@ -57,9 +62,16 @@ export function PaymentFormDialog({
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors, isSubmitting, isSubmitted },
   } = form;
   const bind = useFieldBinder(form, "payment");
+  // Bloqueado solo si la membresía elegida trae precio; si no, se digita a mano.
+  const [membershipId, amount] = useWatch({
+    control,
+    name: ["membership_id", "amount"],
+  });
+  const amountLocked = Boolean(membershipId) && Boolean(amount);
 
   useEffect(() => {
     if (open) reset(paymentFormDefaults);
@@ -69,7 +81,8 @@ export function PaymentFormDialog({
     useResourceFormSubmit<PaymentForm, PaymentRow>({
       form,
       fields: PAYMENT_FORM_FIELDS,
-      submit: (values) => createPayment.mutateAsync(toCreatePaymentInput(values)),
+      submit: (values) =>
+        createPayment.mutateAsync(toCreatePaymentInput(values)),
       successMessage: () => "Pago registrado.",
       errorMessage: "No se pudo registrar el pago.",
       onSuccess: () => onOpenChangeAction(false),
@@ -99,7 +112,12 @@ export function PaymentFormDialog({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form
+        id={FORM_ID}
+        onSubmit={onSubmit}
+        className="flex flex-col gap-4"
+        noValidate
+      >
         <Field
           label="Membresía"
           htmlFor="payment-membership"
@@ -112,7 +130,17 @@ export function PaymentFormDialog({
               <AsyncCombobox
                 id="payment-membership"
                 value={field.value}
-                onValueChange={field.onChange}
+                onValueChange={(value, option) => {
+                  field.onChange(value);
+                  // El monto del cobro es el precio del plan: se precarga y se bloquea.
+                  const planAmount = option.data?.amount ?? "";
+                  setValue("amount", planAmount, {
+                    shouldValidate: isSubmitted,
+                  });
+                  setValue("amount_paid", planAmount, {
+                    shouldValidate: isSubmitted,
+                  });
+                }}
                 source={membershipOptions}
                 placeholder="Selecciona una membresía"
                 searchPlaceholder="Buscar por socio…"
@@ -127,10 +155,12 @@ export function PaymentFormDialog({
           <TextField
             {...bind("amount")}
             label="Monto"
+            hint="Precio del plan de la membresía."
             type="number"
             step="0.01"
             min="0.01"
             placeholder="150.00"
+            readOnly={amountLocked}
           />
           <TextField
             {...bind("amount_paid")}

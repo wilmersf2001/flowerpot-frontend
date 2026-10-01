@@ -37,6 +37,27 @@ export const PAYMENT_GATEWAY_LABELS: Record<string, string> = {
   culqi: "Culqi",
 };
 
+/** Estados del ciclo de vida de un pago (`payments_status_check`). */
+export const PAYMENT_STATUSES = [
+  "pending",
+  "completed",
+  "partially_paid",
+  "failed",
+  "refunded",
+] as const;
+
+export const PAYMENT_STATUS_LABELS: Record<(typeof PAYMENT_STATUSES)[number], string> = {
+  pending: "Pendiente",
+  completed: "Completado",
+  partially_paid: "Pago parcial",
+  failed: "Fallido",
+  refunded: "Reembolsado",
+};
+
+export function paymentStatusLabel(status: string): string {
+  return PAYMENT_STATUS_LABELS[status as (typeof PAYMENT_STATUSES)[number]] ?? status;
+}
+
 /** `Intl.NumberFormat` compartido: los montos de pago viajan en soles, no en céntimos. */
 const SOLES_FORMATTER = new Intl.NumberFormat("es-PE", {
   style: "currency",

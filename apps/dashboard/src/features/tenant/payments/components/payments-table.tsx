@@ -10,44 +10,61 @@ import {
   type Column,
   type DataTablePagination,
   type StatusMap,
+  type StatusStyle,
 } from "@/features/_shared";
-import { PAYMENT_GATEWAY_LABELS, formatSoles } from "../lib/payments.constants";
-import { PaymentRow } from "../lib/payments.types";
+import {
+  PAYMENT_GATEWAY_LABELS,
+  PAYMENT_STATUS_LABELS,
+  formatSoles,
+} from "../lib/payments.constants";
+import { PaymentRow, PaymentStatus } from "../lib/payments.types";
 
-/** Estado del pago -> tono y etiqueta del badge. Valores desconocidos caen a neutro. */
-const PAYMENT_STATUS_MAP: StatusMap = {
-  paid: { label: "Pagado", tone: "success" },
-  pending: { label: "Pendiente", tone: "warning" },
-  partial: { label: "Parcial", tone: "info" },
-  refunded: { label: "Reembolsado", tone: "neutral" },
-  failed: { label: "Fallido", tone: "danger" },
-  cancelled: { label: "Cancelado", tone: "danger" },
+/** Estado del pago -> tono del badge (la etiqueta sale de `PAYMENT_STATUS_LABELS`). */
+const PAYMENT_STATUS_TONES: Record<PaymentStatus, StatusStyle["tone"]> = {
+  pending: "warning",
+  completed: "success",
+  partially_paid: "info",
+  failed: "danger",
+  refunded: "neutral",
 };
+
+const PAYMENT_STATUS_MAP: StatusMap = Object.fromEntries(
+  Object.entries(PAYMENT_STATUS_TONES).map(([status, tone]) => [
+    status,
+    { label: PAYMENT_STATUS_LABELS[status as PaymentStatus], tone },
+  ]),
+);
 
 const columns: Column<PaymentRow>[] = [
   {
     key: "member",
     header: "Socio",
     cell: (row) => (
-      <span className="font-medium">{row.member?.full_name || row.member_id}</span>
+      <span className="font-medium">{row.member_name || row.member_id}</span>
     ),
   },
   {
     key: "membership",
     header: "Membresía",
     cell: (row) => (
-      <span className="text-muted-foreground">{row.membership?.plan_name || row.membership_id}</span>
+      <span className="text-muted-foreground">
+        {row.membership_plan_name || row.membership_id}
+      </span>
     ),
   },
   {
     key: "amount",
     header: "Monto",
-    cell: (row) => <span className="tabular-nums">{formatSoles(row.amount)}</span>,
+    cell: (row) => (
+      <span className="tabular-nums">{formatSoles(row.amount)}</span>
+    ),
   },
   {
     key: "amount_paid",
     header: "Pagado",
-    cell: (row) => <span className="tabular-nums">{formatSoles(row.amount_paid)}</span>,
+    cell: (row) => (
+      <span className="tabular-nums">{formatSoles(row.amount_paid)}</span>
+    ),
   },
   {
     key: "balance_due",
