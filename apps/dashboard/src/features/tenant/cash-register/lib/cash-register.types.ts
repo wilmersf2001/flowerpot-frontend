@@ -1,3 +1,4 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type {
   CASH_EXPENSE_CATEGORIES,
   CASH_INCOME_CATEGORIES,
@@ -33,14 +34,15 @@ export interface CashRegisterRow {
   closed_by_name?: string;
 }
 
-export interface CashRegisterListParams {
-  page?: number;
-  perPage?: number;
+export interface CashRegisterListParams extends BaseListParams {
   status?: CashRegisterStatus;
   branchId?: string | null;
   dateFrom?: string;
   dateTo?: string;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type CashRegisterFilters = ListFilters<CashRegisterListParams>;
 
 /** Cuerpo de `POST /cash-register/open` (`OpenCashRegisterRequest`). */
 export interface OpenCashRegisterInput {
@@ -121,15 +123,16 @@ export interface CashMovementRow {
   expense_category_name?: string;
 }
 
-export interface CashMovementListParams {
-  page?: number;
-  perPage?: number;
+export interface CashMovementListParams extends BaseListParams {
   type?: CashMovementType;
   category?: string;
   paymentMethod?: CashPaymentMethod;
   isVoided?: boolean;
   isAutomatic?: boolean;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type CashMovementFilters = ListFilters<CashMovementListParams>;
 
 /** Cuerpo de `POST /cash-movements` (`StoreCashMovementRequest`). */
 export interface CreateCashMovementInput {

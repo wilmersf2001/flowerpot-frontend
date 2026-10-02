@@ -1,3 +1,4 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { EXPENSE_PAYMENT_METHODS, EXPENSE_STATUSES } from "./expenses.constants";
 
 export type ExpensePaymentMethod = (typeof EXPENSE_PAYMENT_METHODS)[number];
@@ -5,9 +6,9 @@ export type ExpenseStatus = (typeof EXPENSE_STATUSES)[number];
 
 /** Fila de `GET /expenses` (`ExpenseResource`). */
 export interface ExpenseRow {
-  id: string;
-  expense_category_id: string;
-  branch_id: string;
+  id: number;
+  expense_category_id: number;
+  branch_id: number;
   date: string;
   amount: number;
   description: string;
@@ -24,27 +25,27 @@ export interface ExpenseRow {
   updated_at: string;
   deleted_at: string | null;
 
-  /** Solo si el backend cargó la relación (`whenLoaded`). */
-  category_name?: string;
-  branch_name?: string;
-  registered_by_name?: string;
-  approved_by_name?: string;
+  /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
+  category?: { name: string };
+  branch?: { name: string };
+  registered_by?: { name: string };
+  approved_by?: { name: string };
 }
 
-export interface ExpenseListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface ExpenseListParams extends BaseListParams {
   status?: ExpenseStatus;
-  paymentMethod?: ExpensePaymentMethod;
-  expenseCategoryId?: string;
+  payment_method?: ExpensePaymentMethod;
+  expense_category_id?: string;
   /** Sede activa (switcher global). `useExpenses` la inyecta; no la pasa la página. */
-  branchId?: string | null;
-  dateFrom?: string;
-  dateTo?: string;
-  amountMin?: number;
-  amountMax?: number;
+  branch_id?: string | null;
+  date_from?: string;
+  date_to?: string;
+  amount_min?: number;
+  amount_max?: number;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type ExpenseFilters = ListFilters<ExpenseListParams>;
 
 /** Cuerpo de `POST /expenses` (`StoreExpenseRequest`). */
 export interface CreateExpenseInput {
@@ -91,7 +92,7 @@ export interface ExpenseSummaryParams {
 }
 
 export interface ExpenseSummaryByCategory {
-  category_id: string;
+  category_id: number;
   category_name: string;
   total: number;
   count: number;

@@ -2,6 +2,8 @@
 // `App.Http.Resources.Tenant.UserResource` tipa `is_owner` como `string`).
 // Se normaliza a `boolean` en `users.api.ts` al mapear la fila.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface UserRow {
   id: string;
   name: string;
@@ -12,11 +14,10 @@ export interface UserRow {
   is_owner: boolean;
 }
 
-export interface UserListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type UserListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type UserFilters = ListFilters<UserListParams>;
 
 /** Cuerpo de `POST /users` (`StoreUserRequest`). */
 export interface CreateUserInput {

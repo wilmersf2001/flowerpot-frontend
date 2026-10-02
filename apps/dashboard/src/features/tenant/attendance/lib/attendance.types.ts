@@ -1,3 +1,5 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface AttendanceRow {
   id: string;
   member_id: string;
@@ -13,13 +15,13 @@ export interface AttendanceRow {
   membership_ends_at?: string;
 }
 
-export interface AttendanceListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface AttendanceListParams extends BaseListParams {
   /** Sede activa (switcher global). `useAttendances` la inyecta; no la pasa la página. */
   branchId?: string | null;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type AttendanceFilters = ListFilters<AttendanceListParams>;
 
 /** Cuerpo de `POST /attendances` (`StoreAttendanceRequest`). Registro manual. */
 export interface CreateAttendanceInput {

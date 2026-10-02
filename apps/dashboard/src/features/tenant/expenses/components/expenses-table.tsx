@@ -33,7 +33,7 @@ const columns: Column<ExpenseRow>[] = [
     cell: (row) => (
       <div className="flex flex-col">
         <span className="font-medium">{row.description}</span>
-        <span className="text-xs text-muted-foreground">{row.category_name || EM_DASH}</span>
+        <span className="text-xs text-muted-foreground">{row.category?.name || EM_DASH}</span>
       </div>
     ),
   },
@@ -57,7 +57,7 @@ const columns: Column<ExpenseRow>[] = [
   {
     key: "registered_by_name",
     header: "Registrado por",
-    cell: (row) => <span className="text-muted-foreground">{row.registered_by_name || EM_DASH}</span>,
+    cell: (row) => <span className="text-muted-foreground">{row.registered_by?.name || EM_DASH}</span>,
   },
 ];
 

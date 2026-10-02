@@ -7,6 +7,8 @@
  * reemplazar estos tipos por los generados.
  */
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 /**
  * Cuerpo de `POST /tenants`. Hoy la única regla es:
  *   'id' => 'required|string|alpha_dash|unique:tenants,id'
@@ -20,11 +22,10 @@ export interface CreateTenantInput {
  * En la UI el usuario busca por el identificador del gimnasio, pero el backend
  * recibe ese texto en el parámetro `search`.
  */
-export interface TenantListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type TenantListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type TenantFilters = ListFilters<TenantListParams>;
 
 /** Fila de `GET /tenants` — `TenantResource` = `parent::toArray()` del modelo. */
 export interface TenantRow {

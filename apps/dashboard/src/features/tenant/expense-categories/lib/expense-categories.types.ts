@@ -1,3 +1,5 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 /** Fila de `GET /expense-categories` (`ExpenseCategoryResource`). */
 export interface ExpenseCategoryRow {
   id: string;
@@ -8,12 +10,12 @@ export interface ExpenseCategoryRow {
   updated_at: string;
 }
 
-export interface ExpenseCategoryListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface ExpenseCategoryListParams extends BaseListParams {
   isActive?: boolean;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type ExpenseCategoryFilters = ListFilters<ExpenseCategoryListParams>;
 
 /** Cuerpo de `POST /expense-categories` (`StoreExpenseCategoryRequest`). */
 export interface CreateExpenseCategoryInput {

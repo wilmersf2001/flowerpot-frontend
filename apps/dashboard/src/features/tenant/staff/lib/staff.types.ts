@@ -3,6 +3,8 @@
 // aunque el `toArray()` real serializa `branches` como un array de
 // `{id, name}` vía `whenLoaded`). Se normaliza en `staff.api.ts` al mapear.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface StaffBranch {
   id: string;
   name: string;
@@ -27,11 +29,10 @@ export interface StaffRow {
   deleted_at: string | null;
 }
 
-export interface StaffListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type StaffListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type StaffFilters = ListFilters<StaffListParams>;
 
 /** Cuerpo de `POST /staff` (`StoreStaffRequest`). */
 export interface CreateStaffInput {

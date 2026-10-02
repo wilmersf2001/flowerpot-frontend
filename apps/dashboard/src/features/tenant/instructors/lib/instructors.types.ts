@@ -1,6 +1,8 @@
 // TODO(gen): `api.d.ts` todavía no tiene `InstructorResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface InstructorStaffBranch {
   id: string;
   name: string;
@@ -40,11 +42,10 @@ export interface InstructorRow {
   deleted_at: string | null;
 }
 
-export interface InstructorListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type InstructorListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type InstructorFilters = ListFilters<InstructorListParams>;
 
 /** Cuerpo de `POST /instructors` (`StoreInstructorRequest`). */
 export interface CreateInstructorInput {

@@ -1,6 +1,7 @@
 // TODO(gen): `api.d.ts` todavía no tiene `SaleResource`. Se escribe a mano y
 // se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { SALE_PAYMENT_METHODS, SALE_STATUSES } from "./sales.constants";
 
 export type SalePaymentMethod = (typeof SALE_PAYMENT_METHODS)[number];
@@ -61,9 +62,7 @@ export interface SaleRow {
   updated_at: string;
 }
 
-export interface SaleListParams {
-  page?: number;
-  perPage?: number;
+export interface SaleListParams extends BaseListParams {
   branchId?: string;
   memberId?: string;
   staffId?: string;
@@ -74,6 +73,9 @@ export interface SaleListParams {
   /** `created_at <=` (fecha-hora: usa `YYYY-MM-DD 23:59:59` para incluir el día completo). */
   dateTo?: string;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type SaleFilters = ListFilters<SaleListParams>;
 
 export interface SaleItemInput {
   product_id: number;

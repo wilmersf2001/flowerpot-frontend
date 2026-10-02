@@ -27,7 +27,7 @@ const CASH_REGISTER_KEY = ["cash-register"] as const;
  */
 export function useExpenses(params: ExpenseListParams = {}) {
   const { selectedBranchId } = useSelectedBranch();
-  const listParams: ExpenseListParams = { ...params, branchId: selectedBranchId };
+  const listParams: ExpenseListParams = { ...params, branch_id: selectedBranchId };
   return useQuery({
     queryKey: expenseKeys.list(listParams),
     queryFn: () => expensesApi.list(listParams),
@@ -65,7 +65,7 @@ export function useCreateExpense() {
 export function useUpdateExpense() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateExpenseInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateExpenseInput }) =>
       expensesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseKeys.all }),
   });
@@ -74,7 +74,7 @@ export function useUpdateExpense() {
 export function useDeleteExpense() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => expensesApi.remove(id),
+    mutationFn: (id: number) => expensesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseKeys.all }),
   });
 }
@@ -82,7 +82,7 @@ export function useDeleteExpense() {
 export function useRestoreExpense() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => expensesApi.restore(id),
+    mutationFn: (id: number) => expensesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseKeys.all }),
   });
 }
@@ -95,7 +95,7 @@ export function useRestoreExpense() {
 export function useReviewExpense() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: ReviewExpenseInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: ReviewExpenseInput }) =>
       expensesApi.review(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: expenseKeys.all });
@@ -111,7 +111,7 @@ export function useReviewExpense() {
 export function useVoidExpense() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: VoidExpenseInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: VoidExpenseInput }) =>
       expensesApi.void(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: expenseKeys.all });

@@ -1,6 +1,8 @@
 // TODO(gen): `api.d.ts` todavía no tiene `SupplierResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 /**
  * Los proveedores eliminados (soft delete) no aparecen en listados ni se
  * pueden consultar por id (404), así que el recurso no expone `deleted_at`:
@@ -18,12 +20,12 @@ export interface SupplierRow {
   updated_at: string;
 }
 
-export interface SupplierListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface SupplierListParams extends BaseListParams {
   isActive?: boolean;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type SupplierFilters = ListFilters<SupplierListParams>;
 
 /** Cuerpo de `POST /suppliers` (`StoreSupplierRequest`). */
 export interface CreateSupplierInput {

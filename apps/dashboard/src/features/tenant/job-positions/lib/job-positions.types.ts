@@ -2,6 +2,8 @@
 // schema `JobPositionResource` tipa `is_active` como `string`). Se normaliza
 // a `boolean` en `job-positions.api.ts` al mapear la fila.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface JobPositionRow {
   id: string;
   name: string;
@@ -13,11 +15,10 @@ export interface JobPositionRow {
   deleted_at: string | null;
 }
 
-export interface JobPositionListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type JobPositionListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type JobPositionFilters = ListFilters<JobPositionListParams>;
 
 /** Cuerpo de `POST /job-positions` (`StoreJobPositionRequest`). */
 export interface CreateJobPositionInput {

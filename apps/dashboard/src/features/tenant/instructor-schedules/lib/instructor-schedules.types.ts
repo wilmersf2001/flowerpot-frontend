@@ -1,6 +1,8 @@
 // TODO(gen): `api.d.ts` todavía no tiene `InstructorScheduleResource`. Se
 // escribe a mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface InstructorScheduleBranch {
   id: string;
   name: string;
@@ -22,13 +24,14 @@ export interface InstructorScheduleRow {
   deleted_at: string | null;
 }
 
-export interface InstructorScheduleListParams {
+export interface InstructorScheduleListParams extends BaseListParams {
   instructorId: string;
   branchId?: string;
   dayOfWeek?: number;
-  page?: number;
-  perPage?: number;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type InstructorScheduleFilters = ListFilters<InstructorScheduleListParams>;
 
 /** Cuerpo de `POST /instructor-schedules` (`StoreInstructorScheduleRequest`). */
 export interface CreateInstructorScheduleInput {

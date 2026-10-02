@@ -1,6 +1,8 @@
 // TODO(gen): `api.d.ts` todavía no tiene `GymClassResource`. Se escribe a mano
 // y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface GymClassSpecialty {
   id: string;
   name: string;
@@ -21,11 +23,10 @@ export interface GymClassRow {
   deleted_at: string | null;
 }
 
-export interface GymClassListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type GymClassListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type GymClassFilters = ListFilters<GymClassListParams>;
 
 /** Cuerpo de `POST /gym-classes` (`StoreGymClassRequest`). */
 export interface CreateGymClassInput {

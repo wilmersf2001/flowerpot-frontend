@@ -1,3 +1,5 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface UpdateGymSettingsInput {
   culqi_enabled?: boolean;
   culqi_public_key?: string;
@@ -7,11 +9,10 @@ export interface UpdateGymSettingsInput {
   currency?: string;
 }
 
-export interface GymSettingsListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type GymSettingsListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type GymSettingsFilters = ListFilters<GymSettingsListParams>;
 
 export interface GymSettingsRow {
   id: string;

@@ -1,6 +1,7 @@
 // TODO(gen): `api.d.ts` todavía no tiene `StockMovementResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { STOCK_MOVEMENT_TYPES } from "./stock-movements.constants";
 
 export type StockMovementType = (typeof STOCK_MOVEMENT_TYPES)[number];
@@ -45,9 +46,7 @@ export interface StockMovementRow {
   created_at: string;
 }
 
-export interface StockMovementListParams {
-  page?: number;
-  perPage?: number;
+export interface StockMovementListParams extends BaseListParams {
   productId?: string;
   branchId?: string;
   type?: StockMovementType;
@@ -56,3 +55,6 @@ export interface StockMovementListParams {
   /** `created_at <=` (fecha-hora: usa `YYYY-MM-DD 23:59:59` para incluir el día completo). */
   dateTo?: string;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type StockMovementFilters = ListFilters<StockMovementListParams>;

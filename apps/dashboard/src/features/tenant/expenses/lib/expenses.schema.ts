@@ -46,7 +46,7 @@ export const EXPENSE_FORM_FIELDS = [
 /** Prellena el formulario con los datos de un gasto existente (modo edición, solo `pending`). */
 export function expenseToForm(expense: ExpenseRow): ExpenseForm {
   return {
-    expense_category_id: expense.expense_category_id,
+    expense_category_id: String(expense.expense_category_id),
     amount: String(expense.amount),
     description: expense.description,
     payment_method: expense.payment_method,

@@ -1,3 +1,5 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface CreatePlanInput {
   name: string;
   slug: string;
@@ -27,11 +29,10 @@ export interface UpdatePlanInput {
   sort_order?: number;
 }
 
-export interface PlanListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type PlanListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type PlanFilters = ListFilters<PlanListParams>;
 
 export interface PlanRow {
   id: string;

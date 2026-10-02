@@ -2,6 +2,8 @@
 // schema `App.Http.Resources.Tenant.BranchResource` tipa `is_active` como
 // `string`). Se normaliza a `boolean` en `branches.api.ts` al mapear la fila.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface BranchRow {
   id: string;
   name: string;
@@ -14,11 +16,10 @@ export interface BranchRow {
   deleted_at: string | null;
 }
 
-export interface BranchListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type BranchListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type BranchFilters = ListFilters<BranchListParams>;
 
 /** Cuerpo de `POST /branches` (`StoreBranchRequest`). */
 export interface CreateBranchInput {

@@ -1,6 +1,8 @@
 // TODO(gen): `api.d.ts` todavía no tiene `ProductCategoryResource`. Se escribe
 // a mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface ProductCategoryRow {
   id: string;
   name: string;
@@ -10,12 +12,12 @@ export interface ProductCategoryRow {
   deleted_at: string | null;
 }
 
-export interface ProductCategoryListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface ProductCategoryListParams extends BaseListParams {
   isActive?: boolean;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type ProductCategoryFilters = ListFilters<ProductCategoryListParams>;
 
 /** Cuerpo de `POST /product-categories` (`StoreProductCategoryRequest`). */
 export interface CreateProductCategoryInput {

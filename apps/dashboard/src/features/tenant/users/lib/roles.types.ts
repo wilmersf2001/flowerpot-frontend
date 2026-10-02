@@ -3,6 +3,8 @@
 // son estructuras (ver abajo). Reemplazar por los tipos generados cuando se
 // regenere `packages/types/src/api.d.ts` con la anotación correcta.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 /** Un permiso del catálogo (`GET /permissions`) o dentro de un rol. */
 export interface PermissionEntry {
   id: number;
@@ -24,10 +26,10 @@ export interface RoleRow {
   permissions: PermissionEntry[];
 }
 
-export interface RoleListParams {
-  page?: number;
-  perPage?: number;
-}
+export type RoleListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type RoleFilters = ListFilters<RoleListParams>;
 
 /** Cuerpo de `POST /roles` y `PATCH /roles/{role}` (`RoleRequest`). */
 export interface RoleInput {

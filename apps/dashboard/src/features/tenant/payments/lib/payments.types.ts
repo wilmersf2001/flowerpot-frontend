@@ -39,7 +39,9 @@ export interface PaymentRow {
   membership?: { plan_name: string };
 }
 
-export type PaymentListParams = BaseListParams;
+export interface PaymentListParams extends BaseListParams {
+  branch_id?: string | null;
+}
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
 export type PaymentFilters = ListFilters<PaymentListParams>;
@@ -52,6 +54,7 @@ export type PaymentFilters = ListFilters<PaymentListParams>;
  */
 export interface CreatePaymentInput {
   membership_id: number;
+  branch_id?: number | null;
   amount: number;
   amount_paid: number;
   payment_method: PaymentMethod;

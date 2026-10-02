@@ -1,3 +1,4 @@
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import { SUBSCRIPTION_STATUSES } from "./subscriptions.constants";
 
 /** Estado de una suscripción (`active` | `trial` | `cancelled` | `expired`). */
@@ -34,11 +35,10 @@ export interface RenewSubscriptionInput {
   notes?: string;
 }
 
-export interface SubscriptionListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
+export type SubscriptionListParams = BaseListParams;
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type SubscriptionFilters = ListFilters<SubscriptionListParams>;
 
 /** Fila de `GET /subscriptions` — `SubscriptionResource`. */
 export interface SubscriptionRow {

@@ -1,6 +1,8 @@
 // TODO(gen): `api.d.ts` todavía no tiene `ClassScheduleResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+
 export interface ClassScheduleGymClass {
   id: string;
   name: string;
@@ -51,14 +53,15 @@ export interface ClassScheduleRow {
   deleted_at: string | null;
 }
 
-export interface ClassScheduleListParams {
-  page?: number;
-  perPage?: number;
+export interface ClassScheduleListParams extends BaseListParams {
   branchId?: string;
   instructorId?: string;
   gymClassId?: string;
   dayOfWeek?: number;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type ClassScheduleFilters = ListFilters<ClassScheduleListParams>;
 
 /** Cuerpo de `POST /class-schedules` (`StoreClassScheduleRequest`). */
 export interface CreateClassScheduleInput {

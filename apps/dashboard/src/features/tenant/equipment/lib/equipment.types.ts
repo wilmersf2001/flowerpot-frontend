@@ -1,6 +1,7 @@
 // TODO(gen): `api.d.ts` todavía no tiene `EquipmentResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { EQUIPMENT_STATUSES } from "./equipment.constants";
 
 export type EquipmentStatus = (typeof EQUIPMENT_STATUSES)[number];
@@ -67,14 +68,14 @@ export interface EquipmentRow {
   deleted_at: string | null;
 }
 
-export interface EquipmentListParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
+export interface EquipmentListParams extends BaseListParams {
   categoryId?: string;
   branchId?: string;
   status?: EquipmentStatus;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type EquipmentFilters = ListFilters<EquipmentListParams>;
 
 /**
  * Cuerpo de `POST /equipment` (`StoreEquipmentRequest`). Sin `status`: el

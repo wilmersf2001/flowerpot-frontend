@@ -73,8 +73,8 @@ export function ExpenseFormDialog({
   }, [open, expense, reset]);
 
   const selectedCategory: ComboboxOption | null =
-    expense?.expense_category_id && expense.category_name
-      ? { value: expense.expense_category_id, label: expense.category_name }
+    expense?.expense_category_id && expense.category
+      ? { value: String(expense.expense_category_id), label: expense.category.name }
       : null;
 
   const onSubmit = handleSubmit(

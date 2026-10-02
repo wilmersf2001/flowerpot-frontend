@@ -1,6 +1,7 @@
 // TODO(gen): `api.d.ts` todavía no tiene `PurchaseOrderResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type { PURCHASE_ORDER_STATUSES } from "./purchase-orders.constants";
 
 export type PurchaseOrderStatus = (typeof PURCHASE_ORDER_STATUSES)[number];
@@ -53,9 +54,7 @@ export interface PurchaseOrderRow {
   deleted_at: string | null;
 }
 
-export interface PurchaseOrderListParams {
-  page?: number;
-  perPage?: number;
+export interface PurchaseOrderListParams extends BaseListParams {
   supplierId?: string;
   branchId?: string;
   status?: PurchaseOrderStatus;
@@ -64,6 +63,9 @@ export interface PurchaseOrderListParams {
   /** `order_date <=` (inclusive). */
   dateTo?: string;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type PurchaseOrderFilters = ListFilters<PurchaseOrderListParams>;
 
 export interface PurchaseOrderItemInput {
   product_id: number;

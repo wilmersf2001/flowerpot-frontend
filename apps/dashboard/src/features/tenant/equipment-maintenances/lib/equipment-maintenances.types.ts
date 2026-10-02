@@ -1,6 +1,7 @@
 // TODO(gen): `api.d.ts` todavía no tiene `EquipmentMaintenanceResource`. Se
 // escribe a mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type {
   EQUIPMENT_MAINTENANCE_STATUSES,
   EQUIPMENT_MAINTENANCE_TYPES,
@@ -43,9 +44,7 @@ export interface EquipmentMaintenanceRow {
   deleted_at: string | null;
 }
 
-export interface EquipmentMaintenanceListParams {
-  page?: number;
-  perPage?: number;
+export interface EquipmentMaintenanceListParams extends BaseListParams {
   equipmentId?: string;
   supplierId?: string;
   type?: EquipmentMaintenanceType;
@@ -55,6 +54,9 @@ export interface EquipmentMaintenanceListParams {
   /** `scheduled_date <=` (inclusive). Deja fuera los que no tienen `scheduled_date`. */
   dateTo?: string;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type EquipmentMaintenanceFilters = ListFilters<EquipmentMaintenanceListParams>;
 
 /**
  * Cuerpo de `POST /equipment-maintenances`. `scheduled_date` es obligatoria

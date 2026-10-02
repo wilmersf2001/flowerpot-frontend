@@ -1,6 +1,7 @@
 // TODO(gen): `api.d.ts` todavía no tiene `ClassSessionResource`. Se escribe a
 // mano y se reemplaza al correr `npm run gen -w packages/types`.
 
+import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import { CLASS_SESSION_STATUSES } from "./class-sessions.constants";
 
 export type ClassSessionStatus = (typeof CLASS_SESSION_STATUSES)[number];
@@ -57,15 +58,16 @@ export interface ClassSessionRow {
   deleted_at: string | null;
 }
 
-export interface ClassSessionListParams {
-  page?: number;
-  perPage?: number;
+export interface ClassSessionListParams extends BaseListParams {
   classScheduleId?: string;
   instructorId?: string;
   status?: ClassSessionStatus;
   sessionDateStart?: string;
   sessionDateEnd?: string;
 }
+
+/** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
+export type ClassSessionFilters = ListFilters<ClassSessionListParams>;
 
 /**
  * Cuerpo de `PATCH /class-sessions/{id}` (`UpdateClassSessionRequest`). No
