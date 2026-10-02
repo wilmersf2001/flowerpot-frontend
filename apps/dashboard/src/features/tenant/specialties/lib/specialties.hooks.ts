@@ -31,7 +31,7 @@ export function useCreateSpecialty() {
 export function useUpdateSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateSpecialtyInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateSpecialtyInput }) =>
       specialtiesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: specialtyKeys.all }),
   });
@@ -40,7 +40,7 @@ export function useUpdateSpecialty() {
 export function useDeleteSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => specialtiesApi.remove(id),
+    mutationFn: (id: number) => specialtiesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: specialtyKeys.all }),
   });
 }
@@ -48,7 +48,7 @@ export function useDeleteSpecialty() {
 export function useRestoreSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => specialtiesApi.restore(id),
+    mutationFn: (id: number) => specialtiesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: specialtyKeys.all }),
   });
 }
@@ -90,7 +90,7 @@ export function useToggleSpecialtyActive() {
 }
 
 const toSpecialtyOption = (specialty: SpecialtyRow): ComboboxOption => ({
-  value: specialty.id,
+  value: String(specialty.id),
   label: specialty.name,
 });
 

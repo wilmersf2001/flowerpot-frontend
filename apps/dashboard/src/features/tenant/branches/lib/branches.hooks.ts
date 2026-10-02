@@ -38,7 +38,7 @@ export function useCreateBranch() {
 export function useUpdateBranch() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateBranchInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateBranchInput }) =>
       branchesApi.update(id, input),
     onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
@@ -47,7 +47,7 @@ export function useUpdateBranch() {
 export function useDeleteBranch() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => branchesApi.remove(id),
+    mutationFn: (id: number) => branchesApi.remove(id),
     onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
@@ -55,7 +55,7 @@ export function useDeleteBranch() {
 export function useRestoreBranch() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => branchesApi.restore(id),
+    mutationFn: (id: number) => branchesApi.restore(id),
     onSuccess: () => invalidateBranchesAndCurrentUser(queryClient),
   });
 }
@@ -68,8 +68,8 @@ export function useRestoreBranch() {
 export function useToggleBranchActive() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => branchesApi.toggleActive(id),
-    onMutate: async (id: string) => {
+    mutationFn: (id: number) => branchesApi.toggleActive(id),
+    onMutate: async (id: number) => {
       await queryClient.cancelQueries({ queryKey: branchKeys.lists() });
       const snapshots = queryClient.getQueriesData<Paginated<BranchRow>>({
         queryKey: branchKeys.lists(),
@@ -95,7 +95,7 @@ export function useToggleBranchActive() {
 }
 
 const toBranchOption = (branch: BranchRow): ComboboxOption => ({
-  value: branch.id,
+  value: String(branch.id),
   label: branch.name,
 });
 

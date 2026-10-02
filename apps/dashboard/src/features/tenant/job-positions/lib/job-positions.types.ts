@@ -5,7 +5,7 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface JobPositionRow {
-  id: string;
+  id: number;
   name: string;
   description: string;
   is_active: boolean;

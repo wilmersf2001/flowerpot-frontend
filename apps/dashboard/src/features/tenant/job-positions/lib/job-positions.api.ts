@@ -11,7 +11,7 @@ import {
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toJobPositionRow(raw: Record<string, unknown>): JobPositionRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     name: String(raw.name ?? ""),
     description: String(raw.description ?? ""),
     is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
@@ -40,7 +40,7 @@ async function create(input: CreateJobPositionInput): Promise<JobPositionRow> {
   return toJobPositionRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateJobPositionInput): Promise<JobPositionRow> {
+async function update(id: number, input: UpdateJobPositionInput): Promise<JobPositionRow> {
   const { data } = await apiClient.patch<unknown>(
     `${JOB_POSITIONS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -48,12 +48,12 @@ async function update(id: string, input: UpdateJobPositionInput): Promise<JobPos
   return toJobPositionRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${JOB_POSITIONS_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un cargo eliminado (soft-delete). */
-async function restore(id: string): Promise<JobPositionRow> {
+async function restore(id: number): Promise<JobPositionRow> {
   const { data } = await apiClient.patch<unknown>(
     `${JOB_POSITIONS_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

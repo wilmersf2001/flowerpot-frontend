@@ -4,7 +4,7 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface ProductCategoryRow {
-  id: string;
+  id: number;
   name: string;
   is_active: boolean;
   created_at: string;

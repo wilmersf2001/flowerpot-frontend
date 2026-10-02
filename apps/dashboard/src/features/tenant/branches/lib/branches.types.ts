@@ -5,7 +5,7 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface BranchRow {
-  id: string;
+  id: number;
   name: string;
   address: string;
   phone: string;

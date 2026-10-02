@@ -6,7 +6,7 @@ import { BranchListParams, BranchRow, CreateBranchInput, UpdateBranchInput } fro
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toBranchRow(raw: Record<string, unknown>): BranchRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     name: String(raw.name ?? ""),
     address: String(raw.address ?? ""),
     phone: String(raw.phone ?? ""),
@@ -36,7 +36,7 @@ async function create(input: CreateBranchInput): Promise<BranchRow> {
   return toBranchRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateBranchInput): Promise<BranchRow> {
+async function update(id: number, input: UpdateBranchInput): Promise<BranchRow> {
   const { data } = await apiClient.patch<unknown>(
     `${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -44,12 +44,12 @@ async function update(id: string, input: UpdateBranchInput): Promise<BranchRow> 
   return toBranchRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Activa/desactiva una sede. El backend rechaza desactivar la única sede activa. */
-async function toggleActive(id: string): Promise<BranchRow> {
+async function toggleActive(id: number): Promise<BranchRow> {
   const { data } = await apiClient.patch<unknown>(
     `${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}/toggle-active`,
   );
@@ -57,7 +57,7 @@ async function toggleActive(id: string): Promise<BranchRow> {
 }
 
 /** Restaura una sede eliminada (soft-delete). */
-async function restore(id: string): Promise<BranchRow> {
+async function restore(id: number): Promise<BranchRow> {
   const { data } = await apiClient.post<unknown>(
     `${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

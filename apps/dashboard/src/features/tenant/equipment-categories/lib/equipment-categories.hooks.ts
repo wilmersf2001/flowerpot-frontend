@@ -31,7 +31,7 @@ export function useCreateEquipmentCategory() {
 export function useUpdateEquipmentCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateEquipmentCategoryInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateEquipmentCategoryInput }) =>
       equipmentCategoriesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentCategoryKeys.all }),
   });
@@ -40,7 +40,7 @@ export function useUpdateEquipmentCategory() {
 export function useDeleteEquipmentCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentCategoriesApi.remove(id),
+    mutationFn: (id: number) => equipmentCategoriesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentCategoryKeys.all }),
   });
 }
@@ -48,7 +48,7 @@ export function useDeleteEquipmentCategory() {
 export function useRestoreEquipmentCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentCategoriesApi.restore(id),
+    mutationFn: (id: number) => equipmentCategoriesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentCategoryKeys.all }),
   });
 }
@@ -90,7 +90,7 @@ export function useToggleEquipmentCategoryActive() {
 }
 
 const toEquipmentCategoryOption = (category: EquipmentCategoryRow): ComboboxOption => ({
-  value: category.id,
+  value: String(category.id),
   label: category.name,
 });
 

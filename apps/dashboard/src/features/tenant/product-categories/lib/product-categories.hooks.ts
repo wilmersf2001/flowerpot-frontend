@@ -31,7 +31,7 @@ export function useCreateProductCategory() {
 export function useUpdateProductCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateProductCategoryInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateProductCategoryInput }) =>
       productCategoriesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productCategoryKeys.all }),
   });
@@ -40,7 +40,7 @@ export function useUpdateProductCategory() {
 export function useDeleteProductCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => productCategoriesApi.remove(id),
+    mutationFn: (id: number) => productCategoriesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productCategoryKeys.all }),
   });
 }
@@ -48,7 +48,7 @@ export function useDeleteProductCategory() {
 export function useRestoreProductCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => productCategoriesApi.restore(id),
+    mutationFn: (id: number) => productCategoriesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productCategoryKeys.all }),
   });
 }
@@ -90,7 +90,7 @@ export function useToggleProductCategoryActive() {
 }
 
 const toProductCategoryOption = (category: ProductCategoryRow): ComboboxOption => ({
-  value: category.id,
+  value: String(category.id),
   label: category.name,
 });
 

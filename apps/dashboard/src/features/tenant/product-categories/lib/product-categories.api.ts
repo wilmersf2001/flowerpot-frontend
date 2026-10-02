@@ -14,7 +14,7 @@ import {
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toProductCategoryRow(raw: Record<string, unknown>): ProductCategoryRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     name: String(raw.name ?? ""),
     is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
     created_at: String(raw.created_at ?? ""),
@@ -45,7 +45,7 @@ async function create(input: CreateProductCategoryInput): Promise<ProductCategor
 }
 
 async function update(
-  id: string,
+  id: number,
   input: UpdateProductCategoryInput,
 ): Promise<ProductCategoryRow> {
   const { data } = await apiClient.patch<unknown>(
@@ -55,12 +55,12 @@ async function update(
   return toProductCategoryRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${PRODUCT_CATEGORIES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura una categoría eliminada (soft-delete). */
-async function restore(id: string): Promise<ProductCategoryRow> {
+async function restore(id: number): Promise<ProductCategoryRow> {
   const { data } = await apiClient.patch<unknown>(
     `${PRODUCT_CATEGORIES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

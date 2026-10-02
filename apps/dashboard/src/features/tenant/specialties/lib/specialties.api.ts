@@ -11,7 +11,7 @@ import {
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toSpecialtyRow(raw: Record<string, unknown>): SpecialtyRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     name: String(raw.name ?? ""),
     description: String(raw.description ?? ""),
     is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
@@ -39,7 +39,7 @@ async function create(input: CreateSpecialtyInput): Promise<SpecialtyRow> {
   return toSpecialtyRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateSpecialtyInput): Promise<SpecialtyRow> {
+async function update(id: number, input: UpdateSpecialtyInput): Promise<SpecialtyRow> {
   const { data } = await apiClient.patch<unknown>(
     `${SPECIALTIES_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -47,12 +47,12 @@ async function update(id: string, input: UpdateSpecialtyInput): Promise<Specialt
   return toSpecialtyRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${SPECIALTIES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura una especialidad eliminada (soft-delete). */
-async function restore(id: string): Promise<SpecialtyRow> {
+async function restore(id: number): Promise<SpecialtyRow> {
   const { data } = await apiClient.patch<unknown>(
     `${SPECIALTIES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

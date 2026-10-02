@@ -31,7 +31,7 @@ export function useCreateJobPosition() {
 export function useUpdateJobPosition() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateJobPositionInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateJobPositionInput }) =>
       jobPositionsApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: jobPositionKeys.all }),
   });
@@ -40,7 +40,7 @@ export function useUpdateJobPosition() {
 export function useDeleteJobPosition() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => jobPositionsApi.remove(id),
+    mutationFn: (id: number) => jobPositionsApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: jobPositionKeys.all }),
   });
 }
@@ -48,7 +48,7 @@ export function useDeleteJobPosition() {
 export function useRestoreJobPosition() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => jobPositionsApi.restore(id),
+    mutationFn: (id: number) => jobPositionsApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: jobPositionKeys.all }),
   });
 }
@@ -90,7 +90,7 @@ export function useToggleJobPositionActive() {
 }
 
 const toJobPositionOption = (jobPosition: JobPositionRow): ComboboxOption => ({
-  value: jobPosition.id,
+  value: String(jobPosition.id),
   label: jobPosition.name,
 });
 
