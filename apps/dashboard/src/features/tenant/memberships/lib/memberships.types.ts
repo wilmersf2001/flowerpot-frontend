@@ -39,6 +39,8 @@ export interface MembershipListParams extends BaseListParams {
   without_payment?: 1;
   /** Solo membresías que admiten pagos (activas o pendientes). */
   payable?: 1;
+  /** Uno o varios estados separados por coma (`"active,pending"`). */
+  status?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
