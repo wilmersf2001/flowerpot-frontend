@@ -107,8 +107,11 @@ export function MembershipsTable({
               icon: Pencil,
               onSelect: () => onEditAction(row),
             },
-            // Solo los planes `limited` dejan cambiar de sede (el backend valida).
-            ...(row.branch_access === "all" || row.branch_access === "specific"
+            // Solo los planes `limited` dejan cambiar de sede (el backend valida),
+            // y no tiene sentido en una membresía cancelada o expirada.
+            ...(row.branch_access !== "limited" ||
+            row.status === "cancelled" ||
+            row.status === "expired"
               ? []
               : [
                   {
