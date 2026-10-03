@@ -60,6 +60,10 @@ const columns: Column<MembershipRow>[] = [
     cell: (row) => (
       <span className="text-muted-foreground tabular-nums">
         {row.is_expired ? EM_DASH : row.days_remaining}
+        {/* Pagada pero aún no empieza: el check-in la rechaza hasta esa fecha. */}
+        {row.status === "active" && row.has_started === false ? (
+          <span className="block text-xs">Empieza el {formatDate(row.starts_at)}</span>
+        ) : null}
       </span>
     ),
   },

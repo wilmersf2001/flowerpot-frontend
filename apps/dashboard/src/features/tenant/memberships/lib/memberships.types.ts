@@ -56,6 +56,8 @@ export interface MembershipRow {
   starts_at: string;
   ends_at: string;
   days_remaining: number;
+  /** `false` si está pagada pero su fecha de inicio aún no llega (no da acceso). */
+  has_started?: boolean;
   is_expired: boolean;
   status: string;
   /** Aún no los expone `MembershipResource`; el formulario de edición los lee. */
