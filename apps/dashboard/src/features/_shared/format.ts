@@ -167,3 +167,16 @@ export function slugify(value: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+/**
+ * Fecha de hoy desplazada `days` días, en `YYYY-MM-DD` y hora local (no UTC:
+ * de noche en Perú, `toISOString()` ya daría el día siguiente).
+ * `localDateOffset(-7)` = hace una semana.
+ */
+export function localDateOffset(days: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}

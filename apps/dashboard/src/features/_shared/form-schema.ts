@@ -60,7 +60,16 @@ export function optionalText(max: number) {
  */
 export function numericText(
   label: string,
-  { min = 0, max }: { min?: number; max?: number } = {},
+  {
+    min = 0,
+    max,
+    decimals,
+  }: {
+    min?: number;
+    max?: number;
+    /** Máximo de decimales: `0` = solo enteros, `2` = montos. Sin límite si se omite. */
+    decimals?: number;
+  } = {},
 ) {
   return z
     .string()
@@ -70,7 +79,26 @@ export function numericText(
       const n = Number(value);
       if (!Number.isFinite(n) || n < min) return false;
       return max === undefined || n <= max;
-    }, `${label} debe ser un número válido.`);
+    }, rangeMessage(label, min, max))
+    .refine(
+      (value) => decimals === undefined || decimalPlaces(value) <= decimals,
+      decimals === 0
+        ? `${label} debe ser un número entero.`
+        : `${label} admite como máximo ${decimals} decimales.`,
+    );
+}
+
+/** "El precio debe ser un número entre 0 y 99999.99." (o solo el mínimo). */
+function rangeMessage(label: string, min: number, max?: number): string {
+  return max === undefined
+    ? `${label} debe ser un número mayor o igual a ${min}.`
+    : `${label} debe ser un número entre ${min} y ${max}.`;
+}
+
+/** Decimales escritos en el texto: "80.5" -> 1, "80" -> 0. */
+function decimalPlaces(value: string): number {
+  const [, fraction = ""] = value.split(".");
+  return fraction.length;
 }
 
 /**
