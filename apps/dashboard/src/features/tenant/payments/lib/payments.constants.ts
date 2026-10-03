@@ -12,6 +12,9 @@ export const PAYMENTS_PER_PAGE = 20;
  */
 export const PAYMENT_METHODS = ["cash", "transfer", "yape", "plin", "pos"] as const;
 
+/** Métodos que exigen número de operación (igual que la API). */
+export const PAYMENT_METHODS_WITH_REFERENCE = ["transfer", "yape", "plin", "pos"] as const;
+
 export const PAYMENT_METHOD_LABELS: Record<(typeof PAYMENT_METHODS)[number], string> = {
   cash: "Efectivo",
   transfer: "Transferencia",

@@ -1,12 +1,31 @@
 import { z } from "zod";
 import { numericText, optionalText, requiredText } from "@/features/_shared/form-schema";
-import { PAYMENT_METHODS } from "./payments.constants";
+import { localDateOffset } from "@/features/_shared/format";
+import { PAYMENT_METHODS, PAYMENT_METHODS_WITH_REFERENCE } from "./payments.constants";
 import type {
   CreateInstallmentInput,
   CreatePaymentInput,
   PaymentRow,
   UpdatePaymentInput,
 } from "./payments.types";
+
+/*
+ * Mismas reglas que `StorePaymentRequest` / `StoreInstallmentRequest` (y el
+ * trait `ValidatesPaymentMethod`) en la API.
+ */
+
+/** Yape, Plin, transferencia y POS dejan un número de operación verificable. */
+function requiresReference(method: string): boolean {
+  return (PAYMENT_METHODS_WITH_REFERENCE as readonly string[]).includes(method);
+}
+
+const REFERENCE_REQUIRED_MESSAGE =
+  "Ingresa el número de operación para pagos con Yape, Plin, transferencia o POS.";
+
+/** Fecha de pago opcional, nunca futura. */
+const paidAtField = z
+  .string()
+  .refine((value) => value === "" || value <= localDateOffset(0), "La fecha de pago no puede ser futura.");
 
 /**
  * Formulario de alta de pago (`POST /payments`). `payment_method` es el del
@@ -15,16 +34,20 @@ import type {
 export const paymentFormSchema = z
   .object({
     membership_id: requiredText("La membresía"),
-    amount: numericText("El monto", { min: 0.01 }),
-    amount_paid: numericText("El monto pagado", { min: 0.01 }),
+    amount: numericText("El monto", { min: 0.01, decimals: 2 }),
+    amount_paid: numericText("El monto pagado", { min: 0.01, decimals: 2 }),
     payment_method: z.enum(PAYMENT_METHODS),
     reference_code: optionalText(100),
     notes: optionalText(500),
-    paid_at: z.string(),
+    paid_at: paidAtField,
   })
   .refine((form) => Number(form.amount_paid) <= Number(form.amount), {
     message: "El monto pagado no puede superar el monto del cobro.",
     path: ["amount_paid"],
+  })
+  .refine((form) => !requiresReference(form.payment_method) || form.reference_code !== "", {
+    message: REFERENCE_REQUIRED_MESSAGE,
+    path: ["reference_code"],
   });
 
 export type PaymentForm = z.infer<typeof paymentFormSchema>;
@@ -65,18 +88,28 @@ export function toCreatePaymentInput(form: PaymentForm): CreatePaymentInput {
 
 /**
  * Formulario de abono adicional (`POST /payments/{id}/installments`). Mismas
- * reglas de método de pago que el alta; el monto máximo lo valida el backend
- * contra el saldo pendiente.
+ * reglas de método de pago que el alta; el monto no puede superar el saldo
+ * pendiente del pago (`balance`). El backend vuelve a validarlo.
  */
-export const installmentFormSchema = z.object({
-  amount: numericText("El monto", { min: 0.01 }),
-  payment_method: z.enum(PAYMENT_METHODS),
-  reference_code: optionalText(100),
-  notes: optionalText(500),
-  paid_at: z.string(),
-});
+export function installmentFormSchema(balance: number) {
+  return z
+    .object({
+      amount: numericText("El monto", { min: 0.01, decimals: 2 }).refine(
+        (value) => Number(value) <= balance,
+        `El abono no puede superar el saldo pendiente (${balance.toFixed(2)}).`,
+      ),
+      payment_method: z.enum(PAYMENT_METHODS),
+      reference_code: optionalText(100),
+      notes: optionalText(500),
+      paid_at: paidAtField,
+    })
+    .refine((form) => !requiresReference(form.payment_method) || form.reference_code !== "", {
+      message: REFERENCE_REQUIRED_MESSAGE,
+      path: ["reference_code"],
+    });
+}
 
-export type InstallmentForm = z.infer<typeof installmentFormSchema>;
+export type InstallmentForm = z.infer<ReturnType<typeof installmentFormSchema>>;
 
 export const installmentFormDefaults: InstallmentForm = {
   amount: "",

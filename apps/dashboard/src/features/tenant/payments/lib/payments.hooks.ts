@@ -3,7 +3,10 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  type QueryClient,
 } from "@tanstack/react-query";
+import { memberKeys } from "@/features/tenant/members";
+import { membershipKeys } from "@/features/tenant/memberships";
 import { paymentsApi } from "./payments.api";
 import { paymentKeys } from "./payments.keys";
 import {
@@ -15,6 +18,18 @@ import {
 import { useSelectedBranch } from "@/components/branch";
 
 export { useMembershipOptions } from "@/features/tenant/memberships";
+
+/**
+ * Cobrar o reembolsar cambia el estado de la membresía (pendiente -> activa,
+ * reembolso -> cancelada) y con ello la columna "Membresía" de socios.
+ */
+function invalidateAfterMoneyChange(queryClient: QueryClient) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: paymentKeys.all }),
+    queryClient.invalidateQueries({ queryKey: membershipKeys.all }),
+    queryClient.invalidateQueries({ queryKey: memberKeys.all }),
+  ]);
+}
 
 /** Lista paginada de pagos, con búsqueda opcional (`search`). */
 export function usePayments(params: PaymentListParams = {}) {
@@ -40,7 +55,7 @@ export function useCreatePayment() {
         branch_id: selectedBranchId ? Number(selectedBranchId) : null,
       }),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: paymentKeys.all }),
+      invalidateAfterMoneyChange(queryClient),
   });
 }
 
@@ -75,7 +90,7 @@ export function useAddInstallment() {
       input: CreateInstallmentInput;
     }) => paymentsApi.storeInstallment(id, input),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: paymentKeys.all }),
+      invalidateAfterMoneyChange(queryClient),
   });
 }
 
@@ -84,6 +99,6 @@ export function useRefundPayment() {
   return useMutation({
     mutationFn: (id: number) => paymentsApi.refund(id),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: paymentKeys.all }),
+      invalidateAfterMoneyChange(queryClient),
   });
 }

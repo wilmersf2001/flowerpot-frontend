@@ -52,7 +52,8 @@ export function PaymentFormDialog({
   onOpenChangeAction: (open: boolean) => void;
 }) {
   const createPayment = useCreatePayment();
-  const membershipOptions = useMembershipOptions(open, { without_payment: 1 });
+  // Solo membresías cobrables (activas o pendientes) y sin un pago vigente.
+  const membershipOptions = useMembershipOptions(open, { without_payment: 1, payable: 1 });
 
   const form = useForm<PaymentForm>({
     resolver: zodResolver(paymentFormSchema),
@@ -196,7 +197,7 @@ export function PaymentFormDialog({
         <TextField
           {...bind("reference_code")}
           label="Referencia"
-          hint="Opcional. Nº de operación Yape, código de transferencia…"
+          hint="Nº de operación Yape/Plin, código de transferencia o voucher POS. Opcional en efectivo."
           placeholder="OP-123456"
         />
 
@@ -206,6 +207,7 @@ export function PaymentFormDialog({
           idPrefix="payment"
           label="Fecha de pago"
           hint="Opcional. Si se deja vacío, se usa la fecha y hora actual."
+          toDate={new Date()}
         />
 
         <TextareaField

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
@@ -47,8 +47,11 @@ export function AddInstallmentDialog({
   const addInstallment = useAddInstallment();
   const open = payment !== null;
 
+  // El tope del abono es el saldo pendiente de este pago.
+  const balance = payment?.balance_due ?? 0;
+  const schema = useMemo(() => installmentFormSchema(balance), [balance]);
   const form = useForm<InstallmentForm>({
-    resolver: zodResolver(installmentFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: installmentFormDefaults,
   });
   const {
@@ -140,7 +143,7 @@ export function AddInstallmentDialog({
         <TextField
           {...bind("reference_code")}
           label="Referencia"
-          hint="Opcional. Nº de operación Yape, código de transferencia…"
+          hint="Nº de operación Yape/Plin, código de transferencia o voucher POS. Opcional en efectivo."
           placeholder="OP-123456"
         />
 
@@ -150,6 +153,7 @@ export function AddInstallmentDialog({
           idPrefix="installment"
           label="Fecha de pago"
           hint="Opcional. Si se deja vacío, se usa la fecha y hora actual."
+          toDate={new Date()}
         />
 
         <TextareaField
