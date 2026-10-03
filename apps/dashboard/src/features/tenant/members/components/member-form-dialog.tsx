@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, type FormEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
@@ -18,6 +18,7 @@ import { useCreateMember, useUpdateMember } from "../lib/members.hooks";
 import { MEMBER_GENDERS, MEMBER_GENDER_LABELS } from "../lib/members.constants";
 import {
   MEMBER_FORM_FIELDS,
+  birthDateBounds,
   memberFormDefaults,
   memberFormSchema,
   memberToForm,
@@ -28,6 +29,14 @@ import {
 import type { MemberRow } from "../lib/members.types";
 
 const FORM_ID = "member-form";
+
+/**
+ * Borra todo lo que no sea dígito mientras se escribe. Corre antes del
+ * `onChange` de react-hook-form, así el form ya recibe el valor limpio.
+ */
+function keepDigits(event: FormEvent<HTMLInputElement>) {
+  event.currentTarget.value = event.currentTarget.value.replace(/\D/g, "");
+}
 
 /** Género: lista fija -> `Combobox` sin buscador. */
 const GENDER_OPTIONS: ComboboxOption[] = [
@@ -127,19 +136,34 @@ export function MemberFormDialog({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <TextField {...bind("dni")} label="DNI" placeholder="12345678" />
+          <TextField
+            {...bind("dni")}
+            label="DNI"
+            placeholder="12345678"
+            inputMode="numeric"
+            maxLength={8}
+            onInput={keepDigits}
+          />
           <DateField
             form={form}
             name="birth_date"
             idPrefix="member"
             label="Fecha de nacimiento"
-            toDate={new Date()}
+            {...birthDateBounds()}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <TextField {...bind("email")} label="Correo" type="email" placeholder="socio@correo.com" />
-          <TextField {...bind("phone")} label="Teléfono" placeholder="+51 999 999 999" />
+          <TextField
+            {...bind("phone")}
+            label="Celular"
+            type="tel"
+            placeholder="987654321"
+            inputMode="numeric"
+            maxLength={9}
+            onInput={keepDigits}
+          />
         </div>
 
         <Field label="Género" htmlFor="member-gender">
@@ -172,8 +196,12 @@ export function MemberFormDialog({
           />
           <TextField
             {...bind("emergency_contact_phone")}
-            label="Teléfono de emergencia"
-            placeholder="+51 999 999 999"
+            label="Celular de emergencia"
+            type="tel"
+            placeholder="987654321"
+            inputMode="numeric"
+            maxLength={9}
+            onInput={keepDigits}
           />
         </div>
 

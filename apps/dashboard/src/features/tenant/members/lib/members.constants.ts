@@ -13,3 +13,7 @@ export const MEMBER_GENDER_LABELS: Record<
   female: "Femenino",
   other: "Otro",
 };
+
+/** Edad permitida para inscribir a un socio (mismo rango que valida la API). */
+export const MEMBER_MIN_AGE = 18;
+export const MEMBER_MAX_AGE = 100;
