@@ -5,7 +5,11 @@ import {
   optionalText,
 } from "@/features/_shared/form-schema";
 import { fromCents, toCents } from "@/features/_shared/format";
-import { BRANCH_ACCESS_MODES } from "./membership-plans.constants";
+import {
+  BRANCH_ACCESS_MODES,
+  MEMBERSHIP_PLAN_MAX_DURATION_DAYS,
+  MEMBERSHIP_PLAN_MAX_PRICE,
+} from "./membership-plans.constants";
 import type {
   CreateMembershipPlanInput,
   MembershipPlanRow,
@@ -21,16 +25,20 @@ import type {
  */
 export const membershipPlanFormSchema = z
   .object({
-  name: boundedText("El nombre", { max: 120 }),
+  name: boundedText("El nombre", { max: 100 }),
   description: optionalText(500),
-  price: numericText("El precio"),
+  price: numericText("El precio", { max: MEMBERSHIP_PLAN_MAX_PRICE, decimals: 2 }),
   currency: z
     .string()
     .trim()
     .length(3, "Usa el código ISO de 3 letras (p. ej. PEN).")
     .transform((value) => value.toUpperCase()),
-  duration_days: numericText("La duración", { min: 1 }),
-  sort_order: numericText("El orden"),
+  duration_days: numericText("La duración", {
+    min: 1,
+    max: MEMBERSHIP_PLAN_MAX_DURATION_DAYS,
+    decimals: 0,
+  }),
+  sort_order: numericText("El orden", { max: 9999, decimals: 0 }),
   is_active: z.boolean(),
   /** Ids de sedes (texto, como los entrega el combobox). Mínimo una. */
   branch_ids: z.array(z.string()),

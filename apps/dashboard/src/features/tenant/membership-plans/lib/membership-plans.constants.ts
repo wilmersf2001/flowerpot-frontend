@@ -14,3 +14,7 @@ export const BRANCH_ACCESS_OPTIONS = [
   { value: "specific", label: "Sedes específicas", hint: "Solo las sedes que asignes al plan." },
   { value: "limited", label: "Limitado", hint: "El cliente elige hasta N sedes." },
 ];
+
+/** Topes del plan (mismos que `StoreMembershipPlanRequest` en la API). */
+export const MEMBERSHIP_PLAN_MAX_PRICE = 99999.99;
+export const MEMBERSHIP_PLAN_MAX_DURATION_DAYS = 730;
