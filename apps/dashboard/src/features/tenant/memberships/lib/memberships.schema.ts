@@ -96,7 +96,7 @@ export const MEMBERSHIP_FORM_FIELDS = [
 ] as const satisfies readonly (keyof MembershipForm)[];
 
 const normalizeStatus = enumFallback(MEMBERSHIP_STATUSES, "active");
-const normalizeCreateStatus = enumFallback(MEMBERSHIP_CREATE_STATUSES, "active");
+const normalizeCreateStatus = enumFallback(MEMBERSHIP_CREATE_STATUSES, "pending");
 
 /** Prellena el formulario con los datos de una membresía (modo edición). */
 export function membershipToForm(row: MembershipRow): MembershipForm {

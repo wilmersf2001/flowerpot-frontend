@@ -291,7 +291,7 @@ export function MembershipFormDialog({
               ? statusOptions.length === 1
                 ? "Una membresía expirada o cancelada no se reactiva: crea una nueva."
                 : undefined
-              : "Pendiente: se activa sola al registrar el primer pago."
+              : "Se activa sola al registrar el primer pago (los planes gratis nacen activos)."
           }
         >
           <Controller

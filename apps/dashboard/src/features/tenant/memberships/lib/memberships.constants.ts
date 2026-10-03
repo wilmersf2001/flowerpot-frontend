@@ -23,19 +23,23 @@ export const MEMBERSHIP_STATUS_LABELS: Record<
   pending: "Pendiente",
 };
 
-/** Estado inicial admitido por el backend al crear (`StoreMembershipRequest.status`). */
-export const MEMBERSHIP_CREATE_STATUSES = ["active", "pending"] as const;
+/**
+ * Estado inicial al crear (`StoreMembershipRequest.status`): siempre pendiente
+ * de pago. Se activa al registrar el pago (o al crearla, si el plan es gratis).
+ */
+export const MEMBERSHIP_CREATE_STATUSES = ["pending"] as const;
 
 /**
  * Cambios de estado permitidos al editar (espejo de
- * `UpdateMembershipRequest::ALLOWED_TRANSITIONS`). "Expirada" la pone el
- * sistema al vencer, y una cancelada/expirada no se reactiva: se crea otra.
+ * `UpdateMembershipRequest::ALLOWED_TRANSITIONS`): solo cancelar. "Activa"
+ * llega con el pago, "Expirada" la pone el sistema al vencer, y una
+ * cancelada/expirada no se reactiva: se crea otra.
  */
 export const MEMBERSHIP_STATUS_TRANSITIONS: Record<
   (typeof MEMBERSHIP_STATUSES)[number],
   readonly (typeof MEMBERSHIP_STATUSES)[number][]
 > = {
-  pending: ["active", "cancelled"],
+  pending: ["cancelled"],
   active: ["cancelled"],
   expired: [],
   cancelled: [],
