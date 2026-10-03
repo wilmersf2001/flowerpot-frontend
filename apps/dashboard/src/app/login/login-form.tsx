@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
 import { authKeys } from "@/features/tenant/auth";
@@ -26,6 +27,7 @@ export function LoginForm({
   const router = useRouter();
   const queryClient = useQueryClient();
   const [formError, setFormError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -90,13 +92,24 @@ export function LoginForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <Input
-          {...register("password")}
-          type="password"
-          placeholder="Contraseña"
-          autoComplete="current-password"
-          aria-invalid={errors.password ? true : undefined}
-        />
+        <div className="relative">
+          <Input
+            {...register("password")}
+            type={showPassword ? "text" : "password"}
+            placeholder="Contraseña"
+            autoComplete="current-password"
+            aria-invalid={errors.password ? true : undefined}
+            className="pr-9"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((value) => !value)}
+            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
         {errors.password && (
           <p className="text-xs text-destructive">{errors.password.message}</p>
         )}
