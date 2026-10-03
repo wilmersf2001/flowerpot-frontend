@@ -21,6 +21,8 @@ export interface CreateMembershipInput {
   starts_at: string;
   status?: MembershipCreateStatus;
   notes?: string | null;
+  /** Sedes elegidas por el cliente (solo planes `limited`). */
+  branches?: number[];
 }
 
 /**
@@ -35,6 +37,8 @@ export interface UpdateMembershipInput {
 /** Sin filtros extra por ahora: declara aquí los que soporte `GET /memberships`. */
 export interface MembershipListParams extends BaseListParams {
   without_payment?: 1;
+  /** Solo membresías que admiten pagos (activas o pendientes). */
+  payable?: 1;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

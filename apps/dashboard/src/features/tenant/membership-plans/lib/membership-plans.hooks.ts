@@ -31,6 +31,11 @@ const toMembershipPlanOption = (plan: MembershipPlanRow): ComboboxOption => ({
   value: String(plan.id),
   label: plan.name,
   hint: plan.price_formatted || undefined,
+  // El alta de membresía necesita saber si debe pedir sedes (plan `limited`).
+  data: {
+    branch_access: plan.branch_access ?? "",
+    max_branches: plan.max_branches ? String(plan.max_branches) : "",
+  },
 });
 
 /**

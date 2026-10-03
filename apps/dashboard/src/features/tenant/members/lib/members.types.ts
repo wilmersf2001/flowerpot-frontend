@@ -31,6 +31,8 @@ export interface MemberRow {
 export interface MemberListParams extends BaseListParams {
   /** Sede activa (switcher global). `useMembers` la inyecta; no la pasa la página. */
   branch_id?: string | null;
+  /** Solo socios activos y no eliminados (para selectores). */
+  selectable?: 1;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

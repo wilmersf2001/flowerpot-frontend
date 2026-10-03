@@ -10,6 +10,7 @@ export {
   useToggleMemberActive,
 } from "./lib/members.hooks";
 export { membersApi } from "./lib/members.api";
+export { memberKeys } from "./lib/members.keys";
 export type {
   MemberRow,
   MemberListParams,

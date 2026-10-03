@@ -8,6 +8,7 @@ export {
   useMembershipOptions,
 } from "./lib/memberships.hooks";
 export { membershipsApi } from "./lib/memberships.api";
+export { membershipKeys } from "./lib/memberships.keys";
 export type {
   MembershipRow,
   MembershipListParams,

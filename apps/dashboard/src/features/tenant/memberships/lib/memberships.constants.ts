@@ -25,3 +25,22 @@ export const MEMBERSHIP_STATUS_LABELS: Record<
 
 /** Estado inicial admitido por el backend al crear (`StoreMembershipRequest.status`). */
 export const MEMBERSHIP_CREATE_STATUSES = ["active", "pending"] as const;
+
+/**
+ * Cambios de estado permitidos al editar (espejo de
+ * `UpdateMembershipRequest::ALLOWED_TRANSITIONS`). "Expirada" la pone el
+ * sistema al vencer, y una cancelada/expirada no se reactiva: se crea otra.
+ */
+export const MEMBERSHIP_STATUS_TRANSITIONS: Record<
+  (typeof MEMBERSHIP_STATUSES)[number],
+  readonly (typeof MEMBERSHIP_STATUSES)[number][]
+> = {
+  pending: ["active", "cancelled"],
+  active: ["cancelled"],
+  expired: [],
+  cancelled: [],
+};
+
+/** Ventana para la fecha de inicio (igual que `StoreMembershipRequest`). */
+export const MEMBERSHIP_START_MAX_DAYS_IN_PAST = 7;
+export const MEMBERSHIP_START_MAX_DAYS_IN_FUTURE = 30;

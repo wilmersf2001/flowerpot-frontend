@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
@@ -10,10 +10,12 @@ import {
   AsyncCombobox,
   DateField,
   Field,
+  MultiCombobox,
   TextareaField,
   useFieldBinder,
   useResourceFormSubmit,
 } from "@/features/_shared";
+import { useBranchOptions } from "@/features/tenant/branches";
 import {
   useCreateMembership,
   useUpdateMembership,
@@ -23,18 +25,20 @@ import {
 import {
   MEMBERSHIP_CREATE_STATUSES,
   MEMBERSHIP_STATUS_LABELS,
-  MEMBERSHIP_STATUSES,
+  MEMBERSHIP_STATUS_TRANSITIONS,
 } from "../lib/memberships.constants";
 import {
   MEMBERSHIP_FORM_FIELDS,
+  createMembershipFormSchema,
   membershipFormDefaults,
   membershipFormSchema,
+  membershipStartBounds,
   membershipToForm,
   toCreateMembershipInput,
   toUpdateMembershipInput,
   type MembershipForm,
 } from "../lib/memberships.schema";
-import type { MembershipRow } from "../lib/memberships.types";
+import type { MembershipRow, MembershipStatus } from "../lib/memberships.types";
 
 const FORM_ID = "membership-form";
 
@@ -42,9 +46,19 @@ const FORM_ID = "membership-form";
 const CREATE_STATUS_OPTIONS: ComboboxOption[] = MEMBERSHIP_CREATE_STATUSES.map(
   (status) => ({ value: status, label: MEMBERSHIP_STATUS_LABELS[status] }),
 );
-const EDIT_STATUS_OPTIONS: ComboboxOption[] = MEMBERSHIP_STATUSES.map(
-  (status) => ({ value: status, label: MEMBERSHIP_STATUS_LABELS[status] }),
-);
+
+/** En edición solo se ofrece el estado actual y los cambios permitidos. */
+function editStatusOptions(current: MembershipStatus): ComboboxOption[] {
+  return [current, ...(MEMBERSHIP_STATUS_TRANSITIONS[current] ?? [])].map((status) => ({
+    value: status,
+    label: MEMBERSHIP_STATUS_LABELS[status],
+  }));
+}
+
+/** `YYYY-MM-DD` -> `Date` local, para los límites del calendario. */
+function toLocalDate(value: string): Date {
+  return new Date(`${value}T00:00:00`);
+}
 
 /**
  * Diálogo de membresía. Sin `membership` es "Nueva membresía" (POST); con
@@ -89,16 +103,28 @@ export function MembershipFormDialog({
       }
     : null;
 
+  const branchOptions = useBranchOptions(open && !isEdit);
+
   const form = useForm<MembershipForm>({
-    resolver: zodResolver(membershipFormSchema),
+    // La ventana de fechas de inicio solo aplica al crear.
+    resolver: zodResolver(isEdit ? membershipFormSchema : createMembershipFormSchema),
     defaultValues: membershipFormDefaults,
   });
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors, isSubmitted, isSubmitting },
   } = form;
+  const [planBranchAccess, planMaxBranches] = useWatch({
+    control,
+    name: ["plan_branch_access", "plan_max_branches"],
+  });
+  const startBounds = membershipStartBounds();
+  const statusOptions = membership
+    ? editStatusOptions(membership.status as MembershipStatus)
+    : CREATE_STATUS_OPTIONS;
   const bind = useFieldBinder(form, "membership");
 
   // Cada vez que se abre, sincroniza con la membresía (edición) o limpia.
@@ -203,7 +229,13 @@ export function MembershipFormDialog({
               <AsyncCombobox
                 id="membership-plan"
                 value={field.value}
-                onValueChange={field.onChange}
+                onValueChange={(value, option) => {
+                  field.onChange(value);
+                  // Guarda el modo de sedes del plan para pedir (o no) las sedes.
+                  setValue("plan_branch_access", option.data?.branch_access ?? "");
+                  setValue("plan_max_branches", option.data?.max_branches ?? "");
+                  setValue("branches", [], { shouldValidate: isSubmitted });
+                }}
                 source={planOptions}
                 selectedOption={selectedPlanOption}
                 disabled={isEdit}
@@ -216,18 +248,51 @@ export function MembershipFormDialog({
           />
         </Field>
 
+        {!isEdit && planBranchAccess === "limited" ? (
+          <Field
+            label="Sedes"
+            htmlFor="membership-branches"
+            error={errors.branches?.message}
+            hint={`Este plan permite elegir hasta ${planMaxBranches || 1} sede${planMaxBranches === "1" ? "" : "s"}.`}
+          >
+            <Controller
+              control={control}
+              name="branches"
+              render={({ field }) => (
+                <MultiCombobox
+                  id="membership-branches"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  options={branchOptions.options}
+                  placeholder="Selecciona las sedes…"
+                  aria-invalid={errors.branches ? true : undefined}
+                />
+              )}
+            />
+          </Field>
+        ) : null}
+
         <DateField
           form={form}
           name="starts_at"
           idPrefix="membership"
           label="Inicio"
           disabled={isEdit}
+          fromDate={isEdit ? undefined : toLocalDate(startBounds.from)}
+          toDate={isEdit ? undefined : toLocalDate(startBounds.to)}
         />
 
         <Field
           label="Estado"
           htmlFor="membership-status"
           error={errors.status?.message}
+          hint={
+            isEdit
+              ? statusOptions.length === 1
+                ? "Una membresía expirada o cancelada no se reactiva: crea una nueva."
+                : undefined
+              : "Pendiente: se activa sola al registrar el primer pago."
+          }
         >
           <Controller
             control={control}
@@ -237,7 +302,8 @@ export function MembershipFormDialog({
                 id="membership-status"
                 value={field.value}
                 onValueChange={field.onChange}
-                options={isEdit ? EDIT_STATUS_OPTIONS : CREATE_STATUS_OPTIONS}
+                options={statusOptions}
+                disabled={statusOptions.length === 1}
                 aria-invalid={errors.status ? true : undefined}
               />
             )}

@@ -130,7 +130,8 @@ export function useMemberOptions(enabled = true) {
   return useAsyncOptions<MemberRow>({
     queryKey: (search) => memberKeys.options(search),
     fetchPage: ({ search, page }) =>
-      membersApi.list({ search, page, perPage: 20 }),
+      // Un selector nunca debe ofrecer socios eliminados ni inactivos.
+      membersApi.list({ search, page, perPage: 20, selectable: 1 }),
     toOption: toMemberOption,
     enabled,
   });
