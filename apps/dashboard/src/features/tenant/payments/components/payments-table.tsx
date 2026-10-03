@@ -129,25 +129,27 @@ export function PaymentsTable({
       rowActions={(row) => (
         <RowActions
           label={`Acciones del pago de ${row.member?.full_name || row.member_id}`}
+          // Cada acción aparece solo cuando la API la permite
+          // (PaymentService / StoreInstallmentRequest / RefundPaymentRequest).
           actions={[
             row.balance_due > 0 &&
-              row.status !== "refunded" && {
+              row.gateway === "manual" &&
+              (row.status === "pending" || row.status === "partially_paid") && {
                 label: "Agregar abono",
                 icon: CircleDollarSign,
                 onSelect: () => onAddInstallmentAction(row),
               },
-            row.amount_paid > 0 &&
-              row.status !== "refunded" && {
-                label: "Reembolsar",
-                icon: RotateCcw,
-                onSelect: () => onRefundAction(row),
-              },
+            row.status === "completed" && {
+              label: "Reembolsar",
+              icon: RotateCcw,
+              onSelect: () => onRefundAction(row),
+            },
             {
               label: "Editar notas",
               icon: Pencil,
               onSelect: () => onEditNotesAction(row),
             },
-            {
+            row.status === "pending" && {
               label: "Eliminar",
               icon: Trash2,
               variant: "destructive",
