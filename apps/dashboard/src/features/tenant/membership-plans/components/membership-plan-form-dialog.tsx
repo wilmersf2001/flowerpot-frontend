@@ -21,7 +21,10 @@ import {
   useCreateMembershipPlan,
   useUpdateMembershipPlan,
 } from "../lib/membership-plans.hooks";
-import { BRANCH_ACCESS_OPTIONS } from "../lib/membership-plans.constants";
+import {
+  BRANCH_ACCESS_OPTIONS,
+  MEMBERSHIP_PLAN_CURRENCIES,
+} from "../lib/membership-plans.constants";
 import {
   MEMBERSHIP_PLAN_FORM_FIELDS,
   membershipPlanFormDefaults,
@@ -169,7 +172,7 @@ export function MembershipPlanFormDialog({
             label="Moneda"
             htmlFor="membership-plan-currency"
             error={errors.currency?.message}
-            hint={isEdit ? "No se puede cambiar." : undefined}
+            hint="Por ahora el sistema trabaja solo en soles."
           >
             <Controller
               control={control}
@@ -179,8 +182,13 @@ export function MembershipPlanFormDialog({
                   id="membership-plan-currency"
                   value={field.value}
                   onValueChange={field.onChange}
-                  options={CURRENCY_OPTIONS}
-                  disabled={isEdit}
+                  // Solo soles; se conserva la moneda de un plan antiguo al editarlo.
+                  options={CURRENCY_OPTIONS.filter(
+                    (option) =>
+                      MEMBERSHIP_PLAN_CURRENCIES.includes(option.value) ||
+                      option.value === field.value,
+                  )}
+                  disabled
                   aria-invalid={errors.currency ? true : undefined}
                 />
               )}

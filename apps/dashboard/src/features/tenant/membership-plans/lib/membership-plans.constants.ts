@@ -15,6 +15,13 @@ export const BRANCH_ACCESS_OPTIONS = [
   { value: "limited", label: "Limitado", hint: "El cliente elige hasta N sedes." },
 ];
 
+/**
+ * Por ahora el gimnasio cobra solo en soles: los pagos y la caja no guardan
+ * moneda. Para internacionalizar, agregar códigos aquí y en la API
+ * (`StoreMembershipPlanRequest::CURRENCIES`) además de la moneda en pagos.
+ */
+export const MEMBERSHIP_PLAN_CURRENCIES: readonly string[] = ["PEN"];
+
 /** Topes del plan (mismos que `StoreMembershipPlanRequest` en la API). */
 export const MEMBERSHIP_PLAN_MAX_PRICE = 99999.99;
 export const MEMBERSHIP_PLAN_MAX_DURATION_DAYS = 730;
