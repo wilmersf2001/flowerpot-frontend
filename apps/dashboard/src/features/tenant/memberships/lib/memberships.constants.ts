@@ -25,7 +25,8 @@ export const MEMBERSHIP_STATUS_LABELS: Record<
 
 /**
  * Estado inicial al crear (`StoreMembershipRequest.status`): siempre pendiente
- * de pago. Se activa al registrar el pago (o al crearla, si el plan es gratis).
+ * de pago. Se activa cuando el pago queda completo (o al crearla, si el plan
+ * es gratis); con abonos parciales sigue pendiente.
  */
 export const MEMBERSHIP_CREATE_STATUSES = ["pending"] as const;
 

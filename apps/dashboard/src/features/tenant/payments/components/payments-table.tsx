@@ -139,7 +139,9 @@ export function PaymentsTable({
                 icon: CircleDollarSign,
                 onSelect: () => onAddInstallmentAction(row),
               },
-            row.status === "completed" && {
+            // Completo, o abonos parciales manuales (Culqi no cobra en partes).
+            (row.status === "completed" ||
+              (row.status === "partially_paid" && row.gateway === "manual")) && {
               label: "Reembolsar",
               icon: RotateCcw,
               onSelect: () => onRefundAction(row),

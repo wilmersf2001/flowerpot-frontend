@@ -166,7 +166,7 @@ export function PaymentFormDialog({
           <TextField
             {...bind("amount_paid")}
             label="Monto pagado"
-            hint="El primer abono."
+            hint="Primer abono. La membresía se activa al completar el pago."
             type="number"
             step="0.01"
             min="0.01"

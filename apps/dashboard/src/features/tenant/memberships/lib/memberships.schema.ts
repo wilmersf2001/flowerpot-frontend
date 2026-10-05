@@ -77,7 +77,7 @@ export const membershipFormDefaults: MembershipForm = {
   member_id: "",
   membership_plan_id: "",
   starts_at: "",
-  // Queda pendiente de pago: se activa sola al registrar el primer abono.
+  // Queda pendiente de pago: se activa sola cuando el pago queda completo.
   status: "pending",
   notes: "",
   branches: [],
