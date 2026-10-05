@@ -157,5 +157,6 @@ export const PAYMENT_NOTES_FORM_FIELDS = [
 ] as const satisfies readonly (keyof PaymentNotesForm)[];
 
 export function toUpdatePaymentInput(form: PaymentNotesForm): UpdatePaymentInput {
-  return { notes: form.notes || undefined };
+  // `null` borra la nota (con `undefined` no se enviaba y no se podía vaciar).
+  return { notes: form.notes || null };
 }

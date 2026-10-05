@@ -31,6 +31,8 @@ export function PaymentNotesDialog({
 }) {
   const updatePayment = useUpdatePayment();
   const open = payment !== null;
+  // La nota de un pago reembolsado guarda el registro de la devolución: solo lectura.
+  const readOnly = payment?.status === "refunded";
 
   const form = useForm<PaymentNotesForm>({
     resolver: zodResolver(paymentNotesFormSchema),
@@ -66,28 +68,40 @@ export function PaymentNotesDialog({
       open={open}
       onOpenChange={onOpenChangeAction}
       className="max-w-lg"
-      title="Editar notas del pago"
+      title={readOnly ? "Notas del pago" : "Editar notas del pago"}
       footer={
-        <>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChangeAction(false)}
-            disabled={isSubmitting}
-          >
-            Cancelar
+        readOnly ? (
+          <Button type="button" variant="outline" onClick={() => onOpenChangeAction(false)}>
+            Cerrar
           </Button>
-          <Button type="submit" form={FORM_ID} disabled={isSubmitting}>
-            {isSubmitting ? "Guardando…" : "Guardar cambios"}
-          </Button>
-        </>
+        ) : (
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChangeAction(false)}
+              disabled={isSubmitting}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" form={FORM_ID} disabled={isSubmitting}>
+              {isSubmitting ? "Guardando…" : "Guardar cambios"}
+            </Button>
+          </>
+        )
       }
     >
       <form id={FORM_ID} onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <TextareaField
           {...bind("notes")}
           label="Notas"
-          hint="Opcional."
+          readOnly={readOnly}
+          rows={readOnly ? 5 : 3}
+          hint={
+            readOnly
+              ? "Pago reembolsado: la nota guarda el registro de la devolución y no se puede editar."
+              : "Opcional. Déjala vacía para borrarla."
+          }
           placeholder="Observaciones del cobro…"
         />
       </form>

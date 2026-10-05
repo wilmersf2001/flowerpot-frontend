@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleDollarSign, Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { CircleDollarSign, NotebookText, Pencil, RotateCcw, Trash2 } from "lucide-react";
 import {
   DataTable,
   RowActions,
@@ -40,7 +40,18 @@ const columns: Column<PaymentRow>[] = [
     key: "member",
     header: "Socio",
     cell: (row) => (
-      <span className="font-medium">{row.member_name || row.member_id}</span>
+      <div className="flex min-w-0 flex-col">
+        <span className="font-medium">{row.member_name || row.member_id}</span>
+        {/* Nota del cobro: una línea; el texto completo al pasar el mouse. */}
+        {row.notes ? (
+          <span
+            className="max-w-56 truncate text-xs text-muted-foreground"
+            title={row.notes}
+          >
+            {row.notes}
+          </span>
+        ) : null}
+      </div>
     ),
   },
   {
@@ -147,8 +158,9 @@ export function PaymentsTable({
               onSelect: () => onRefundAction(row),
             },
             {
-              label: "Editar notas",
-              icon: Pencil,
+              // En un reembolsado la nota guarda el registro de la devolución: solo se ve.
+              label: row.status === "refunded" ? "Ver notas" : "Editar notas",
+              icon: row.status === "refunded" ? NotebookText : Pencil,
               onSelect: () => onEditNotesAction(row),
             },
             row.status === "pending" && {
