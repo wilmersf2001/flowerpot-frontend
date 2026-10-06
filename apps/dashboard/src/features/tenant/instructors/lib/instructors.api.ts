@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { INSTRUCTORS_ENDPOINT, INSTRUCTORS_PER_PAGE } from "./instructors.constants";
 import {
   CreateInstructorInput,
@@ -32,7 +33,7 @@ function toInstructorStaff(raw: unknown): InstructorStaff | null {
     dni: String(s.dni ?? ""),
     phone: String(s.phone ?? ""),
     email: String(s.email ?? ""),
-    is_active: s.is_active === true || s.is_active === "true" || s.is_active === 1,
+    is_active: toBoolean(s.is_active),
     job_position: jobPosition ? { name: String(jobPosition.name ?? "") } : undefined,
     branches: toInstructorStaffBranches(s.branches),
   };
@@ -46,7 +47,6 @@ function toInstructorSpecialties(raw: unknown): InstructorSpecialty[] {
   });
 }
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toInstructorRow(raw: Record<string, unknown>): InstructorRow {
   return {
     id: Number(raw.id),
@@ -55,7 +55,7 @@ function toInstructorRow(raw: Record<string, unknown>): InstructorRow {
     bio: String(raw.bio ?? ""),
     tarifa_por_clase: raw.tarifa_por_clase == null ? "" : String(raw.tarifa_por_clase),
     fecha_inicio: raw.fecha_inicio == null ? null : String(raw.fecha_inicio),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     specialties: toInstructorSpecialties(raw.specialties),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),

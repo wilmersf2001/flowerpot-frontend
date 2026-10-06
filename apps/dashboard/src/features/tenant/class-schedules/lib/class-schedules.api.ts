@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import {
   CLASS_SCHEDULES_ENDPOINT,
   CLASS_SCHEDULES_PER_PAGE,
@@ -41,7 +42,6 @@ function toClassScheduleBranch(raw: unknown): ClassScheduleBranch | null {
   return { id: Number(b.id), name: String(b.name ?? "") };
 }
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toClassScheduleRow(raw: Record<string, unknown>): ClassScheduleRow {
   return {
     id: Number(raw.id),
@@ -57,7 +57,7 @@ function toClassScheduleRow(raw: Record<string, unknown>): ClassScheduleRow {
     end_time: String(raw.end_time ?? ""),
     max_capacity: raw.max_capacity == null ? null : Number(raw.max_capacity),
     effective_capacity: raw.effective_capacity == null ? null : Number(raw.effective_capacity),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
     deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),

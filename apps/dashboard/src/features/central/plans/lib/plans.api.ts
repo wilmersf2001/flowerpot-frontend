@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import { PLANS_ENDPOINT, PLANS_PER_PAGE } from "./plans.constants";
 import {
   CreatePlanInput,
@@ -9,13 +10,8 @@ import {
 } from "./plans.types";
 
 async function list(params: PlanListParams = {}): Promise<Paginated<PlanRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(PLANS_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? PLANS_PER_PAGE,
-      search: search ? search : undefined,
-    },
+    params: buildListParams(params, PLANS_PER_PAGE),
   });
   return unwrapPaginated<PlanRow>(data);
 }

@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { SUPPLIERS_ENDPOINT, SUPPLIERS_PER_PAGE } from "./suppliers.constants";
 import {
   CreateSupplierInput,
@@ -8,7 +9,6 @@ import {
   UpdateSupplierInput,
 } from "./suppliers.types";
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toSupplierRow(raw: Record<string, unknown>): SupplierRow {
   return {
     id: Number(raw.id),
@@ -17,7 +17,7 @@ function toSupplierRow(raw: Record<string, unknown>): SupplierRow {
     phone: raw.phone == null ? null : String(raw.phone),
     email: raw.email == null ? null : String(raw.email),
     address: raw.address == null ? null : String(raw.address),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
   };

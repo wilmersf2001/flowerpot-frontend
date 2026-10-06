@@ -1,4 +1,5 @@
 import { apiClient, unwrapEnvelope } from "@repo/api-client";
+import { toBoolean } from "@/features/_shared/format";
 import { AUTH_ME_ENDPOINT } from "./auth.constants";
 import type { CurrentUser, CurrentUserBranch, CurrentUserSubscription } from "./auth.types";
 
@@ -16,10 +17,7 @@ function toCurrentUserSubscription(raw: unknown): CurrentUserSubscription | null
   return {
     plan: String(subscription.plan ?? ""),
     status: String(subscription.status ?? ""),
-    isTrial:
-      subscription.is_trial === true ||
-      subscription.is_trial === "true" ||
-      subscription.is_trial === 1,
+    isTrial: toBoolean(subscription.is_trial),
     startsAt: String(subscription.starts_at ?? ""),
     endsAt: String(subscription.ends_at ?? ""),
     daysRemaining: Number(subscription.days_remaining ?? 0),
@@ -32,7 +30,7 @@ function toCurrentUser(raw: Record<string, unknown>): CurrentUser {
     name: String(raw.name ?? ""),
     email: String(raw.email ?? ""),
     role: String(raw.role ?? ""),
-    isOwner: raw.is_owner === true || raw.is_owner === "true" || raw.is_owner === 1,
+    isOwner: toBoolean(raw.is_owner),
     permissions: Array.isArray(raw.permissions) ? raw.permissions.map(String) : [],
     branches: toCurrentUserBranches(raw.branches),
     subscription: toCurrentUserSubscription(raw.subscription),

@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { STAFF_ENDPOINT, STAFF_PER_PAGE } from "./staff.constants";
 import {
   CreateStaffInput,
@@ -17,7 +18,6 @@ function toStaffBranches(raw: unknown): StaffBranch[] {
   });
 }
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toStaffRow(raw: Record<string, unknown>): StaffRow {
   const jobPosition = raw.job_position as Record<string, unknown> | undefined;
   return {
@@ -30,7 +30,7 @@ function toStaffRow(raw: Record<string, unknown>): StaffRow {
     email: String(raw.email ?? ""),
     salary: String(raw.salary ?? ""),
     hire_date: raw.hire_date == null ? null : String(raw.hire_date),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     job_position_id: jobPosition ? Number(jobPosition.id) : null,
     job_position: jobPosition ? { name: String(jobPosition.name ?? "") } : undefined,
     branches: toStaffBranches(raw.branches),

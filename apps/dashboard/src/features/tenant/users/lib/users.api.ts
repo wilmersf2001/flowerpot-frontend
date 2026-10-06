@@ -1,16 +1,16 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { USERS_ENDPOINT, USERS_PER_PAGE } from "./users.constants";
 import { CreateUserInput, UpdateUserInput, UserListParams, UserRow } from "./users.types";
 
-/** El backend manda `is_owner` con un tipo inconsistente ("true"/true/1). */
 function toUserRow(raw: Record<string, unknown>): UserRow {
   return {
     id: Number(raw.id),
     name: String(raw.name ?? ""),
     email: String(raw.email ?? ""),
     role: String(raw.role ?? ""),
-    is_owner: raw.is_owner === true || raw.is_owner === "true" || raw.is_owner === 1,
+    is_owner: toBoolean(raw.is_owner),
   };
 }
 

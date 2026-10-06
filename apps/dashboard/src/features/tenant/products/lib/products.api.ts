@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { PRODUCTS_ENDPOINT, PRODUCTS_PER_PAGE } from "./products.constants";
 import {
   CreateProductInput,
@@ -16,7 +17,7 @@ function toProductCategoryRef(raw: unknown): ProductCategoryRef | null {
   return {
     id: Number(c.id),
     name: String(c.name ?? ""),
-    is_active: c.is_active === true || c.is_active === "true" || c.is_active === 1,
+    is_active: toBoolean(c.is_active),
   };
 }
 
@@ -34,8 +35,7 @@ function toProductStocks(raw: unknown): ProductStock[] {
 
 /**
  * El `store` no devuelve `category` ni `stocks` (solo `product_category_id`);
- * `index`/`show`/`update` sí. `is_active` llega con tipo inconsistente
- * ("true"/true/1) y `cost` en `0` cuando nunca se definió.
+ * `index`/`show`/`update` sí. `cost` llega en `0` cuando nunca se definió.
  */
 function toProductRow(raw: Record<string, unknown>): ProductRow {
   return {
@@ -47,7 +47,7 @@ function toProductRow(raw: Record<string, unknown>): ProductRow {
     sku: String(raw.sku ?? ""),
     sale_price: Number(raw.sale_price ?? 0),
     cost: Number(raw.cost ?? 0),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     stocks: toProductStocks(raw.stocks),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),

@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import {
   PRODUCT_CATEGORIES_ENDPOINT,
   PRODUCT_CATEGORIES_PER_PAGE,
@@ -11,12 +12,11 @@ import {
   UpdateProductCategoryInput,
 } from "./product-categories.types";
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toProductCategoryRow(raw: Record<string, unknown>): ProductCategoryRow {
   return {
     id: Number(raw.id),
     name: String(raw.name ?? ""),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
     deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),

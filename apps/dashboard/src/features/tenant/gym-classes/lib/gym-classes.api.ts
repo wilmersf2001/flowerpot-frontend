@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { GYM_CLASSES_ENDPOINT, GYM_CLASSES_PER_PAGE } from "./gym-classes.constants";
 import {
   CreateGymClassInput,
@@ -15,7 +16,6 @@ function toGymClassSpecialty(raw: unknown): GymClassSpecialty | null {
   return { id: Number(s.id), name: String(s.name ?? "") };
 }
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toGymClassRow(raw: Record<string, unknown>): GymClassRow {
   return {
     id: Number(raw.id),
@@ -25,7 +25,7 @@ function toGymClassRow(raw: Record<string, unknown>): GymClassRow {
     description: String(raw.description ?? ""),
     duration_minutes: Number(raw.duration_minutes ?? 0),
     max_capacity: Number(raw.max_capacity ?? 0),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
     deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),

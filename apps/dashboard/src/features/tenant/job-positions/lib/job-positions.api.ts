@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { JOB_POSITIONS_ENDPOINT, JOB_POSITIONS_PER_PAGE } from "./job-positions.constants";
 import {
   CreateJobPositionInput,
@@ -8,13 +9,12 @@ import {
   UpdateJobPositionInput,
 } from "./job-positions.types";
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toJobPositionRow(raw: Record<string, unknown>): JobPositionRow {
   return {
     id: Number(raw.id),
     name: String(raw.name ?? ""),
     description: String(raw.description ?? ""),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     staff_count: typeof raw.staff_count === "number" ? raw.staff_count : null,
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),

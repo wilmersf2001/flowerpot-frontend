@@ -4,6 +4,7 @@ import {
   unwrapPaginated,
   type Paginated,
 } from "@repo/api-client";
+import { buildListParams } from "@/features/_shared/list-params";
 import { TENANTS_ENDPOINT, TENANTS_PER_PAGE } from "./tenants.constants";
 import type {
   CreateTenantInput,
@@ -15,13 +16,8 @@ import type {
 async function list(
   params: TenantListParams = {},
 ): Promise<Paginated<TenantRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(TENANTS_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? TENANTS_PER_PAGE,
-      search: search ? search : undefined,
-    },
+    params: buildListParams(params, TENANTS_PER_PAGE),
   });
   return unwrapPaginated<TenantRow>(data);
 }
