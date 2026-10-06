@@ -69,7 +69,7 @@ export function StaffFormDialog({
   const selectedJobPosition: ComboboxOption | null = useMemo(
     () =>
       staff?.job_position_id
-        ? { value: staff.job_position_id, label: staff.job_position_name ?? "" }
+        ? { value: String(staff.job_position_id), label: staff.job_position?.name ?? "" }
         : null,
     [staff],
   );

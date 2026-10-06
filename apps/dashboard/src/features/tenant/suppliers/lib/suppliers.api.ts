@@ -11,7 +11,7 @@ import {
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toSupplierRow(raw: Record<string, unknown>): SupplierRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     name: String(raw.name ?? ""),
     ruc: raw.ruc == null ? null : String(raw.ruc),
     phone: raw.phone == null ? null : String(raw.phone),
@@ -42,7 +42,7 @@ async function create(input: CreateSupplierInput): Promise<SupplierRow> {
   return toSupplierRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateSupplierInput): Promise<SupplierRow> {
+async function update(id: number, input: UpdateSupplierInput): Promise<SupplierRow> {
   const { data } = await apiClient.patch<unknown>(
     `${SUPPLIERS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -50,7 +50,7 @@ async function update(id: string, input: UpdateSupplierInput): Promise<SupplierR
   return toSupplierRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${SUPPLIERS_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 

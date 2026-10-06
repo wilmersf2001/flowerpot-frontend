@@ -4,13 +4,13 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface InstructorStaffBranch {
-  id: string;
+  id: number;
   name: string;
 }
 
 /** Resumen del `staff` 1:1 asociado (`StaffResource`, ver módulo de personal). */
 export interface InstructorStaff {
-  id: string;
+  id: number;
   full_name: string;
   first_name: string;
   last_name: string;
@@ -18,18 +18,18 @@ export interface InstructorStaff {
   phone: string;
   email: string;
   is_active: boolean;
-  job_position_name: string | null;
+  job_position?: { name: string };
   branches: InstructorStaffBranch[];
 }
 
 export interface InstructorSpecialty {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface InstructorRow {
-  id: string;
-  staff_id: string;
+  id: number;
+  staff_id: number;
   staff: InstructorStaff | null;
   bio: string;
   /** Decimal como texto (p. ej. "50.00"), igual que `salary` en `StaffRow`. */

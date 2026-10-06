@@ -76,7 +76,7 @@ export function InstructorFormDialog({
   const selectedStaff: ComboboxOption | null = useMemo(
     () =>
       instructor?.staff
-        ? { value: instructor.staff.id, label: instructor.staff.full_name, hint: instructor.staff.dni }
+        ? { value: String(instructor.staff.id), label: instructor.staff.full_name, hint: instructor.staff.dni }
         : null,
     [instructor],
   );

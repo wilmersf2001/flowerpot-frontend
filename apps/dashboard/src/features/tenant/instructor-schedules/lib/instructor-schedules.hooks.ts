@@ -28,7 +28,7 @@ export function useCreateInstructorSchedule() {
 export function useUpdateInstructorSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateInstructorScheduleInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateInstructorScheduleInput }) =>
       instructorSchedulesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: instructorScheduleKeys.all }),
   });
@@ -37,7 +37,7 @@ export function useUpdateInstructorSchedule() {
 export function useDeleteInstructorSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => instructorSchedulesApi.remove(id),
+    mutationFn: (id: number) => instructorSchedulesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: instructorScheduleKeys.all }),
   });
 }
@@ -45,7 +45,7 @@ export function useDeleteInstructorSchedule() {
 export function useRestoreInstructorSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => instructorSchedulesApi.restore(id),
+    mutationFn: (id: number) => instructorSchedulesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: instructorScheduleKeys.all }),
   });
 }

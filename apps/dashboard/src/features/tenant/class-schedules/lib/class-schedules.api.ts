@@ -18,7 +18,7 @@ function toClassScheduleGymClass(raw: unknown): ClassScheduleGymClass | null {
   if (!raw || typeof raw !== "object") return null;
   const c = raw as Record<string, unknown>;
   return {
-    id: String(c.id),
+    id: Number(c.id),
     name: String(c.name ?? ""),
     duration_minutes: Number(c.duration_minutes ?? 0),
     max_capacity: Number(c.max_capacity ?? 0),
@@ -30,7 +30,7 @@ function toClassScheduleInstructor(raw: unknown): ClassScheduleInstructor | null
   const i = raw as Record<string, unknown>;
   const staff = i.staff as Record<string, unknown> | undefined;
   return {
-    id: String(i.id),
+    id: Number(i.id),
     staff: staff ? { full_name: String(staff.full_name ?? ""), dni: String(staff.dni ?? "") } : null,
   };
 }
@@ -38,18 +38,18 @@ function toClassScheduleInstructor(raw: unknown): ClassScheduleInstructor | null
 function toClassScheduleBranch(raw: unknown): ClassScheduleBranch | null {
   if (!raw || typeof raw !== "object") return null;
   const b = raw as Record<string, unknown>;
-  return { id: String(b.id), name: String(b.name ?? "") };
+  return { id: Number(b.id), name: String(b.name ?? "") };
 }
 
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toClassScheduleRow(raw: Record<string, unknown>): ClassScheduleRow {
   return {
-    id: String(raw.id),
-    gym_class_id: String(raw.gym_class_id ?? ""),
+    id: Number(raw.id),
+    gym_class_id: Number(raw.gym_class_id ?? 0),
     gym_class: toClassScheduleGymClass(raw.gym_class),
-    instructor_id: String(raw.instructor_id ?? ""),
+    instructor_id: Number(raw.instructor_id ?? 0),
     instructor: toClassScheduleInstructor(raw.instructor),
-    branch_id: String(raw.branch_id ?? ""),
+    branch_id: Number(raw.branch_id ?? 0),
     branch: toClassScheduleBranch(raw.branch),
     day_of_week: Number(raw.day_of_week),
     day_label: String(raw.day_label ?? ""),
@@ -84,7 +84,7 @@ async function create(input: CreateClassScheduleInput): Promise<ClassScheduleRow
   return toClassScheduleRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateClassScheduleInput): Promise<ClassScheduleRow> {
+async function update(id: number, input: UpdateClassScheduleInput): Promise<ClassScheduleRow> {
   const { data } = await apiClient.patch<unknown>(
     `${CLASS_SCHEDULES_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -92,12 +92,12 @@ async function update(id: string, input: UpdateClassScheduleInput): Promise<Clas
   return toClassScheduleRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${CLASS_SCHEDULES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un horario eliminado (soft-delete). */
-async function restore(id: string): Promise<ClassScheduleRow> {
+async function restore(id: number): Promise<ClassScheduleRow> {
   const { data } = await apiClient.patch<unknown>(
     `${CLASS_SCHEDULES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

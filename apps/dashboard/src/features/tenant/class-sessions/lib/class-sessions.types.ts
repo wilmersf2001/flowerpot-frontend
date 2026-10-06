@@ -7,18 +7,18 @@ import { CLASS_SESSION_STATUSES } from "./class-sessions.constants";
 export type ClassSessionStatus = (typeof CLASS_SESSION_STATUSES)[number];
 
 export interface ClassSessionGymClass {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface ClassSessionBranch {
-  id: string;
+  id: number;
   name: string;
 }
 
 /** `ClassScheduleResource` anidado (ver módulo de horarios), con `gym_class` anidada. */
 export interface ClassSessionClassSchedule {
-  id: string;
+  id: number;
   gym_class: ClassSessionGymClass | null;
   branch: ClassSessionBranch | null;
 }
@@ -30,7 +30,7 @@ export interface ClassSessionInstructorStaff {
 }
 
 export interface ClassSessionInstructor {
-  id: string;
+  id: number;
   staff: ClassSessionInstructorStaff | null;
 }
 
@@ -40,8 +40,8 @@ export interface ClassSessionInstructor {
  * generó la sesión: no reflejan cambios posteriores en `class_schedules`.
  */
 export interface ClassSessionRow {
-  id: string;
-  class_schedule_id: string;
+  id: number;
+  class_schedule_id: number;
   class_schedule: ClassSessionClassSchedule | null;
   /** `YYYY-MM-DD`. */
   session_date: string;
@@ -49,7 +49,7 @@ export interface ClassSessionRow {
   start_time: string;
   /** `HH:MM:SS`. */
   end_time: string;
-  instructor_id: string;
+  instructor_id: number;
   instructor: ClassSessionInstructor | null;
   max_capacity: number;
   status: ClassSessionStatus;

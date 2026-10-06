@@ -15,14 +15,14 @@ import {
 function toInstructorScheduleBranch(raw: unknown): InstructorScheduleBranch | null {
   if (!raw || typeof raw !== "object") return null;
   const b = raw as Record<string, unknown>;
-  return { id: String(b.id), name: String(b.name ?? "") };
+  return { id: Number(b.id), name: String(b.name ?? "") };
 }
 
 function toInstructorScheduleRow(raw: Record<string, unknown>): InstructorScheduleRow {
   return {
-    id: String(raw.id),
-    instructor_id: String(raw.instructor_id ?? ""),
-    branch_id: String(raw.branch_id ?? ""),
+    id: Number(raw.id),
+    instructor_id: Number(raw.instructor_id ?? 0),
+    branch_id: Number(raw.branch_id ?? 0),
     branch: toInstructorScheduleBranch(raw.branch),
     day_of_week: Number(raw.day_of_week),
     start_time: String(raw.start_time ?? ""),
@@ -55,7 +55,7 @@ async function create(input: CreateInstructorScheduleInput): Promise<InstructorS
 }
 
 async function update(
-  id: string,
+  id: number,
   input: UpdateInstructorScheduleInput,
 ): Promise<InstructorScheduleRow> {
   const { data } = await apiClient.patch<unknown>(
@@ -65,12 +65,12 @@ async function update(
   return toInstructorScheduleRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${INSTRUCTOR_SCHEDULES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un horario eliminado (soft-delete). */
-async function restore(id: string): Promise<InstructorScheduleRow> {
+async function restore(id: number): Promise<InstructorScheduleRow> {
   const { data } = await apiClient.patch<unknown>(
     `${INSTRUCTOR_SCHEDULES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

@@ -12,14 +12,14 @@ import {
 function toGymClassSpecialty(raw: unknown): GymClassSpecialty | null {
   if (!raw || typeof raw !== "object") return null;
   const s = raw as Record<string, unknown>;
-  return { id: String(s.id), name: String(s.name ?? "") };
+  return { id: Number(s.id), name: String(s.name ?? "") };
 }
 
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toGymClassRow(raw: Record<string, unknown>): GymClassRow {
   return {
-    id: String(raw.id),
-    specialty_id: raw.specialty_id == null ? null : String(raw.specialty_id),
+    id: Number(raw.id),
+    specialty_id: raw.specialty_id == null ? null : Number(raw.specialty_id),
     specialty: toGymClassSpecialty(raw.specialty),
     name: String(raw.name ?? ""),
     description: String(raw.description ?? ""),
@@ -50,7 +50,7 @@ async function create(input: CreateGymClassInput): Promise<GymClassRow> {
   return toGymClassRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateGymClassInput): Promise<GymClassRow> {
+async function update(id: number, input: UpdateGymClassInput): Promise<GymClassRow> {
   const { data } = await apiClient.patch<unknown>(
     `${GYM_CLASSES_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -58,12 +58,12 @@ async function update(id: string, input: UpdateGymClassInput): Promise<GymClassR
   return toGymClassRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${GYM_CLASSES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura una clase eliminada (soft-delete). */
-async function restore(id: string): Promise<GymClassRow> {
+async function restore(id: number): Promise<GymClassRow> {
   const { data } = await apiClient.patch<unknown>(
     `${GYM_CLASSES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

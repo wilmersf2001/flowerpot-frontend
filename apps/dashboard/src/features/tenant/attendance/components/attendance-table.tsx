@@ -22,9 +22,9 @@ const columns: Column<AttendanceRow>[] = [
     header: "Socio",
     cell: (row) => (
       <div className="flex flex-col">
-        <span className="font-medium">{row.member_name || row.member_id}</span>
-        {row.member_dni ? (
-          <span className="text-xs text-muted-foreground">{row.member_dni}</span>
+        <span className="font-medium">{row.member?.full_name || row.member_id}</span>
+        {row.member?.dni ? (
+          <span className="text-xs text-muted-foreground">{row.member.dni}</span>
         ) : null}
       </div>
     ),
@@ -42,7 +42,7 @@ const columns: Column<AttendanceRow>[] = [
     key: "branch_name",
     header: "Sede",
     cell: (row) => (
-      <span className="text-muted-foreground">{row.branch_name || EM_DASH}</span>
+      <span className="text-muted-foreground">{row.branch?.name || EM_DASH}</span>
     ),
   },
   {
@@ -57,7 +57,7 @@ const columns: Column<AttendanceRow>[] = [
     header: "Membresía vence",
     cell: (row) => (
       <span className="text-muted-foreground tabular-nums">
-        {row.membership_ends_at ? formatDate(row.membership_ends_at) : EM_DASH}
+        {row.membership?.ends_at ? formatDate(row.membership.ends_at) : EM_DASH}
       </span>
     ),
   },
@@ -85,7 +85,7 @@ export function AttendanceTable({
       pagination={pagination}
       rowActions={(row) => (
         <RowActions
-          label={`Acciones de ${row.member_name || row.member_id}`}
+          label={`Acciones de ${row.member?.full_name || row.member_id}`}
           actions={[
             {
               label: "Eliminar",

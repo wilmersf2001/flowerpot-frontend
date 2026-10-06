@@ -51,7 +51,7 @@ export function EquipmentPage() {
   const meta = equipment.data;
 
   const [editing, setEditing] = useState<EquipmentRow | "new" | null>(null);
-  const [viewingId, setViewingId] = useState<string | null>(null);
+  const [viewingId, setViewingId] = useState<number | null>(null);
   const [decommissioning, setDecommissioning] = useState<EquipmentRow | null>(null);
   const [deleting, setDeleting] = useState<EquipmentRow | null>(null);
 

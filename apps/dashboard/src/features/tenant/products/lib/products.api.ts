@@ -14,7 +14,7 @@ function toProductCategoryRef(raw: unknown): ProductCategoryRef | null {
   if (!raw || typeof raw !== "object") return null;
   const c = raw as Record<string, unknown>;
   return {
-    id: String(c.id),
+    id: Number(c.id),
     name: String(c.name ?? ""),
     is_active: c.is_active === true || c.is_active === "true" || c.is_active === 1,
   };
@@ -25,7 +25,7 @@ function toProductStocks(raw: unknown): ProductStock[] {
   return raw.map((item) => {
     const s = item as Record<string, unknown>;
     return {
-      branch_id: String(s.branch_id),
+      branch_id: Number(s.branch_id),
       branch_name: String(s.branch_name ?? ""),
       quantity: Number(s.quantity ?? 0),
     };
@@ -39,8 +39,8 @@ function toProductStocks(raw: unknown): ProductStock[] {
  */
 function toProductRow(raw: Record<string, unknown>): ProductRow {
   return {
-    id: String(raw.id),
-    product_category_id: raw.product_category_id == null ? null : String(raw.product_category_id),
+    id: Number(raw.id),
+    product_category_id: raw.product_category_id == null ? null : Number(raw.product_category_id),
     category: toProductCategoryRef(raw.category),
     name: String(raw.name ?? ""),
     description: String(raw.description ?? ""),
@@ -75,7 +75,7 @@ async function create(input: CreateProductInput): Promise<ProductRow> {
   return toProductRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateProductInput): Promise<ProductRow> {
+async function update(id: number, input: UpdateProductInput): Promise<ProductRow> {
   const { data } = await apiClient.patch<unknown>(
     `${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -83,12 +83,12 @@ async function update(id: string, input: UpdateProductInput): Promise<ProductRow
   return toProductRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un producto eliminado (soft-delete). */
-async function restore(id: string): Promise<ProductRow> {
+async function restore(id: number): Promise<ProductRow> {
   const { data } = await apiClient.patch<unknown>(
     `${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

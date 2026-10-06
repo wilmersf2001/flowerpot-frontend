@@ -29,7 +29,7 @@ export function useCreateStaff() {
 export function useUpdateStaff() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateStaffInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateStaffInput }) =>
       staffApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: staffKeys.all }),
   });
@@ -38,7 +38,7 @@ export function useUpdateStaff() {
 export function useDeleteStaff() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => staffApi.remove(id),
+    mutationFn: (id: number) => staffApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: staffKeys.all }),
   });
 }
@@ -46,7 +46,7 @@ export function useDeleteStaff() {
 export function useRestoreStaff() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => staffApi.restore(id),
+    mutationFn: (id: number) => staffApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: staffKeys.all }),
   });
 }
@@ -87,7 +87,7 @@ export function useToggleStaffActive() {
 }
 
 const toStaffOption = (staff: StaffRow): ComboboxOption => ({
-  value: staff.id,
+  value: String(staff.id),
   label: staff.full_name,
   hint: staff.dni,
 });

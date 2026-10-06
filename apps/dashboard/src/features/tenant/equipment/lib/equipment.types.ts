@@ -7,17 +7,17 @@ import type { EQUIPMENT_STATUSES } from "./equipment.constants";
 export type EquipmentStatus = (typeof EQUIPMENT_STATUSES)[number];
 
 export interface EquipmentCategoryRef {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface EquipmentBranchRef {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface EquipmentMaintenanceSupplierRef {
-  id: string;
+  id: number;
   name: string;
 }
 
@@ -28,7 +28,7 @@ export interface EquipmentMaintenanceSupplierRef {
  * inversa al equipo) para su propia pantalla.
  */
 export interface EquipmentMaintenanceRef {
-  id: string;
+  id: number;
   type: "preventivo" | "correctivo";
   status: "programado" | "en_progreso" | "completado" | "cancelado";
   description: string;
@@ -37,14 +37,14 @@ export interface EquipmentMaintenanceRef {
   completed_at: string | null;
   cost: number | null;
   next_maintenance_date: string | null;
-  supplier_id: string;
+  supplier_id: number;
   supplier: EquipmentMaintenanceSupplierRef | null;
   created_at: string;
   updated_at: string;
 }
 
 export interface EquipmentRow {
-  id: string;
+  id: number;
   name: string;
   brand: string | null;
   model: string | null;
@@ -55,10 +55,10 @@ export interface EquipmentRow {
   /** Fecha pura `YYYY-MM-DD`, o `null`. */
   warranty_expiration: string | null;
   status: EquipmentStatus;
-  equipment_category_id: string | null;
+  equipment_category_id: number | null;
   /** `null` si no tiene categoría (o esta fue eliminada). No viene en `store`. */
   category: EquipmentCategoryRef | null;
-  branch_id: string;
+  branch_id: number;
   /** No viene en `store`. */
   branch: EquipmentBranchRef | null;
   /** Solo viene cargado en `show` (detalle). En listado y `store`/`update` es `[]`. */

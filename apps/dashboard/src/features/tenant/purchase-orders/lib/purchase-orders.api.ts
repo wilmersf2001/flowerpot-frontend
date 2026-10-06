@@ -15,14 +15,14 @@ import {
 function toPartyRef(raw: unknown): PurchaseOrderPartyRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
-  return { id: String(r.id), name: String(r.name ?? "") };
+  return { id: Number(r.id), name: String(r.name ?? "") };
 }
 
 function toStaffRef(raw: unknown): PurchaseOrderStaffRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
   return {
-    id: String(r.id),
+    id: Number(r.id),
     first_name: String(r.first_name ?? ""),
     last_name: String(r.last_name ?? ""),
   };
@@ -32,10 +32,10 @@ function toItemRow(raw: unknown): PurchaseOrderItemRow {
   const r = (raw ?? {}) as Record<string, unknown>;
   const product = r.product as Record<string, unknown> | null | undefined;
   return {
-    id: String(r.id),
-    product_id: String(r.product_id),
+    id: Number(r.id),
+    product_id: Number(r.product_id),
     product: product
-      ? { id: String(product.id), name: String(product.name ?? ""), sku: String(product.sku ?? "") }
+      ? { id: Number(product.id), name: String(product.name ?? ""), sku: String(product.sku ?? "") }
       : null,
     quantity: Number(r.quantity ?? 0),
     unit_cost: Number(r.unit_cost ?? 0),
@@ -45,15 +45,15 @@ function toItemRow(raw: unknown): PurchaseOrderItemRow {
 
 function toPurchaseOrderRow(raw: Record<string, unknown>): PurchaseOrderRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     order_date: String(raw.order_date ?? ""),
     status: (raw.status as PurchaseOrderRow["status"]) ?? "pending",
     total: Number(raw.total ?? 0),
-    supplier_id: String(raw.supplier_id),
+    supplier_id: Number(raw.supplier_id),
     supplier: toPartyRef(raw.supplier),
-    branch_id: String(raw.branch_id),
+    branch_id: Number(raw.branch_id),
     branch: toPartyRef(raw.branch),
-    staff_id: raw.staff_id == null ? null : String(raw.staff_id),
+    staff_id: raw.staff_id == null ? null : Number(raw.staff_id),
     staff: toStaffRef(raw.staff),
     items: Array.isArray(raw.items) ? raw.items.map(toItemRow) : [],
     received_at: raw.received_at == null ? null : String(raw.received_at),
@@ -85,7 +85,7 @@ async function list(params: PurchaseOrderListParams = {}): Promise<Paginated<Pur
   return { ...page, data: page.data.map(toPurchaseOrderRow) };
 }
 
-async function show(id: string): Promise<PurchaseOrderRow> {
+async function show(id: number): Promise<PurchaseOrderRow> {
   const { data } = await apiClient.get<unknown>(
     `${PURCHASE_ORDERS_ENDPOINT}/${encodeURIComponent(id)}`,
   );
@@ -98,7 +98,7 @@ async function create(input: CreatePurchaseOrderInput): Promise<PurchaseOrderRow
 }
 
 /** Solo permitido si la orden está `pending`. */
-async function update(id: string, input: UpdatePurchaseOrderInput): Promise<PurchaseOrderRow> {
+async function update(id: number, input: UpdatePurchaseOrderInput): Promise<PurchaseOrderRow> {
   const { data } = await apiClient.patch<unknown>(
     `${PURCHASE_ORDERS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -107,12 +107,12 @@ async function update(id: string, input: UpdatePurchaseOrderInput): Promise<Purc
 }
 
 /** Soft delete. Solo permitido si la orden está `pending`. */
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${PURCHASE_ORDERS_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura una orden eliminada (soft-delete). La respuesta no trae el recurso. */
-async function restore(id: string): Promise<void> {
+async function restore(id: number): Promise<void> {
   await apiClient.post(`${PURCHASE_ORDERS_ENDPOINT}/${encodeURIComponent(id)}/restore`);
 }
 
@@ -121,7 +121,7 @@ async function restore(id: string): Promise<void> {
  * de cada producto y crea los movimientos "compra". Irreversible.
  */
 async function receive(
-  id: string,
+  id: number,
   input: ReceivePurchaseOrderInput = {},
 ): Promise<PurchaseOrderRow> {
   const { data } = await apiClient.patch<unknown>(

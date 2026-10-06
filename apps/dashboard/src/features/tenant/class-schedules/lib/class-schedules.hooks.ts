@@ -29,7 +29,7 @@ export function useCreateClassSchedule() {
 export function useUpdateClassSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateClassScheduleInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateClassScheduleInput }) =>
       classSchedulesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: classScheduleKeys.all }),
   });
@@ -38,7 +38,7 @@ export function useUpdateClassSchedule() {
 export function useDeleteClassSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => classSchedulesApi.remove(id),
+    mutationFn: (id: number) => classSchedulesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: classScheduleKeys.all }),
   });
 }
@@ -46,7 +46,7 @@ export function useDeleteClassSchedule() {
 export function useRestoreClassSchedule() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => classSchedulesApi.restore(id),
+    mutationFn: (id: number) => classSchedulesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: classScheduleKeys.all }),
   });
 }

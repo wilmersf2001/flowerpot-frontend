@@ -15,7 +15,7 @@ function toInstructorStaffBranches(raw: unknown): InstructorStaffBranch[] {
   if (!Array.isArray(raw)) return [];
   return raw.map((branch) => {
     const b = branch as Record<string, unknown>;
-    return { id: String(b.id), name: String(b.name ?? "") };
+    return { id: Number(b.id), name: String(b.name ?? "") };
   });
 }
 
@@ -25,7 +25,7 @@ function toInstructorStaff(raw: unknown): InstructorStaff | null {
   const s = raw as Record<string, unknown>;
   const jobPosition = s.job_position as Record<string, unknown> | undefined;
   return {
-    id: String(s.id),
+    id: Number(s.id),
     full_name: String(s.full_name ?? ""),
     first_name: String(s.first_name ?? ""),
     last_name: String(s.last_name ?? ""),
@@ -33,7 +33,7 @@ function toInstructorStaff(raw: unknown): InstructorStaff | null {
     phone: String(s.phone ?? ""),
     email: String(s.email ?? ""),
     is_active: s.is_active === true || s.is_active === "true" || s.is_active === 1,
-    job_position_name: jobPosition ? String(jobPosition.name ?? "") : null,
+    job_position: jobPosition ? { name: String(jobPosition.name ?? "") } : undefined,
     branches: toInstructorStaffBranches(s.branches),
   };
 }
@@ -42,15 +42,15 @@ function toInstructorSpecialties(raw: unknown): InstructorSpecialty[] {
   if (!Array.isArray(raw)) return [];
   return raw.map((specialty) => {
     const s = specialty as Record<string, unknown>;
-    return { id: String(s.id), name: String(s.name ?? "") };
+    return { id: Number(s.id), name: String(s.name ?? "") };
   });
 }
 
 /** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toInstructorRow(raw: Record<string, unknown>): InstructorRow {
   return {
-    id: String(raw.id),
-    staff_id: String(raw.staff_id ?? ""),
+    id: Number(raw.id),
+    staff_id: Number(raw.staff_id ?? 0),
     staff: toInstructorStaff(raw.staff),
     bio: String(raw.bio ?? ""),
     tarifa_por_clase: raw.tarifa_por_clase == null ? "" : String(raw.tarifa_por_clase),
@@ -81,7 +81,7 @@ async function create(input: CreateInstructorInput): Promise<InstructorRow> {
   return toInstructorRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateInstructorInput): Promise<InstructorRow> {
+async function update(id: number, input: UpdateInstructorInput): Promise<InstructorRow> {
   const { data } = await apiClient.patch<unknown>(
     `${INSTRUCTORS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -89,12 +89,12 @@ async function update(id: string, input: UpdateInstructorInput): Promise<Instruc
   return toInstructorRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${INSTRUCTORS_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un instructor eliminado (soft-delete). */
-async function restore(id: string): Promise<InstructorRow> {
+async function restore(id: number): Promise<InstructorRow> {
   const { data } = await apiClient.patch<unknown>(
     `${INSTRUCTORS_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

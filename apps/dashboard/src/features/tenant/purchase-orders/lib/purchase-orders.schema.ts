@@ -54,12 +54,12 @@ export function purchaseOrderFormFields(itemCount: number): Path<PurchaseOrderFo
 /** Prellena el formulario con los datos de una orden existente (modo edición). */
 export function purchaseOrderToForm(order: PurchaseOrderRow): PurchaseOrderForm {
   return {
-    supplier_id: order.supplier_id,
-    branch_id: order.branch_id,
+    supplier_id: String(order.supplier_id),
+    branch_id: String(order.branch_id),
     order_date: order.order_date,
     items: order.items.length
       ? order.items.map((item) => ({
-          product_id: item.product_id,
+          product_id: String(item.product_id),
           quantity: String(item.quantity),
           unit_cost: String(item.unit_cost),
         }))

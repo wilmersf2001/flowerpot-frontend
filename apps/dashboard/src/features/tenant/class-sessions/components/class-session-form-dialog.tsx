@@ -68,7 +68,7 @@ export function ClassSessionFormDialog({
     () =>
       session?.instructor
         ? {
-            value: session.instructor.id,
+            value: String(session.instructor.id),
             label: session.instructor.staff?.full_name ?? "Instructor",
             hint: session.instructor.staff?.dni,
           }

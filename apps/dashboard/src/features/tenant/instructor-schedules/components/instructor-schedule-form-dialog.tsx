@@ -79,7 +79,7 @@ export function InstructorScheduleFormDialog({
   const selectedBranch: ComboboxOption | null = useMemo(
     () =>
       schedule?.branch
-        ? { value: schedule.branch.id, label: schedule.branch.name }
+        ? { value: String(schedule.branch.id), label: schedule.branch.name }
         : null,
     [schedule],
   );

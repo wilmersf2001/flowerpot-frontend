@@ -85,15 +85,17 @@ export function PurchaseOrderFormDialog({
   );
 
   const supplierSelected: ComboboxOption | null = order?.supplier
-    ? { value: order.supplier.id, label: order.supplier.name }
+    ? { value: String(order.supplier.id), label: order.supplier.name }
     : null;
   const branchSelected: ComboboxOption | null = order?.branch
-    ? { value: order.branch.id, label: order.branch.name }
+    ? { value: String(order.branch.id), label: order.branch.name }
     : null;
 
   function itemProductSelected(index: number): ComboboxOption | null {
     const item = order?.items[index];
-    return item?.product ? { value: item.product.id, label: item.product.name, hint: item.product.sku } : null;
+    return item?.product
+      ? { value: String(item.product.id), label: item.product.name, hint: item.product.sku }
+      : null;
   }
 
   const onSubmit = handleSubmit(

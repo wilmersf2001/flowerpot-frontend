@@ -15,10 +15,10 @@ export function useEquipmentList(params: EquipmentListParams = {}) {
 }
 
 /** Detalle de un equipo (con categoría, sede e historial de mantenimientos). */
-export function useEquipmentDetail(id: string | null) {
+export function useEquipmentDetail(id: number | null) {
   return useQuery({
-    queryKey: equipmentKeys.detail(id ?? ""),
-    queryFn: () => equipmentApi.show(id as string),
+    queryKey: equipmentKeys.detail(id ?? 0),
+    queryFn: () => equipmentApi.show(id as number),
     enabled: id !== null,
   });
 }
@@ -34,7 +34,7 @@ export function useCreateEquipment() {
 export function useUpdateEquipment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateEquipmentInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateEquipmentInput }) =>
       equipmentApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentKeys.all }),
   });
@@ -43,7 +43,7 @@ export function useUpdateEquipment() {
 export function useDeleteEquipment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentApi.remove(id),
+    mutationFn: (id: number) => equipmentApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentKeys.all }),
   });
 }
@@ -51,7 +51,7 @@ export function useDeleteEquipment() {
 export function useRestoreEquipment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentApi.restore(id),
+    mutationFn: (id: number) => equipmentApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentKeys.all }),
   });
 }
@@ -60,13 +60,13 @@ export function useRestoreEquipment() {
 export function useDecommissionEquipment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentApi.decommission(id),
+    mutationFn: (id: number) => equipmentApi.decommission(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentKeys.all }),
   });
 }
 
 const toEquipmentOption = (equipment: EquipmentRow): ComboboxOption => ({
-  value: equipment.id,
+  value: String(equipment.id),
   label: equipment.name,
   hint: equipment.status === "dado_de_baja" ? "Dado de baja" : (equipment.serial_number ?? undefined),
 });

@@ -10,18 +10,19 @@ function toAttendanceRow(raw: Record<string, unknown>): AttendanceRow {
   const device = raw.device as Record<string, unknown> | null | undefined;
   const membership = raw.membership as Record<string, unknown> | null | undefined;
   return {
-    id: String(raw.id),
-    member_id: String(raw.member_id),
-    membership_id: raw.membership_id == null ? null : String(raw.membership_id),
+    id: Number(raw.id),
+    member_id: Number(raw.member_id),
+    membership_id: raw.membership_id == null ? null : Number(raw.membership_id),
     checked_in_at: String(raw.checked_in_at ?? ""),
     source: String(raw.source ?? ""),
     notes: String(raw.notes ?? ""),
     created_at: String(raw.created_at ?? ""),
-    member_name: member ? String(member.full_name ?? "") : undefined,
-    member_dni: member ? String(member.dni ?? "") : undefined,
-    branch_name: branch ? String(branch.name ?? "") : undefined,
-    device_name: device ? String(device.name ?? "") : undefined,
-    membership_ends_at: membership ? String(membership.ends_at ?? "") : undefined,
+    member: member
+      ? { full_name: String(member.full_name ?? ""), dni: String(member.dni ?? "") }
+      : undefined,
+    branch: branch ? { name: String(branch.name ?? "") } : undefined,
+    device: device ? { name: String(device.name ?? "") } : undefined,
+    membership: membership ? { ends_at: String(membership.ends_at ?? "") } : undefined,
   };
 }
 
@@ -44,7 +45,7 @@ async function create(input: CreateAttendanceInput): Promise<AttendanceRow> {
   return toAttendanceRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${ATTENDANCE_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 

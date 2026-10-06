@@ -13,7 +13,7 @@ function toStaffBranches(raw: unknown): StaffBranch[] {
   if (!Array.isArray(raw)) return [];
   return raw.map((branch) => {
     const b = branch as Record<string, unknown>;
-    return { id: String(b.id), name: String(b.name ?? "") };
+    return { id: Number(b.id), name: String(b.name ?? "") };
   });
 }
 
@@ -21,7 +21,7 @@ function toStaffBranches(raw: unknown): StaffBranch[] {
 function toStaffRow(raw: Record<string, unknown>): StaffRow {
   const jobPosition = raw.job_position as Record<string, unknown> | undefined;
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     full_name: String(raw.full_name ?? ""),
     first_name: String(raw.first_name ?? ""),
     last_name: String(raw.last_name ?? ""),
@@ -31,8 +31,8 @@ function toStaffRow(raw: Record<string, unknown>): StaffRow {
     salary: String(raw.salary ?? ""),
     hire_date: raw.hire_date == null ? null : String(raw.hire_date),
     is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
-    job_position_id: jobPosition ? String(jobPosition.id) : null,
-    job_position_name: jobPosition ? String(jobPosition.name ?? "") : null,
+    job_position_id: jobPosition ? Number(jobPosition.id) : null,
+    job_position: jobPosition ? { name: String(jobPosition.name ?? "") } : undefined,
     branches: toStaffBranches(raw.branches),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
@@ -58,7 +58,7 @@ async function create(input: CreateStaffInput): Promise<StaffRow> {
   return toStaffRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateStaffInput): Promise<StaffRow> {
+async function update(id: number, input: UpdateStaffInput): Promise<StaffRow> {
   const { data } = await apiClient.patch<unknown>(
     `${STAFF_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -66,12 +66,12 @@ async function update(id: string, input: UpdateStaffInput): Promise<StaffRow> {
   return toStaffRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${STAFF_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un miembro del personal eliminado (soft-delete). */
-async function restore(id: string): Promise<StaffRow> {
+async function restore(id: number): Promise<StaffRow> {
   const { data } = await apiClient.patch<unknown>(
     `${STAFF_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );

@@ -17,20 +17,20 @@ const normalizeStatus = enumFallback(CLASS_SESSION_STATUSES, "scheduled");
 function toClassSessionGymClass(raw: unknown): ClassSessionGymClass | null {
   if (!raw || typeof raw !== "object") return null;
   const c = raw as Record<string, unknown>;
-  return { id: String(c.id), name: String(c.name ?? "") };
+  return { id: Number(c.id), name: String(c.name ?? "") };
 }
 
 function toClassSessionBranch(raw: unknown): ClassSessionBranch | null {
   if (!raw || typeof raw !== "object") return null;
   const b = raw as Record<string, unknown>;
-  return { id: String(b.id), name: String(b.name ?? "") };
+  return { id: Number(b.id), name: String(b.name ?? "") };
 }
 
 function toClassSessionClassSchedule(raw: unknown): ClassSessionClassSchedule | null {
   if (!raw || typeof raw !== "object") return null;
   const s = raw as Record<string, unknown>;
   return {
-    id: String(s.id),
+    id: Number(s.id),
     gym_class: toClassSessionGymClass(s.gym_class),
     branch: toClassSessionBranch(s.branch),
   };
@@ -41,20 +41,20 @@ function toClassSessionInstructor(raw: unknown): ClassSessionInstructor | null {
   const i = raw as Record<string, unknown>;
   const staff = i.staff as Record<string, unknown> | undefined;
   return {
-    id: String(i.id),
+    id: Number(i.id),
     staff: staff ? { full_name: String(staff.full_name ?? ""), dni: String(staff.dni ?? "") } : null,
   };
 }
 
 function toClassSessionRow(raw: Record<string, unknown>): ClassSessionRow {
   return {
-    id: String(raw.id),
-    class_schedule_id: String(raw.class_schedule_id ?? ""),
+    id: Number(raw.id),
+    class_schedule_id: Number(raw.class_schedule_id ?? 0),
     class_schedule: toClassSessionClassSchedule(raw.class_schedule),
     session_date: String(raw.session_date ?? ""),
     start_time: String(raw.start_time ?? ""),
     end_time: String(raw.end_time ?? ""),
-    instructor_id: String(raw.instructor_id ?? ""),
+    instructor_id: Number(raw.instructor_id ?? 0),
     instructor: toClassSessionInstructor(raw.instructor),
     max_capacity: Number(raw.max_capacity ?? 0),
     status: normalizeStatus(String(raw.status ?? "")),
@@ -80,7 +80,7 @@ async function list(params: ClassSessionListParams = {}): Promise<Paginated<Clas
   return { ...page, data: page.data.map(toClassSessionRow) };
 }
 
-async function update(id: string, input: UpdateClassSessionInput): Promise<ClassSessionRow> {
+async function update(id: number, input: UpdateClassSessionInput): Promise<ClassSessionRow> {
   const { data } = await apiClient.patch<unknown>(
     `${CLASS_SESSIONS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,

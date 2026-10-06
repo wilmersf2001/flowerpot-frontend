@@ -26,7 +26,7 @@ export function useCreateGymClass() {
 export function useUpdateGymClass() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateGymClassInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateGymClassInput }) =>
       gymClassesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: gymClassKeys.all }),
   });
@@ -35,7 +35,7 @@ export function useUpdateGymClass() {
 export function useDeleteGymClass() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => gymClassesApi.remove(id),
+    mutationFn: (id: number) => gymClassesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: gymClassKeys.all }),
   });
 }
@@ -43,7 +43,7 @@ export function useDeleteGymClass() {
 export function useRestoreGymClass() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => gymClassesApi.restore(id),
+    mutationFn: (id: number) => gymClassesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: gymClassKeys.all }),
   });
 }
@@ -85,7 +85,7 @@ export function useToggleGymClassActive() {
 }
 
 const toGymClassOption = (gymClass: GymClassRow): ComboboxOption => ({
-  value: gymClass.id,
+  value: String(gymClass.id),
   label: gymClass.name,
   hint: `${gymClass.duration_minutes} min`,
 });

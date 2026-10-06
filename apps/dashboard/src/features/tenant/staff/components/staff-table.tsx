@@ -37,7 +37,7 @@ const baseColumns: Column<StaffRow>[] = [
     key: "job_position_name",
     header: "Cargo",
     cell: (row) => (
-      <span className="text-muted-foreground">{row.job_position_name || EM_DASH}</span>
+      <span className="text-muted-foreground">{row.job_position?.name || EM_DASH}</span>
     ),
   },
   {

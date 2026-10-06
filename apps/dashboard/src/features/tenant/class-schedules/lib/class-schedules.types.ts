@@ -4,7 +4,7 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface ClassScheduleGymClass {
-  id: string;
+  id: number;
   name: string;
   duration_minutes: number;
   max_capacity: number;
@@ -17,23 +17,23 @@ export interface ClassScheduleInstructorStaff {
 }
 
 export interface ClassScheduleInstructor {
-  id: string;
+  id: number;
   staff: ClassScheduleInstructorStaff | null;
 }
 
 export interface ClassScheduleBranch {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface ClassScheduleRow {
-  id: string;
-  gym_class_id: string;
+  id: number;
+  gym_class_id: number;
   /** Solo viene cargada en el `index`; en `store`/`update`/`show` es `null`. */
   gym_class: ClassScheduleGymClass | null;
-  instructor_id: string;
+  instructor_id: number;
   instructor: ClassScheduleInstructor | null;
-  branch_id: string;
+  branch_id: number;
   branch: ClassScheduleBranch | null;
   /** 1 = Lunes ... 7 = Domingo. */
   day_of_week: number;

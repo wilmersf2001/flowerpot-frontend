@@ -31,7 +31,7 @@ export function useCreatePurchaseOrder() {
 export function useUpdatePurchaseOrder() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdatePurchaseOrderInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdatePurchaseOrderInput }) =>
       purchaseOrdersApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: purchaseOrderKeys.all }),
   });
@@ -41,7 +41,7 @@ export function useUpdatePurchaseOrder() {
 export function useDeletePurchaseOrder() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => purchaseOrdersApi.remove(id),
+    mutationFn: (id: number) => purchaseOrdersApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: purchaseOrderKeys.all }),
   });
 }
@@ -49,7 +49,7 @@ export function useDeletePurchaseOrder() {
 export function useRestorePurchaseOrder() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => purchaseOrdersApi.restore(id),
+    mutationFn: (id: number) => purchaseOrdersApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: purchaseOrderKeys.all }),
   });
 }
@@ -62,7 +62,7 @@ export function useRestorePurchaseOrder() {
 export function useReceivePurchaseOrder() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: ReceivePurchaseOrderInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: ReceivePurchaseOrderInput }) =>
       purchaseOrdersApi.receive(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: purchaseOrderKeys.all });

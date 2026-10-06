@@ -6,12 +6,12 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface StaffBranch {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface StaffRow {
-  id: string;
+  id: number;
   full_name: string;
   first_name: string;
   last_name: string;
@@ -21,8 +21,8 @@ export interface StaffRow {
   salary: string;
   hire_date: string | null;
   is_active: boolean;
-  job_position_id: string | null;
-  job_position_name: string | null;
+  job_position_id: number | null;
+  job_position?: { name: string };
   branches: StaffBranch[];
   created_at: string;
   updated_at: string;

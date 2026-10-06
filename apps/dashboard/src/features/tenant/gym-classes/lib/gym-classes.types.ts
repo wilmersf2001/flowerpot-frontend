@@ -4,13 +4,13 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface GymClassSpecialty {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface GymClassRow {
-  id: string;
-  specialty_id: string | null;
+  id: number;
+  specialty_id: number | null;
   /** Solo viene cargada en el `index`; en `store`/`update`/`show` es `null`. */
   specialty: GymClassSpecialty | null;
   name: string;

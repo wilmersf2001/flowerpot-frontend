@@ -39,7 +39,7 @@ export function useCreateAttendance() {
 export function useDeleteAttendance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => attendanceApi.remove(id),
+    mutationFn: (id: number) => attendanceApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: attendanceKeys.all }),
   });
 }

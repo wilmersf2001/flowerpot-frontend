@@ -4,14 +4,14 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface InstructorScheduleBranch {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface InstructorScheduleRow {
-  id: string;
-  instructor_id: string;
-  branch_id: string;
+  id: number;
+  instructor_id: number;
+  branch_id: number;
   branch: InstructorScheduleBranch | null;
   /** 1 = Lunes ... 7 = Domingo. */
   day_of_week: number;
