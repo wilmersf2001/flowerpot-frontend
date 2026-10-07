@@ -13,7 +13,7 @@ export interface ProductCategoryRow {
 }
 
 export interface ProductCategoryListParams extends BaseListParams {
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

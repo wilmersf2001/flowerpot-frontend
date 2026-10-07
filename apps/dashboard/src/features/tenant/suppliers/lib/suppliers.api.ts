@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import { toBoolean } from "@/features/_shared/format";
 import { SUPPLIERS_ENDPOINT, SUPPLIERS_PER_PAGE } from "./suppliers.constants";
 import {
@@ -24,14 +25,8 @@ function toSupplierRow(raw: Record<string, unknown>): SupplierRow {
 }
 
 async function list(params: SupplierListParams = {}): Promise<Paginated<SupplierRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(SUPPLIERS_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? SUPPLIERS_PER_PAGE,
-      search: search ? search : undefined,
-      is_active: params.isActive,
-    },
+    params: buildListParams(params, SUPPLIERS_PER_PAGE),
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);
   return { ...page, data: page.data.map(toSupplierRow) };

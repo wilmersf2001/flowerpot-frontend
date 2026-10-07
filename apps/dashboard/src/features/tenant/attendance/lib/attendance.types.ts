@@ -6,17 +6,17 @@ export interface AttendanceRow {
   membership_id: number | null;
   checked_in_at: string;
   source: string;
-  notes: string;
+  notes: string | null;
   created_at: string;
   member?: { full_name: string; dni: string };
   branch?: { name: string };
-  device?: { name: string };
-  membership?: { ends_at: string };
+  device?: { name: string } | null;
+  membership?: { ends_at: string } | null;
 }
 
 export interface AttendanceListParams extends BaseListParams {
   /** Sede activa (switcher global). `useAttendances` la inyecta; no la pasa la página. */
-  branchId?: string | null;
+  branch_id?: string | null;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

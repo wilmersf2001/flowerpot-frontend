@@ -36,8 +36,8 @@ export interface ProductRow {
 }
 
 export interface ProductListParams extends BaseListParams {
-  categoryId?: string;
-  isActive?: boolean;
+  product_category_id?: string;
+  is_active?: boolean;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

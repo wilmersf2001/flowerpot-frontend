@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import { toBoolean } from "@/features/_shared/format";
 import {
   PRODUCT_CATEGORIES_ENDPOINT,
@@ -26,14 +27,8 @@ function toProductCategoryRow(raw: Record<string, unknown>): ProductCategoryRow 
 async function list(
   params: ProductCategoryListParams = {},
 ): Promise<Paginated<ProductCategoryRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(PRODUCT_CATEGORIES_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? PRODUCT_CATEGORIES_PER_PAGE,
-      search: search ? search : undefined,
-      is_active: params.isActive,
-    },
+    params: buildListParams(params, PRODUCT_CATEGORIES_PER_PAGE),
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);
   return { ...page, data: page.data.map(toProductCategoryRow) };

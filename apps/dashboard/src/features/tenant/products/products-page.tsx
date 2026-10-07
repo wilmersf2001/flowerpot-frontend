@@ -26,8 +26,8 @@ export function ProductsPage() {
   const products = useProducts({
     page,
     search: debouncedSearch,
-    categoryId: categoryId || undefined,
-    isActive: activeFilter === "" ? undefined : activeFilter === "true",
+    product_category_id: categoryId || undefined,
+    is_active: activeFilter === "" ? undefined : activeFilter === "true",
   });
   const meta = products.data;
 

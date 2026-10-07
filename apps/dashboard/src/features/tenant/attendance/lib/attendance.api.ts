@@ -1,48 +1,28 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
-import { ATTENDANCE_ENDPOINT, ATTENDANCE_PER_PAGE } from "./attendance.constants";
-import { AttendanceListParams, AttendanceRow, CreateAttendanceInput } from "./attendance.types";
+import { buildListParams } from "@/features/_shared/list-params";
+import {
+  ATTENDANCE_ENDPOINT,
+  ATTENDANCE_PER_PAGE,
+} from "./attendance.constants";
+import {
+  AttendanceListParams,
+  AttendanceRow,
+  CreateAttendanceInput,
+} from "./attendance.types";
 
-/** Mapea la fila cruda del backend, incluidas sus relaciones opcionales (`whenLoaded`). */
-function toAttendanceRow(raw: Record<string, unknown>): AttendanceRow {
-  const member = raw.member as Record<string, unknown> | undefined;
-  const branch = raw.branch as Record<string, unknown> | undefined;
-  const device = raw.device as Record<string, unknown> | null | undefined;
-  const membership = raw.membership as Record<string, unknown> | null | undefined;
-  return {
-    id: Number(raw.id),
-    member_id: Number(raw.member_id),
-    membership_id: raw.membership_id == null ? null : Number(raw.membership_id),
-    checked_in_at: String(raw.checked_in_at ?? ""),
-    source: String(raw.source ?? ""),
-    notes: String(raw.notes ?? ""),
-    created_at: String(raw.created_at ?? ""),
-    member: member
-      ? { full_name: String(member.full_name ?? ""), dni: String(member.dni ?? "") }
-      : undefined,
-    branch: branch ? { name: String(branch.name ?? "") } : undefined,
-    device: device ? { name: String(device.name ?? "") } : undefined,
-    membership: membership ? { ends_at: String(membership.ends_at ?? "") } : undefined,
-  };
-}
-
-async function list(params: AttendanceListParams = {}): Promise<Paginated<AttendanceRow>> {
-  const search = params.search?.trim();
+async function list(
+  params: AttendanceListParams = {},
+): Promise<Paginated<AttendanceRow>> {
   const { data } = await apiClient.get<unknown>(ATTENDANCE_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? ATTENDANCE_PER_PAGE,
-      search: search ? search : undefined,
-      branch_id: params.branchId ? Number(params.branchId) : undefined,
-    },
+    params: buildListParams(params, ATTENDANCE_PER_PAGE),
   });
-  const page = unwrapPaginated<Record<string, unknown>>(data);
-  return { ...page, data: page.data.map(toAttendanceRow) };
+  return unwrapPaginated<AttendanceRow>(data);
 }
 
 async function create(input: CreateAttendanceInput): Promise<AttendanceRow> {
   const { data } = await apiClient.post<unknown>(ATTENDANCE_ENDPOINT, input);
-  return toAttendanceRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<AttendanceRow>(data);
 }
 
 async function remove(id: number): Promise<void> {

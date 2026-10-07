@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import { toBoolean } from "@/features/_shared/format";
 import {
   EQUIPMENT_CATEGORIES_ENDPOINT,
@@ -26,14 +27,8 @@ function toEquipmentCategoryRow(raw: Record<string, unknown>): EquipmentCategory
 async function list(
   params: EquipmentCategoryListParams = {},
 ): Promise<Paginated<EquipmentCategoryRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(EQUIPMENT_CATEGORIES_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? EQUIPMENT_CATEGORIES_PER_PAGE,
-      search: search ? search : undefined,
-      is_active: params.isActive,
-    },
+    params: buildListParams(params, EQUIPMENT_CATEGORIES_PER_PAGE),
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);
   return { ...page, data: page.data.map(toEquipmentCategoryRow) };
