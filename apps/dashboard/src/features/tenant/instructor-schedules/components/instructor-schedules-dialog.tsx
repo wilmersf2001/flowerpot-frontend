@@ -26,7 +26,7 @@ export function InstructorSchedulesDialog({
   instructorName?: string;
   onOpenChangeAction: (open: boolean) => void;
 }) {
-  const schedules = useInstructorSchedules({ instructorId: instructorId ?? "" });
+  const schedules = useInstructorSchedules({ instructor_id: instructorId ?? "" });
 
   // Diálogo de alta/edición: "new" para crear, un horario para editar, null cerrado.
   const [editing, setEditing] = useState<InstructorScheduleRow | "new" | null>(null);

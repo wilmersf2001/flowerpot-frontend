@@ -36,11 +36,11 @@ export const INSTRUCTOR_FORM_FIELDS = [
 /** Prellena el formulario con los datos de un instructor existente (modo edición). */
 export function instructorToForm(instructor: InstructorRow): InstructorForm {
   return {
-    staff_id: String(instructor.staff_id),
-    bio: instructor.bio,
-    tarifa_por_clase: instructor.tarifa_por_clase,
+    staff_id: instructor.staff ? String(instructor.staff.id) : "",
+    bio: instructor.bio ?? "",
+    tarifa_por_clase: instructor.tarifa_por_clase ?? "",
     fecha_inicio: instructor.fecha_inicio ?? "",
-    specialty_ids: instructor.specialties.map((specialty) => String(specialty.id)),
+    specialty_ids: (instructor.specialties ?? []).map((specialty) => String(specialty.id)),
   };
 }
 

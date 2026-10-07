@@ -38,7 +38,7 @@ const baseColumns: Column<InstructorRow>[] = [
     header: "Especialidades",
     cell: (row) => (
       <span className="text-muted-foreground">
-        {row.specialties.length > 0
+        {row.specialties?.length
           ? row.specialties.map((specialty) => specialty.name).join(", ")
           : EM_DASH}
       </span>
@@ -119,12 +119,12 @@ export function InstructorsTable({
           <div className="flex items-center gap-2">
             <Switch
               size="sm"
-              checked={row.is_active}
+              checked={Boolean(row.is_active)}
               disabled={pendingId === row.id}
               onCheckedChange={() => handleToggle(row)}
               aria-label={`Activar a ${row.staff?.full_name ?? "instructor"}`}
             />
-            <StatusBadge value={row.is_active} map={ACTIVE_MAP} />
+            <StatusBadge value={Boolean(row.is_active)} map={ACTIVE_MAP} />
           </div>
         ),
     },

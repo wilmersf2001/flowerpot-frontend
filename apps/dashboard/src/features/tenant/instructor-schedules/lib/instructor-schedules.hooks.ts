@@ -12,7 +12,7 @@ export function useInstructorSchedules(params: InstructorScheduleListParams) {
   return useQuery({
     queryKey: instructorScheduleKeys.list(params),
     queryFn: () => instructorSchedulesApi.list(params),
-    enabled: Boolean(params.instructorId),
+    enabled: Boolean(params.instructor_id),
     placeholderData: keepPreviousData,
   });
 }

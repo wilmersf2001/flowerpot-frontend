@@ -45,7 +45,7 @@ const baseColumns: Column<StaffRow>[] = [
     header: "Sedes",
     cell: (row) => (
       <span className="text-muted-foreground">
-        {row.branches.length > 0
+        {row.branches?.length
           ? row.branches.map((branch) => branch.name).join(", ")
           : EM_DASH}
       </span>
@@ -135,12 +135,12 @@ export function StaffTable({
           <div className="flex items-center gap-2">
             <Switch
               size="sm"
-              checked={row.is_active}
+              checked={Boolean(row.is_active)}
               disabled={pendingId === row.id}
               onCheckedChange={() => handleToggle(row)}
               aria-label={`Activar a ${row.full_name}`}
             />
-            <StatusBadge value={row.is_active} map={ACTIVE_MAP} />
+            <StatusBadge value={Boolean(row.is_active)} map={ACTIVE_MAP} />
           </div>
         ),
     },

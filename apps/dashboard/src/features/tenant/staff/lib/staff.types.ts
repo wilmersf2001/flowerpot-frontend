@@ -1,9 +1,7 @@
-// TODO(gen): `api.d.ts` no confirma el shape real de `GET /staff` (el schema
-// `StaffResource` tipa `is_active` como `string` y `branches` como `string`,
-// aunque el `toArray()` real serializa `branches` como un array de
-// `{id, name}` vía `whenLoaded`). Se normaliza en `staff.api.ts` al mapear.
-
-import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+import type {
+  BaseListParams,
+  ListFilters,
+} from "@/features/_shared/list-params";
 
 export interface StaffBranch {
   id: number;
@@ -21,15 +19,18 @@ export interface StaffRow {
   salary: string;
   hire_date: string | null;
   is_active: boolean;
-  job_position_id: number | null;
-  job_position?: { name: string };
-  branches: StaffBranch[];
+  /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
+  job_position?: { id: number; name: string };
+  branches?: StaffBranch[];
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
 }
 
-export type StaffListParams = BaseListParams;
+export interface StaffListParams extends BaseListParams {
+  /** Sede activa (switcher global). `useMembers` la inyecta; no la pasa la página. */
+  branch_id?: string | null;
+}
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
 export type StaffFilters = ListFilters<StaffListParams>;

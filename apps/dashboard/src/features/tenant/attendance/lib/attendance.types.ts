@@ -1,8 +1,13 @@
-import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
+import type {
+  BaseListParams,
+  ListFilters,
+} from "@/features/_shared/list-params";
 
 export interface AttendanceRow {
   id: number;
   member_id: number;
+  member_name?: string;
+  branch_name?: string;
   membership_id: number | null;
   checked_in_at: string;
   source: string;

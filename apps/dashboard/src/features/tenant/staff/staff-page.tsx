@@ -4,7 +4,11 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
-import { ResourceHeader, SearchInput, useDebouncedValue } from "@/features/_shared";
+import {
+  ResourceHeader,
+  SearchInput,
+  useDebouncedValue,
+} from "@/features/_shared";
 import { JobPositionsPage } from "@/features/tenant/job-positions";
 import type { StaffRow } from "./lib/staff.types";
 import { useStaff } from "./lib/staff.hooks";

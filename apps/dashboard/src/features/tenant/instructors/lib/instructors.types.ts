@@ -1,6 +1,3 @@
-// TODO(gen): `api.d.ts` todavía no tiene `InstructorResource`. Se escribe a
-// mano y se reemplaza al correr `npm run gen -w packages/types`.
-
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface InstructorStaffBranch {
@@ -19,7 +16,7 @@ export interface InstructorStaff {
   email: string;
   is_active: boolean;
   job_position?: { name: string };
-  branches: InstructorStaffBranch[];
+  branches?: InstructorStaffBranch[];
 }
 
 export interface InstructorSpecialty {
@@ -29,14 +26,14 @@ export interface InstructorSpecialty {
 
 export interface InstructorRow {
   id: number;
-  staff_id: number;
-  staff: InstructorStaff | null;
-  bio: string;
+  /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
+  staff?: InstructorStaff;
+  bio: string | null;
   /** Decimal como texto (p. ej. "50.00"), igual que `salary` en `StaffRow`. */
-  tarifa_por_clase: string;
+  tarifa_por_clase: string | null;
   fecha_inicio: string | null;
   is_active: boolean;
-  specialties: InstructorSpecialty[];
+  specialties?: InstructorSpecialty[];
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

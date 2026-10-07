@@ -1,20 +1,38 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import type { Paginated } from "@repo/types";
 import type { ComboboxOption } from "@repo/ui/combobox";
 import { useAsyncOptions } from "@/features/_shared/use-async-options";
 import { staffApi } from "./staff.api";
 import { staffKeys } from "./staff.keys";
-import { CreateStaffInput, StaffListParams, StaffRow, UpdateStaffInput } from "./staff.types";
+import {
+  CreateStaffInput,
+  StaffListParams,
+  StaffRow,
+  UpdateStaffInput,
+} from "./staff.types";
+import { useSelectedBranch } from "@/components/branch";
 
 export { useJobPositionOptions } from "@/features/tenant/job-positions";
 export { useBranchOptions } from "@/features/tenant/branches";
 
 /** Lista paginada de personal, con búsqueda opcional (`search`). */
 export function useStaff(params: StaffListParams = {}) {
+  const { selectedBranchId } = useSelectedBranch();
+  const listParams: StaffListParams = {
+    ...params,
+    branch_id: selectedBranchId,
+  };
+
   return useQuery({
-    queryKey: staffKeys.list(params),
-    queryFn: () => staffApi.list(params),
+    queryKey: staffKeys.list(listParams),
+    queryFn: () => staffApi.list(listParams),
     placeholderData: keepPreviousData,
+    enabled: selectedBranchId != null,
   });
 }
 
@@ -60,7 +78,8 @@ export function useRestoreStaff() {
 export function useToggleStaffActive() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (staff: StaffRow) => staffApi.update(staff.id, { is_active: !staff.is_active }),
+    mutationFn: (staff: StaffRow) =>
+      staffApi.update(staff.id, { is_active: !staff.is_active }),
     onMutate: async (staff: StaffRow) => {
       await queryClient.cancelQueries({ queryKey: staffKeys.lists() });
       const snapshots = queryClient.getQueriesData<Paginated<StaffRow>>({
@@ -96,7 +115,8 @@ const toStaffOption = (staff: StaffRow): ComboboxOption => ({
 export function useStaffOptions(enabled = true) {
   return useAsyncOptions<StaffRow>({
     queryKey: staffKeys.options,
-    fetchPage: ({ search, page }) => staffApi.list({ search, page, perPage: 20 }),
+    fetchPage: ({ search, page }) =>
+      staffApi.list({ search, page, perPage: 20 }),
     toOption: toStaffOption,
     enabled,
   });
