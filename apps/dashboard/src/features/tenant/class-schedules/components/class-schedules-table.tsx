@@ -124,12 +124,12 @@ export function ClassSchedulesTable({
           <div className="flex items-center gap-2">
             <Switch
               size="sm"
-              checked={row.is_active}
+              checked={Boolean(row.is_active)}
               disabled={pendingId === row.id}
               onCheckedChange={() => handleToggle(row)}
               aria-label="Activar horario"
             />
-            <StatusBadge value={row.is_active} map={ACTIVE_MAP} />
+            <StatusBadge value={Boolean(row.is_active)} map={ACTIVE_MAP} />
           </div>
         ),
     },

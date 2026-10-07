@@ -1,6 +1,3 @@
-// TODO(gen): `api.d.ts` todavía no tiene `ClassSessionResource`. Se escribe a
-// mano y se reemplaza al correr `npm run gen -w packages/types`.
-
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import { CLASS_SESSION_STATUSES } from "./class-sessions.constants";
 
@@ -19,8 +16,8 @@ export interface ClassSessionBranch {
 /** `ClassScheduleResource` anidado (ver módulo de horarios), con `gym_class` anidada. */
 export interface ClassSessionClassSchedule {
   id: number;
-  gym_class: ClassSessionGymClass | null;
-  branch: ClassSessionBranch | null;
+  gym_class?: ClassSessionGymClass;
+  branch?: ClassSessionBranch;
 }
 
 /** Resumen del `staff` asociado al instructor (ver módulo de instructores). */
@@ -31,7 +28,7 @@ export interface ClassSessionInstructorStaff {
 
 export interface ClassSessionInstructor {
   id: number;
-  staff: ClassSessionInstructorStaff | null;
+  staff?: ClassSessionInstructorStaff;
 }
 
 /**
@@ -42,7 +39,8 @@ export interface ClassSessionInstructor {
 export interface ClassSessionRow {
   id: number;
   class_schedule_id: number;
-  class_schedule: ClassSessionClassSchedule | null;
+  /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
+  class_schedule?: ClassSessionClassSchedule;
   /** `YYYY-MM-DD`. */
   session_date: string;
   /** `HH:MM:SS`. */
@@ -50,7 +48,7 @@ export interface ClassSessionRow {
   /** `HH:MM:SS`. */
   end_time: string;
   instructor_id: number;
-  instructor: ClassSessionInstructor | null;
+  instructor?: ClassSessionInstructor;
   max_capacity: number;
   status: ClassSessionStatus;
   created_at: string;
@@ -59,11 +57,11 @@ export interface ClassSessionRow {
 }
 
 export interface ClassSessionListParams extends BaseListParams {
-  classScheduleId?: string;
-  instructorId?: string;
+  class_schedule_id?: string;
+  instructor_id?: string;
   status?: ClassSessionStatus;
-  sessionDateStart?: string;
-  sessionDateEnd?: string;
+  session_date_start?: string;
+  session_date_end?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

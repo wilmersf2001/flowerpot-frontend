@@ -34,7 +34,7 @@ export function gymClassToForm(gymClass: GymClassRow): GymClassForm {
   return {
     specialty_id: gymClass.specialty_id == null ? "" : String(gymClass.specialty_id),
     name: gymClass.name,
-    description: gymClass.description,
+    description: gymClass.description ?? "",
     duration_minutes: String(gymClass.duration_minutes),
     max_capacity: String(gymClass.max_capacity),
   };

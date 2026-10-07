@@ -1,6 +1,3 @@
-// TODO(gen): `api.d.ts` todavía no tiene `GymClassResource`. Se escribe a mano
-// y se reemplaza al correr `npm run gen -w packages/types`.
-
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface GymClassSpecialty {
@@ -11,10 +8,10 @@ export interface GymClassSpecialty {
 export interface GymClassRow {
   id: number;
   specialty_id: number | null;
-  /** Solo viene cargada en el `index`; en `store`/`update`/`show` es `null`. */
-  specialty: GymClassSpecialty | null;
+  /** Solo viene cargada en el `index` (`whenLoaded`). */
+  specialty?: GymClassSpecialty | null;
   name: string;
-  description: string;
+  description: string | null;
   duration_minutes: number;
   max_capacity: number;
   is_active: boolean;
