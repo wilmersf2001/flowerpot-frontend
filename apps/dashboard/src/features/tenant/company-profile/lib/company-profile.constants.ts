@@ -30,7 +30,7 @@ export const COMPANY_IMAGE_META = {
   },
   logo_alt: {
     label: "Logo alternativo",
-    hint: "Versión secundaria, por ejemplo para fondos oscuros.",
+    hint: "Versión para fondos de color (formato Moderno). Si falta, se usa el logo principal.",
   },
   signature: {
     label: "Firma",

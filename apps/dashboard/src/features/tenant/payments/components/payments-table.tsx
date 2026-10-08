@@ -12,6 +12,7 @@ import {
   type StatusMap,
   type StatusStyle,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import {
   PAYMENT_GATEWAY_LABELS,
   PAYMENT_STATUS_LABELS,
@@ -130,49 +131,58 @@ export function PaymentsTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("payment_receipt");
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => (
-        <RowActions
-          label={`Acciones del pago de ${row.member?.full_name || row.member_id}`}
-          // Cada acción aparece solo cuando la API la permite
-          // (PaymentService / StoreInstallmentRequest / RefundPaymentRequest).
-          actions={[
-            row.balance_due > 0 &&
-              row.gateway === "manual" &&
-              (row.status === "pending" || row.status === "partially_paid") && {
-                label: "Agregar abono",
-                icon: CircleDollarSign,
-                onSelect: () => onAddInstallmentAction(row),
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => (
+          <RowActions
+            label={`Acciones del pago de ${row.member?.full_name || row.member_id}`}
+            // Cada acción aparece solo cuando la API la permite
+            // (PaymentService / StoreInstallmentRequest / RefundPaymentRequest).
+            actions={[
+              row.balance_due > 0 &&
+                row.gateway === "manual" &&
+                (row.status === "pending" || row.status === "partially_paid") && {
+                  label: "Agregar abono",
+                  icon: CircleDollarSign,
+                  onSelect: () => onAddInstallmentAction(row),
+                },
+              // Completo, o abonos parciales manuales (Culqi no cobra en partes).
+              (row.status === "completed" ||
+                (row.status === "partially_paid" && row.gateway === "manual")) && {
+                label: "Reembolsar",
+                icon: RotateCcw,
+                onSelect: () => onRefundAction(row),
               },
-            // Completo, o abonos parciales manuales (Culqi no cobra en partes).
-            (row.status === "completed" ||
-              (row.status === "partially_paid" && row.gateway === "manual")) && {
-              label: "Reembolsar",
-              icon: RotateCcw,
-              onSelect: () => onRefundAction(row),
-            },
-            {
-              // En un reembolsado la nota guarda el registro de la devolución: solo se ve.
-              label: row.status === "refunded" ? "Ver notas" : "Editar notas",
-              icon: row.status === "refunded" ? NotebookText : Pencil,
-              onSelect: () => onEditNotesAction(row),
-            },
-            row.status === "pending" && {
-              label: "Eliminar",
-              icon: Trash2,
-              variant: "destructive",
-              separatorBefore: true,
-              onSelect: () => onDeleteAction(row),
-            },
-          ]}
-        />
-      )}
-    />
+              ...docs.actionsFor(row.id, {
+                // El backend rechaza pagos fallidos o sin abonos recibidos (422).
+                canDownload: row.status !== "failed" && row.amount_paid > 0,
+                subject: row.member?.full_name,
+              }),
+              {
+                // En un reembolsado la nota guarda el registro de la devolución: solo se ve.
+                label: row.status === "refunded" ? "Ver notas" : "Editar notas",
+                icon: row.status === "refunded" ? NotebookText : Pencil,
+                onSelect: () => onEditNotesAction(row),
+              },
+              row.status === "pending" && {
+                label: "Eliminar",
+                icon: Trash2,
+                variant: "destructive",
+                separatorBefore: true,
+                onSelect: () => onDeleteAction(row),
+              },
+            ]}
+          />
+        )}
+      />
+      {docs.dialog}
+    </>
   );
 }

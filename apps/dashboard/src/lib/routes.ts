@@ -37,6 +37,7 @@ export const ROUTES = {
     cashRegister: "/cash-register",
     settings: "/settings",
     settingsCompany: "/settings/company",
+    settingsDocuments: "/settings/documents",
   },
 } as const;
 

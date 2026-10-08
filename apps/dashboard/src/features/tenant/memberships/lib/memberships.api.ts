@@ -54,4 +54,9 @@ async function updateBranches(
   return unwrapEnvelope<MembershipRow>(data);
 }
 
-export const membershipsApi = { list, create, update, updateBranches };
+export const membershipsApi = {
+  list,
+  create,
+  update,
+  updateBranches,
+};

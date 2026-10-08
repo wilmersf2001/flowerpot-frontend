@@ -14,6 +14,7 @@ import {
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import { useRestorePurchaseOrder } from "../lib/purchase-orders.hooks";
 import type { PurchaseOrderRow } from "../lib/purchase-orders.types";
 
@@ -74,6 +75,7 @@ export function PurchaseOrdersTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("purchase_order");
   const restoreOrder = useRestorePurchaseOrder();
 
   function handleRestore(order: PurchaseOrderRow) {
@@ -99,48 +101,58 @@ export function PurchaseOrdersTable({
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => {
-        const isDeleted = Boolean(row.deleted_at);
-        const isPending = row.status === "pending" && !isDeleted;
-        return (
-          <RowActions
-            label={`Acciones de la orden del ${formatDate(row.order_date)}`}
-            actions={[
-              { label: "Ver detalle", icon: Eye, onSelect: () => onViewAction(row) },
-              isDeleted && {
-                label: "Restaurar",
-                icon: RotateCcw,
-                disabled: restoreOrder.isPending && restoreOrder.variables === row.id,
-                onSelect: () => handleRestore(row),
-              },
-              isPending && {
-                label: "Editar",
-                icon: Pencil,
-                separatorBefore: true,
-                onSelect: () => onEditAction(row),
-              },
-              isPending && {
-                label: "Recibir",
-                icon: PackageCheck,
-                onSelect: () => onReceiveAction(row),
-              },
-              isPending && {
-                label: "Eliminar",
-                icon: Trash2,
-                variant: "destructive",
-                separatorBefore: true,
-                onSelect: () => onDeleteAction(row),
-              },
-            ]}
-          />
-        );
-      }}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => {
+          const isDeleted = Boolean(row.deleted_at);
+          const isPending = row.status === "pending" && !isDeleted;
+          return (
+            <RowActions
+              label={`Acciones de la orden del ${formatDate(row.order_date)}`}
+              actions={[
+                { label: "Ver detalle", icon: Eye, onSelect: () => onViewAction(row) },
+                ...(isDeleted
+                  ? []
+                  : docs.actionsFor(row.id, {
+                      // El backend rechaza órdenes canceladas (422).
+                      canDownload: row.status !== "cancelled",
+                      subject: `la orden del ${formatDate(row.order_date)}`,
+                    })),
+                isDeleted && {
+                  label: "Restaurar",
+                  icon: RotateCcw,
+                  disabled: restoreOrder.isPending && restoreOrder.variables === row.id,
+                  onSelect: () => handleRestore(row),
+                },
+                isPending && {
+                  label: "Editar",
+                  icon: Pencil,
+                  separatorBefore: true,
+                  onSelect: () => onEditAction(row),
+                },
+                isPending && {
+                  label: "Recibir",
+                  icon: PackageCheck,
+                  onSelect: () => onReceiveAction(row),
+                },
+                isPending && {
+                  label: "Eliminar",
+                  icon: Trash2,
+                  variant: "destructive",
+                  separatorBefore: true,
+                  onSelect: () => onDeleteAction(row),
+                },
+              ]}
+            />
+          );
+        }}
+      />
+      {docs.dialog}
+    </>
   );
 }

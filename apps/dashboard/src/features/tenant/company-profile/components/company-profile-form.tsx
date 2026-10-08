@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye } from "lucide-react";
-import { ApiError } from "@repo/api-client";
 import { Button } from "@repo/ui/button";
 import { toast } from "@repo/ui/toast";
 import {
   SettingsSection,
+  pdfErrorMessage,
   TextField,
   useFieldBinder,
   useResourceFormSubmit,
@@ -96,9 +96,7 @@ export function CompanyProfileForm({
       setPdfUrl(URL.createObjectURL(blob));
     } catch (err) {
       toast.error(
-        err instanceof ApiError
-          ? err.message
-          : "No se pudo generar la vista previa.",
+        await pdfErrorMessage(err, "No se pudo generar la vista previa."),
       );
     }
   }

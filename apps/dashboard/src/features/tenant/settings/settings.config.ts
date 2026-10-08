@@ -20,4 +20,10 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
     description: "Datos legales, colores y logos",
     permission: "settings.view",
   },
+  {
+    href: ROUTES.tenant.settingsDocuments,
+    label: "Documentos y plantillas",
+    description: "Textos y formato de los PDF",
+    permission: "settings.view",
+  },
 ];

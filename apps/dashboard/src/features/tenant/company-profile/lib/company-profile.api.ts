@@ -1,4 +1,5 @@
 import { apiClient, unwrapEnvelope } from "@repo/api-client";
+import { fetchPdf } from "@/features/_shared/pdf";
 import { COMPANY_PROFILE_ENDPOINT } from "./company-profile.constants";
 import type {
   CompanyImageType,
@@ -42,15 +43,10 @@ async function deleteImage(type: CompanyImageType): Promise<CompanyProfile> {
 
 /** PDF de ejemplo con la marca guardada. `layout` permite probar otro formato. */
 async function preview(layout?: string): Promise<Blob> {
-  const { data } = await apiClient.get<Blob>(
-    `${COMPANY_PROFILE_ENDPOINT}/preview`,
-    {
-      params: layout ? { layout } : undefined,
-      responseType: "blob",
-      headers: { Accept: "application/pdf" },
-    },
-  );
-  return data;
+  const { blob } = await fetchPdf(`${COMPANY_PROFILE_ENDPOINT}/preview`, {
+    layout,
+  });
+  return blob;
 }
 
 export const companyProfileApi = {

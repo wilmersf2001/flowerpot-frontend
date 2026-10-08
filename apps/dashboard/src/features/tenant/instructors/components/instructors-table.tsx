@@ -15,6 +15,7 @@ import {
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import { InstructorRow } from "../lib/instructors.types";
 import { useRestoreInstructor, useToggleInstructorActive } from "../lib/instructors.hooks";
 
@@ -79,6 +80,7 @@ export function InstructorsTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("instructor_contract");
   const toggleActive = useToggleInstructorActive();
   const restoreInstructor = useRestoreInstructor();
   const pendingId = toggleActive.isPending ? toggleActive.variables.id : undefined;
@@ -131,46 +133,52 @@ export function InstructorsTable({
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => {
-        const isDeleted = Boolean(row.deleted_at);
-        return (
-          <RowActions
-            label={`Acciones de ${row.staff?.full_name ?? "instructor"}`}
-            actions={[
-              {
-                label: "Horarios",
-                icon: CalendarClock,
-                onSelect: () => onSchedulesAction(row),
-              },
-              isDeleted
-                ? {
-                    label: "Restaurar",
-                    icon: RotateCcw,
-                    disabled: restoreInstructor.isPending && restoreInstructor.variables === row.id,
-                    onSelect: () => handleRestore(row),
-                  }
-                : {
-                    label: "Editar",
-                    icon: Pencil,
-                    onSelect: () => onEditAction(row),
-                  },
-              !isDeleted && {
-                label: "Eliminar",
-                icon: Trash2,
-                variant: "destructive",
-                separatorBefore: true,
-                onSelect: () => onDeleteAction(row),
-              },
-            ]}
-          />
-        );
-      }}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => {
+          const isDeleted = Boolean(row.deleted_at);
+          return (
+            <RowActions
+              label={`Acciones de ${row.staff?.full_name ?? "instructor"}`}
+              actions={[
+                {
+                  label: "Horarios",
+                  icon: CalendarClock,
+                  onSelect: () => onSchedulesAction(row),
+                },
+                isDeleted
+                  ? {
+                      label: "Restaurar",
+                      icon: RotateCcw,
+                      disabled: restoreInstructor.isPending && restoreInstructor.variables === row.id,
+                      onSelect: () => handleRestore(row),
+                    }
+                  : {
+                      label: "Editar",
+                      icon: Pencil,
+                      onSelect: () => onEditAction(row),
+                    },
+                ...(isDeleted
+                  ? []
+                  : docs.actionsFor(row.id, { subject: row.staff?.full_name })),
+                !isDeleted && {
+                  label: "Eliminar",
+                  icon: Trash2,
+                  variant: "destructive",
+                  separatorBefore: true,
+                  onSelect: () => onDeleteAction(row),
+                },
+              ]}
+            />
+          );
+        }}
+      />
+      {docs.dialog}
+    </>
   );
 }

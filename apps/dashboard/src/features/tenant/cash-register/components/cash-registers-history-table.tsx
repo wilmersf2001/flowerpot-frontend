@@ -11,6 +11,7 @@ import {
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import { formatSoles } from "../lib/cash-register.constants";
 import type { CashRegisterRow } from "../lib/cash-register.types";
 
@@ -103,25 +104,35 @@ export function CashRegistersHistoryTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("cash_closing_report");
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => (
-        <RowActions
-          label={`Ver detalle de la caja del ${formatDateTime(row.opened_at)}`}
-          actions={[
-            {
-              label: "Ver detalle",
-              icon: Eye,
-              onSelect: () => onViewAction(row),
-            },
-          ]}
-        />
-      )}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => (
+          <RowActions
+            label={`Ver detalle de la caja del ${formatDateTime(row.opened_at)}`}
+            actions={[
+              {
+                label: "Ver detalle",
+                icon: Eye,
+                onSelect: () => onViewAction(row),
+              },
+              // El reporte de cierre solo existe con la caja cerrada (si no, 422).
+              ...(row.status === "closed"
+                ? docs.actionsFor(row.id, {
+                    subject: `la caja del ${formatDateTime(row.opened_at)}`,
+                  })
+                : []),
+            ]}
+          />
+        )}
+      />
+      {docs.dialog}
+    </>
   );
 }

@@ -11,6 +11,7 @@ import {
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import { MembershipRow } from "../lib/memberships.types";
 
 /** Estado de la membresía -> tono y etiqueta del badge. */
@@ -91,38 +92,43 @@ export function MembershipsTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("membership_contract");
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => (
-        <RowActions
-          label={`Acciones de ${row.member_name || row.member_id}`}
-          actions={[
-            {
-              label: "Editar",
-              icon: Pencil,
-              onSelect: () => onEditAction(row),
-            },
-            // Solo los planes `limited` dejan cambiar de sede (el backend valida),
-            // y no tiene sentido en una membresía cancelada o expirada.
-            ...(row.branch_access !== "limited" ||
-            row.status === "cancelled" ||
-            row.status === "expired"
-              ? []
-              : [
-                  {
-                    label: "Cambiar sedes",
-                    icon: MapPin,
-                    onSelect: () => onChangeBranchesAction(row),
-                  },
-                ]),
-          ]}
-        />
-      )}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => (
+          <RowActions
+            label={`Acciones de ${row.member_name || row.member_id}`}
+            actions={[
+              {
+                label: "Editar",
+                icon: Pencil,
+                onSelect: () => onEditAction(row),
+              },
+              // Solo los planes `limited` dejan cambiar de sede (el backend valida),
+              // y no tiene sentido en una membresía cancelada o expirada.
+              ...docs.actionsFor(row.id, { subject: row.member_name }),
+              ...(row.branch_access !== "limited" ||
+              row.status === "cancelled" ||
+              row.status === "expired"
+                ? []
+                : [
+                    {
+                      label: "Cambiar sedes",
+                      icon: MapPin,
+                      onSelect: () => onChangeBranchesAction(row),
+                    },
+                  ]),
+            ]}
+          />
+        )}
+      />
+      {docs.dialog}
+    </>
   );
 }

@@ -11,6 +11,7 @@ import {
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import { SALE_PAYMENT_METHOD_LABELS } from "../lib/sales.constants";
 import type { SaleRow } from "../lib/sales.types";
 
@@ -74,28 +75,35 @@ export function SalesTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("sale_receipt");
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => (
-        <RowActions
-          label={`Acciones de la venta del ${formatDateTime(row.created_at)}`}
-          actions={[
-            { label: "Ver detalle", icon: Eye, onSelect: () => onViewAction(row) },
-            row.status === "completed" && {
-              label: "Anular",
-              icon: Ban,
-              variant: "destructive",
-              separatorBefore: true,
-              onSelect: () => onVoidAction(row),
-            },
-          ]}
-        />
-      )}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => (
+          <RowActions
+            label={`Acciones de la venta del ${formatDateTime(row.created_at)}`}
+            actions={[
+              { label: "Ver detalle", icon: Eye, onSelect: () => onViewAction(row) },
+              ...docs.actionsFor(row.id, {
+                subject: `la venta del ${formatDateTime(row.created_at)}`,
+              }),
+              row.status === "completed" && {
+                label: "Anular",
+                icon: Ban,
+                variant: "destructive",
+                separatorBefore: true,
+                onSelect: () => onVoidAction(row),
+              },
+            ]}
+          />
+        )}
+      />
+      {docs.dialog}
+    </>
   );
 }

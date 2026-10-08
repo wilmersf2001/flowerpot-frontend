@@ -15,6 +15,7 @@ import {
   type DataTablePagination,
   type StatusMap,
 } from "@/features/_shared";
+import { useRecordDocuments } from "@/features/tenant/documents";
 import { StaffRow } from "../lib/staff.types";
 import { useRestoreStaff, useToggleStaffActive } from "../lib/staff.hooks";
 
@@ -87,6 +88,7 @@ export function StaffTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const docs = useRecordDocuments("staff_contract");
   const toggleActive = useToggleStaffActive();
   const restoreStaff = useRestoreStaff();
   const pendingId = toggleActive.isPending ? toggleActive.variables.id : undefined;
@@ -147,41 +149,45 @@ export function StaffTable({
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      rows={rows}
-      isLoading={isLoading}
-      emptyMessage={emptyMessage}
-      pagination={pagination}
-      rowActions={(row) => {
-        const isDeleted = Boolean(row.deleted_at);
-        return (
-          <RowActions
-            label={`Acciones de ${row.full_name}`}
-            actions={[
-              isDeleted
-                ? {
-                    label: "Restaurar",
-                    icon: RotateCcw,
-                    disabled: restoreStaff.isPending && restoreStaff.variables === row.id,
-                    onSelect: () => handleRestore(row),
-                  }
-                : {
-                    label: "Editar",
-                    icon: Pencil,
-                    onSelect: () => onEditAction(row),
-                  },
-              !isDeleted && {
-                label: "Eliminar",
-                icon: Trash2,
-                variant: "destructive",
-                separatorBefore: true,
-                onSelect: () => onDeleteAction(row),
-              },
-            ]}
-          />
-        );
-      }}
-    />
+    <>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyMessage={emptyMessage}
+        pagination={pagination}
+        rowActions={(row) => {
+          const isDeleted = Boolean(row.deleted_at);
+          return (
+            <RowActions
+              label={`Acciones de ${row.full_name}`}
+              actions={[
+                isDeleted
+                  ? {
+                      label: "Restaurar",
+                      icon: RotateCcw,
+                      disabled: restoreStaff.isPending && restoreStaff.variables === row.id,
+                      onSelect: () => handleRestore(row),
+                    }
+                  : {
+                      label: "Editar",
+                      icon: Pencil,
+                      onSelect: () => onEditAction(row),
+                    },
+                ...(isDeleted ? [] : docs.actionsFor(row.id, { subject: row.full_name })),
+                !isDeleted && {
+                  label: "Eliminar",
+                  icon: Trash2,
+                  variant: "destructive",
+                  separatorBefore: true,
+                  onSelect: () => onDeleteAction(row),
+                },
+              ]}
+            />
+          );
+        }}
+      />
+      {docs.dialog}
+    </>
   );
 }
