@@ -38,7 +38,8 @@ export const PRODUCT_FORM_FIELDS = [
 /** Prellena el formulario con los datos de un producto existente (modo edición). */
 export function productToForm(product: ProductRow): ProductForm {
   return {
-    product_category_id: product.product_category_id ?? "",
+    product_category_id:
+      product.product_category_id == null ? "" : String(product.product_category_id),
     name: product.name,
     description: product.description,
     sku: product.sku,

@@ -16,7 +16,7 @@ export { useMemberOptions } from "@/features/tenant/members";
  */
 export function useAttendances(params: AttendanceListParams = {}) {
   const { selectedBranchId } = useSelectedBranch();
-  const listParams: AttendanceListParams = { ...params, branchId: selectedBranchId };
+  const listParams: AttendanceListParams = { ...params, branch_id: selectedBranchId };
   return useQuery({
     queryKey: attendanceKeys.list(listParams),
     queryFn: () => attendanceApi.list(listParams),
@@ -39,7 +39,7 @@ export function useCreateAttendance() {
 export function useDeleteAttendance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => attendanceApi.remove(id),
+    mutationFn: (id: number) => attendanceApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: attendanceKeys.all }),
   });
 }

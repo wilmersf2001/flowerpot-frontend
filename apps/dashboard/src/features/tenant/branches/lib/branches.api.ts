@@ -1,9 +1,9 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { BRANCHES_ENDPOINT, BRANCHES_PER_PAGE } from "./branches.constants";
 import { BranchListParams, BranchRow, CreateBranchInput, UpdateBranchInput } from "./branches.types";
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toBranchRow(raw: Record<string, unknown>): BranchRow {
   return {
     id: Number(raw.id),
@@ -11,7 +11,7 @@ function toBranchRow(raw: Record<string, unknown>): BranchRow {
     address: String(raw.address ?? ""),
     phone: String(raw.phone ?? ""),
     timezone: String(raw.timezone ?? ""),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
     deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),

@@ -1,5 +1,6 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import { SPECIALTIES_ENDPOINT, SPECIALTIES_PER_PAGE } from "./specialties.constants";
 import {
   CreateSpecialtyInput,
@@ -8,13 +9,12 @@ import {
   UpdateSpecialtyInput,
 } from "./specialties.types";
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toSpecialtyRow(raw: Record<string, unknown>): SpecialtyRow {
   return {
     id: Number(raw.id),
     name: String(raw.name ?? ""),
     description: String(raw.description ?? ""),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
     deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),

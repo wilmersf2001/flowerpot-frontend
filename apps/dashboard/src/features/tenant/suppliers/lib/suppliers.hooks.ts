@@ -26,7 +26,7 @@ export function useCreateSupplier() {
 export function useUpdateSupplier() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateSupplierInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateSupplierInput }) =>
       suppliersApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: supplierKeys.all }),
   });
@@ -35,7 +35,7 @@ export function useUpdateSupplier() {
 export function useDeleteSupplier() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => suppliersApi.remove(id),
+    mutationFn: (id: number) => suppliersApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: supplierKeys.all }),
   });
 }
@@ -77,7 +77,7 @@ export function useToggleSupplierActive() {
 }
 
 const toSupplierOption = (supplier: SupplierRow): ComboboxOption => ({
-  value: supplier.id,
+  value: String(supplier.id),
   label: supplier.name,
   hint: supplier.ruc ?? undefined,
 });

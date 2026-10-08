@@ -37,7 +37,7 @@ export function useCreateEquipmentMaintenance() {
 export function useUpdateEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateEquipmentMaintenanceInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateEquipmentMaintenanceInput }) =>
       equipmentMaintenancesApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all }),
   });
@@ -46,7 +46,7 @@ export function useUpdateEquipmentMaintenance() {
 export function useDeleteEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentMaintenancesApi.remove(id),
+    mutationFn: (id: number) => equipmentMaintenancesApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all }),
   });
 }
@@ -54,7 +54,7 @@ export function useDeleteEquipmentMaintenance() {
 export function useRestoreEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentMaintenancesApi.restore(id),
+    mutationFn: (id: number) => equipmentMaintenancesApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all }),
   });
 }
@@ -63,7 +63,7 @@ export function useRestoreEquipmentMaintenance() {
 export function useStartEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentMaintenancesApi.start(id),
+    mutationFn: (id: number) => equipmentMaintenancesApi.start(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all });
       queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
@@ -75,7 +75,7 @@ export function useStartEquipmentMaintenance() {
 export function useCompleteEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: CompleteEquipmentMaintenanceInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: CompleteEquipmentMaintenanceInput }) =>
       equipmentMaintenancesApi.complete(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all });
@@ -88,7 +88,7 @@ export function useCompleteEquipmentMaintenance() {
 export function useCancelEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => equipmentMaintenancesApi.cancel(id),
+    mutationFn: (id: number) => equipmentMaintenancesApi.cancel(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all }),
   });
 }

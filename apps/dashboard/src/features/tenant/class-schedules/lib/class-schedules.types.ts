@@ -1,10 +1,7 @@
-// TODO(gen): `api.d.ts` todavía no tiene `ClassScheduleResource`. Se escribe a
-// mano y se reemplaza al correr `npm run gen -w packages/types`.
-
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface ClassScheduleGymClass {
-  id: string;
+  id: number;
   name: string;
   duration_minutes: number;
   max_capacity: number;
@@ -17,24 +14,24 @@ export interface ClassScheduleInstructorStaff {
 }
 
 export interface ClassScheduleInstructor {
-  id: string;
-  staff: ClassScheduleInstructorStaff | null;
+  id: number;
+  staff?: ClassScheduleInstructorStaff;
 }
 
 export interface ClassScheduleBranch {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface ClassScheduleRow {
-  id: string;
-  gym_class_id: string;
-  /** Solo viene cargada en el `index`; en `store`/`update`/`show` es `null`. */
-  gym_class: ClassScheduleGymClass | null;
-  instructor_id: string;
-  instructor: ClassScheduleInstructor | null;
-  branch_id: string;
-  branch: ClassScheduleBranch | null;
+  id: number;
+  gym_class_id: number;
+  /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
+  gym_class?: ClassScheduleGymClass;
+  instructor_id: number;
+  instructor?: ClassScheduleInstructor;
+  branch_id: number;
+  branch?: ClassScheduleBranch;
   /** 1 = Lunes ... 7 = Domingo. */
   day_of_week: number;
   /** Nombre del día en español, calculado en backend. */
@@ -46,7 +43,7 @@ export interface ClassScheduleRow {
   /** Override del cupo de la clase. `null` = hereda el de `gym_class`. */
   max_capacity: number | null;
   /** Solo viene calculado en el `index` (`max_capacity` ?? el de `gym_class`). */
-  effective_capacity: number | null;
+  effective_capacity?: number | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -54,10 +51,10 @@ export interface ClassScheduleRow {
 }
 
 export interface ClassScheduleListParams extends BaseListParams {
-  branchId?: string;
-  instructorId?: string;
-  gymClassId?: string;
-  dayOfWeek?: number;
+  branch_id?: string;
+  instructor_id?: string;
+  gym_class_id?: string;
+  day_of_week?: number;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

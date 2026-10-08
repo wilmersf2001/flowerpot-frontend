@@ -53,7 +53,7 @@ export const STAFF_FORM_FIELDS = [
 /** Prellena el formulario con los datos de un miembro del personal existente (modo edición). */
 export function staffToForm(staff: StaffRow): StaffForm {
   return {
-    job_position_id: staff.job_position_id ?? "",
+    job_position_id: staff.job_position ? String(staff.job_position.id) : "",
     first_name: staff.first_name,
     last_name: staff.last_name,
     dni: staff.dni,
@@ -61,7 +61,7 @@ export function staffToForm(staff: StaffRow): StaffForm {
     email: staff.email,
     salary: staff.salary,
     hire_date: staff.hire_date ?? "",
-    branch_ids: staff.branches.map((branch) => branch.id),
+    branch_ids: (staff.branches ?? []).map((branch) => String(branch.id)),
   };
 }
 

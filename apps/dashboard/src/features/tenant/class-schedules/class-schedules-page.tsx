@@ -32,10 +32,10 @@ export function ClassSchedulesPage() {
 
   const schedules = useClassSchedules({
     page,
-    branchId: branchId || undefined,
-    instructorId: instructorId || undefined,
-    gymClassId: gymClassId || undefined,
-    dayOfWeek: dayOfWeek ? Number(dayOfWeek) : undefined,
+    branch_id: branchId || undefined,
+    instructor_id: instructorId || undefined,
+    gym_class_id: gymClassId || undefined,
+    day_of_week: dayOfWeek ? Number(dayOfWeek) : undefined,
   });
   const meta = schedules.data;
 

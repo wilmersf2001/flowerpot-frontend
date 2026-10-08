@@ -116,7 +116,7 @@ function InstructorsListSection() {
       />
       <InstructorSchedulesDialog
         open={schedulesFor !== null}
-        instructorId={schedulesFor?.id ?? null}
+        instructorId={schedulesFor ? String(schedulesFor.id) : null}
         instructorName={schedulesFor?.staff?.full_name}
         onOpenChangeAction={(open) => {
           if (!open) setSchedulesFor(null);

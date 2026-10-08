@@ -5,6 +5,7 @@ import {
   unwrapPaginated,
 } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { toBoolean } from "@/features/_shared/format";
 import {
   CASH_MOVEMENTS_ENDPOINT,
   CASH_MOVEMENTS_PER_PAGE,
@@ -72,12 +73,8 @@ function toCashMovementRow(raw: Record<string, unknown>): CashMovementRow {
     amount: Number(raw.amount ?? 0),
     description: String(raw.description ?? ""),
     reference: raw.reference == null ? null : String(raw.reference),
-    is_automatic:
-      raw.is_automatic === true ||
-      raw.is_automatic === "true" ||
-      raw.is_automatic === 1,
-    is_voided:
-      raw.is_voided === true || raw.is_voided === "true" || raw.is_voided === 1,
+    is_automatic: toBoolean(raw.is_automatic),
+    is_voided: toBoolean(raw.is_voided),
     void_reason: raw.void_reason == null ? null : String(raw.void_reason),
     movement_at: String(raw.movement_at ?? ""),
     created_at: String(raw.created_at ?? ""),

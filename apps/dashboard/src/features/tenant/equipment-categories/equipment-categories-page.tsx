@@ -20,7 +20,7 @@ export function EquipmentCategoriesPage() {
   const categories = useEquipmentCategories({
     page,
     search: debouncedSearch,
-    isActive: activeFilter === "" ? undefined : activeFilter === "true",
+    is_active: activeFilter === "" ? undefined : activeFilter === "true",
   });
   const meta = categories.data;
 

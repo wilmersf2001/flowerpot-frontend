@@ -1,4 +1,9 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import type { Paginated } from "@repo/types";
 import type { ComboboxOption } from "@repo/ui/combobox";
 import { useAsyncOptions } from "@/features/_shared/use-async-options";
@@ -23,17 +28,25 @@ export function useExpenseCategories(params: ExpenseCategoryListParams = {}) {
 export function useCreateExpenseCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: CreateExpenseCategoryInput) => expenseCategoriesApi.create(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
+    mutationFn: (input: CreateExpenseCategoryInput) =>
+      expenseCategoriesApi.create(input),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
   });
 }
 
 export function useUpdateExpenseCategory() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateExpenseCategoryInput }) =>
-      expenseCategoriesApi.update(id, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
+    mutationFn: ({
+      id,
+      input,
+    }: {
+      id: string;
+      input: UpdateExpenseCategoryInput;
+    }) => expenseCategoriesApi.update(id, input),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
   });
 }
 
@@ -41,7 +54,8 @@ export function useDeleteExpenseCategory() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => expenseCategoriesApi.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
   });
 }
 
@@ -53,10 +67,15 @@ export function useDeleteExpenseCategory() {
 export function useToggleExpenseCategoryActive() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (category: ExpenseCategoryRow) => expenseCategoriesApi.toggleActive(category.id),
+    mutationFn: (category: ExpenseCategoryRow) =>
+      expenseCategoriesApi.toggleActive(category.id),
     onMutate: async (category: ExpenseCategoryRow) => {
-      await queryClient.cancelQueries({ queryKey: expenseCategoryKeys.lists() });
-      const snapshots = queryClient.getQueriesData<Paginated<ExpenseCategoryRow>>({
+      await queryClient.cancelQueries({
+        queryKey: expenseCategoryKeys.lists(),
+      });
+      const snapshots = queryClient.getQueriesData<
+        Paginated<ExpenseCategoryRow>
+      >({
         queryKey: expenseCategoryKeys.lists(),
       });
       for (const [key, page] of snapshots) {
@@ -64,7 +83,9 @@ export function useToggleExpenseCategoryActive() {
         queryClient.setQueryData<Paginated<ExpenseCategoryRow>>(key, {
           ...page,
           data: page.data.map((row) =>
-            row.id === category.id ? { ...row, is_active: !row.is_active } : row,
+            row.id === category.id
+              ? { ...row, is_active: !row.is_active }
+              : row,
           ),
         });
       }
@@ -75,12 +96,15 @@ export function useToggleExpenseCategoryActive() {
         queryClient.setQueryData(key, page);
       }
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: expenseCategoryKeys.all }),
   });
 }
 
-const toExpenseCategoryOption = (category: ExpenseCategoryRow): ComboboxOption => ({
-  value: category.id,
+const toExpenseCategoryOption = (
+  category: ExpenseCategoryRow,
+): ComboboxOption => ({
+  value: String(category.id),
   label: category.name,
 });
 
@@ -89,7 +113,7 @@ export function useExpenseCategoryOptions(enabled = true) {
   return useAsyncOptions<ExpenseCategoryRow>({
     queryKey: expenseCategoryKeys.options,
     fetchPage: ({ search, page }) =>
-      expenseCategoriesApi.list({ search, page, perPage: 20, isActive: true }),
+      expenseCategoriesApi.list({ search, page, perPage: 20, is_active: true }),
     toOption: toExpenseCategoryOption,
     enabled,
   });

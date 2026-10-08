@@ -17,19 +17,19 @@ import {
 function toEquipmentRef(raw: unknown): EquipmentMaintenanceEquipmentRef | null {
   if (!raw || typeof raw !== "object") return null;
   const e = raw as Record<string, unknown>;
-  return { id: String(e.id), name: String(e.name ?? ""), status: String(e.status ?? "") };
+  return { id: Number(e.id), name: String(e.name ?? ""), status: String(e.status ?? "") };
 }
 
 function toSupplierRef(raw: unknown): EquipmentMaintenanceSupplierRef | null {
   if (!raw || typeof raw !== "object") return null;
   const s = raw as Record<string, unknown>;
-  return { id: String(s.id), name: String(s.name ?? "") };
+  return { id: Number(s.id), name: String(s.name ?? "") };
 }
 
 /** `cost` llega `null` hasta completarse (un costo `0` también llega como `null`). */
 function toEquipmentMaintenanceRow(raw: Record<string, unknown>): EquipmentMaintenanceRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     type: (raw.type as EquipmentMaintenanceRow["type"]) ?? "preventivo",
     status: (raw.status as EquipmentMaintenanceRow["status"]) ?? "programado",
     description: String(raw.description ?? ""),
@@ -39,9 +39,9 @@ function toEquipmentMaintenanceRow(raw: Record<string, unknown>): EquipmentMaint
     cost: raw.cost == null ? null : Number(raw.cost),
     next_maintenance_date:
       raw.next_maintenance_date == null ? null : String(raw.next_maintenance_date),
-    equipment_id: String(raw.equipment_id),
+    equipment_id: Number(raw.equipment_id),
     equipment: toEquipmentRef(raw.equipment),
-    supplier_id: String(raw.supplier_id),
+    supplier_id: Number(raw.supplier_id),
     supplier: toSupplierRef(raw.supplier),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
@@ -68,7 +68,7 @@ async function list(
   return { ...page, data: page.data.map(toEquipmentMaintenanceRow) };
 }
 
-async function show(id: string): Promise<EquipmentMaintenanceRow> {
+async function show(id: number): Promise<EquipmentMaintenanceRow> {
   const { data } = await apiClient.get<unknown>(
     `${EQUIPMENT_MAINTENANCES_ENDPOINT}/${encodeURIComponent(id)}`,
   );
@@ -84,7 +84,7 @@ async function create(
 
 /** Solo permitido si el mantenimiento está `programado`. */
 async function update(
-  id: string,
+  id: number,
   input: UpdateEquipmentMaintenanceInput,
 ): Promise<EquipmentMaintenanceRow> {
   const { data } = await apiClient.patch<unknown>(
@@ -95,12 +95,12 @@ async function update(
 }
 
 /** Soft delete. El backend no valida el estado ni revierte el estado del equipo. */
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${EQUIPMENT_MAINTENANCES_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un mantenimiento eliminado (soft-delete). */
-async function restore(id: string): Promise<EquipmentMaintenanceRow> {
+async function restore(id: number): Promise<EquipmentMaintenanceRow> {
   const { data } = await apiClient.patch<unknown>(
     `${EQUIPMENT_MAINTENANCES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );
@@ -108,7 +108,7 @@ async function restore(id: string): Promise<EquipmentMaintenanceRow> {
 }
 
 /** `programado -> en_progreso`. Pone el equipo en `en_mantenimiento`. Sin body. */
-async function start(id: string): Promise<EquipmentMaintenanceRow> {
+async function start(id: number): Promise<EquipmentMaintenanceRow> {
   const { data } = await apiClient.patch<unknown>(
     `${EQUIPMENT_MAINTENANCES_ENDPOINT}/${encodeURIComponent(id)}/start`,
   );
@@ -117,7 +117,7 @@ async function start(id: string): Promise<EquipmentMaintenanceRow> {
 
 /** `en_progreso -> completado`. Devuelve el equipo a `operativo`. */
 async function complete(
-  id: string,
+  id: number,
   input: CompleteEquipmentMaintenanceInput,
 ): Promise<EquipmentMaintenanceRow> {
   const { data } = await apiClient.patch<unknown>(
@@ -128,7 +128,7 @@ async function complete(
 }
 
 /** `programado -> cancelado`. No modifica el estado del equipo. Sin body. */
-async function cancel(id: string): Promise<EquipmentMaintenanceRow> {
+async function cancel(id: number): Promise<EquipmentMaintenanceRow> {
   const { data } = await apiClient.patch<unknown>(
     `${EQUIPMENT_MAINTENANCES_ENDPOINT}/${encodeURIComponent(id)}/cancel`,
   );

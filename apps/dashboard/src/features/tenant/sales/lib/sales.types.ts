@@ -8,32 +8,32 @@ export type SalePaymentMethod = (typeof SALE_PAYMENT_METHODS)[number];
 export type SaleStatus = (typeof SALE_STATUSES)[number];
 
 export interface SaleBranchRef {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface SaleMemberRef {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
   full_name: string;
 }
 
 export interface SaleStaffRef {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
 }
 
 export interface SaleItemProductRef {
-  id: string;
+  id: number;
   name: string;
   sku: string;
 }
 
 export interface SaleItemRow {
-  id: string;
-  product_id: string;
+  id: number;
+  product_id: number;
   product: SaleItemProductRef | null;
   quantity: number;
   /** Precio con el que se vendió; no cambia aunque el producto suba de precio después. */
@@ -42,18 +42,18 @@ export interface SaleItemRow {
 }
 
 export interface SaleRow {
-  id: string;
+  id: number;
   payment_method: SalePaymentMethod;
   payment_reference: string | null;
   subtotal: number;
   total: number;
   status: SaleStatus;
-  branch_id: string;
+  branch_id: number;
   branch: SaleBranchRef | null;
   /** `null` = venta a visitante (sin socio). */
-  member_id: string | null;
+  member_id: number | null;
   member: SaleMemberRef | null;
-  staff_id: string | null;
+  staff_id: number | null;
   staff: SaleStaffRef | null;
   items: SaleItemRow[];
   voided_at: string | null;

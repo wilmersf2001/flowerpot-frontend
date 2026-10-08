@@ -47,8 +47,9 @@ export const EQUIPMENT_FORM_FIELDS = [
 /** Prellena el formulario con los datos de un equipo existente (modo edición). */
 export function equipmentToForm(equipment: EquipmentRow): EquipmentForm {
   return {
-    equipment_category_id: equipment.equipment_category_id ?? "",
-    branch_id: equipment.branch_id,
+    equipment_category_id:
+      equipment.equipment_category_id == null ? "" : String(equipment.equipment_category_id),
+    branch_id: String(equipment.branch_id),
     name: equipment.name,
     brand: equipment.brand ?? "",
     model: equipment.model ?? "",

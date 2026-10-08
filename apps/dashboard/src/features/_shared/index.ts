@@ -48,6 +48,7 @@ export {
   toDateInputValue,
   splitLines,
   slugify,
+  toBoolean,
   toCents,
   fromCents,
   SUPPORTED_CURRENCIES,

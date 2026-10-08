@@ -78,7 +78,10 @@ export function ClassScheduleFormDialog({
   }, [open, schedule, reset]);
 
   const selectedGymClass: ComboboxOption | null = useMemo(
-    () => (schedule?.gym_class ? { value: schedule.gym_class.id, label: schedule.gym_class.name } : null),
+    () =>
+      schedule?.gym_class
+        ? { value: String(schedule.gym_class.id), label: schedule.gym_class.name }
+        : null,
     [schedule],
   );
 
@@ -86,7 +89,7 @@ export function ClassScheduleFormDialog({
     () =>
       schedule?.instructor
         ? {
-            value: schedule.instructor.id,
+            value: String(schedule.instructor.id),
             label: schedule.instructor.staff?.full_name ?? "Instructor",
             hint: schedule.instructor.staff?.dni,
           }
@@ -95,7 +98,8 @@ export function ClassScheduleFormDialog({
   );
 
   const selectedBranch: ComboboxOption | null = useMemo(
-    () => (schedule?.branch ? { value: schedule.branch.id, label: schedule.branch.name } : null),
+    () =>
+      schedule?.branch ? { value: String(schedule.branch.id), label: schedule.branch.name } : null,
     [schedule],
   );
 

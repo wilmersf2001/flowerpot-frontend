@@ -43,7 +43,7 @@ export function useCreateSale() {
 export function useVoidSale() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: VoidSaleInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: VoidSaleInput }) =>
       salesApi.voidSale(id, input),
     onSuccess: (_result: SaleRow) => {
       queryClient.invalidateQueries({ queryKey: saleKeys.all });

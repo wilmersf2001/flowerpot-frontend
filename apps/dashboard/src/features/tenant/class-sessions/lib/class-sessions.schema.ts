@@ -31,7 +31,7 @@ const normalizeStatus = enumFallback(CLASS_SESSION_STATUSES, "scheduled");
 /** Prellena el formulario con los datos de una sesión existente. */
 export function classSessionToForm(session: ClassSessionRow): ClassSessionForm {
   return {
-    instructor_id: session.instructor_id,
+    instructor_id: String(session.instructor_id),
     status: normalizeStatus(session.status),
   };
 }

@@ -15,7 +15,7 @@ import {
 function toBranchRef(raw: unknown): SaleBranchRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
-  return { id: String(r.id), name: String(r.name ?? "") };
+  return { id: Number(r.id), name: String(r.name ?? "") };
 }
 
 function toMemberRef(raw: unknown): SaleMemberRef | null {
@@ -24,7 +24,7 @@ function toMemberRef(raw: unknown): SaleMemberRef | null {
   const firstName = String(r.first_name ?? "");
   const lastName = String(r.last_name ?? "");
   return {
-    id: String(r.id),
+    id: Number(r.id),
     first_name: firstName,
     last_name: lastName,
     full_name: String(r.full_name ?? `${firstName} ${lastName}`.trim()),
@@ -35,7 +35,7 @@ function toStaffRef(raw: unknown): SaleStaffRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
   return {
-    id: String(r.id),
+    id: Number(r.id),
     first_name: String(r.first_name ?? ""),
     last_name: String(r.last_name ?? ""),
   };
@@ -45,10 +45,10 @@ function toItemRow(raw: unknown): SaleItemRow {
   const r = (raw ?? {}) as Record<string, unknown>;
   const product = r.product as Record<string, unknown> | null | undefined;
   return {
-    id: String(r.id),
-    product_id: String(r.product_id),
+    id: Number(r.id),
+    product_id: Number(r.product_id),
     product: product
-      ? { id: String(product.id), name: String(product.name ?? ""), sku: String(product.sku ?? "") }
+      ? { id: Number(product.id), name: String(product.name ?? ""), sku: String(product.sku ?? "") }
       : null,
     quantity: Number(r.quantity ?? 0),
     unit_price: Number(r.unit_price ?? 0),
@@ -58,17 +58,17 @@ function toItemRow(raw: unknown): SaleItemRow {
 
 function toSaleRow(raw: Record<string, unknown>): SaleRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     payment_method: (raw.payment_method as SaleRow["payment_method"]) ?? "efectivo",
     payment_reference: raw.payment_reference == null ? null : String(raw.payment_reference),
     subtotal: Number(raw.subtotal ?? 0),
     total: Number(raw.total ?? 0),
     status: (raw.status as SaleRow["status"]) ?? "completed",
-    branch_id: String(raw.branch_id),
+    branch_id: Number(raw.branch_id),
     branch: toBranchRef(raw.branch),
-    member_id: raw.member_id == null ? null : String(raw.member_id),
+    member_id: raw.member_id == null ? null : Number(raw.member_id),
     member: toMemberRef(raw.member),
-    staff_id: raw.staff_id == null ? null : String(raw.staff_id),
+    staff_id: raw.staff_id == null ? null : Number(raw.staff_id),
     staff: toStaffRef(raw.staff),
     items: Array.isArray(raw.items) ? raw.items.map(toItemRow) : [],
     voided_at: raw.voided_at == null ? null : String(raw.voided_at),
@@ -102,7 +102,7 @@ async function list(params: SaleListParams = {}): Promise<Paginated<SaleRow>> {
   return { ...page, data: page.data.map(toSaleRow) };
 }
 
-async function show(id: string): Promise<SaleRow> {
+async function show(id: number): Promise<SaleRow> {
   const { data } = await apiClient.get<unknown>(`${SALES_ENDPOINT}/${encodeURIComponent(id)}`);
   return toSaleRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
@@ -118,7 +118,7 @@ async function create(input: CreateSaleInput): Promise<SaleRow> {
 }
 
 /** Solo válido si la venta está `completed`. Repone stock y revierte el ingreso en caja. Irreversible. */
-async function voidSale(id: string, input: VoidSaleInput): Promise<SaleRow> {
+async function voidSale(id: number, input: VoidSaleInput): Promise<SaleRow> {
   const { data } = await apiClient.patch<unknown>(
     `${SALES_ENDPOINT}/${encodeURIComponent(id)}/void`,
     input,

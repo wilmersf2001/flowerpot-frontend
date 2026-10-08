@@ -14,20 +14,20 @@ import {
 function toCategoryRef(raw: unknown): EquipmentCategoryRef | null {
   if (!raw || typeof raw !== "object") return null;
   const c = raw as Record<string, unknown>;
-  return { id: String(c.id), name: String(c.name ?? "") };
+  return { id: Number(c.id), name: String(c.name ?? "") };
 }
 
 function toBranchRef(raw: unknown): EquipmentBranchRef | null {
   if (!raw || typeof raw !== "object") return null;
   const b = raw as Record<string, unknown>;
-  return { id: String(b.id), name: String(b.name ?? "") };
+  return { id: Number(b.id), name: String(b.name ?? "") };
 }
 
 function toMaintenanceRef(raw: unknown): EquipmentMaintenanceRef {
   const r = (raw ?? {}) as Record<string, unknown>;
   const supplier = r.supplier as Record<string, unknown> | null | undefined;
   return {
-    id: String(r.id),
+    id: Number(r.id),
     type: (r.type as EquipmentMaintenanceRef["type"]) ?? "preventivo",
     status: (r.status as EquipmentMaintenanceRef["status"]) ?? "programado",
     description: String(r.description ?? ""),
@@ -36,8 +36,8 @@ function toMaintenanceRef(raw: unknown): EquipmentMaintenanceRef {
     completed_at: r.completed_at == null ? null : String(r.completed_at),
     cost: r.cost == null ? null : Number(r.cost),
     next_maintenance_date: r.next_maintenance_date == null ? null : String(r.next_maintenance_date),
-    supplier_id: String(r.supplier_id),
-    supplier: supplier ? { id: String(supplier.id), name: String(supplier.name ?? "") } : null,
+    supplier_id: Number(r.supplier_id),
+    supplier: supplier ? { id: Number(supplier.id), name: String(supplier.name ?? "") } : null,
     created_at: String(r.created_at ?? ""),
     updated_at: String(r.updated_at ?? ""),
   };
@@ -50,7 +50,7 @@ function toMaintenanceRef(raw: unknown): EquipmentMaintenanceRef {
  */
 function toEquipmentRow(raw: Record<string, unknown>): EquipmentRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     name: String(raw.name ?? ""),
     brand: raw.brand == null ? null : String(raw.brand),
     model: raw.model == null ? null : String(raw.model),
@@ -60,9 +60,9 @@ function toEquipmentRow(raw: Record<string, unknown>): EquipmentRow {
     warranty_expiration: raw.warranty_expiration == null ? null : String(raw.warranty_expiration),
     status: (raw.status as EquipmentRow["status"]) ?? "operativo",
     equipment_category_id:
-      raw.equipment_category_id == null ? null : String(raw.equipment_category_id),
+      raw.equipment_category_id == null ? null : Number(raw.equipment_category_id),
     category: toCategoryRef(raw.category),
-    branch_id: String(raw.branch_id),
+    branch_id: Number(raw.branch_id),
     branch: toBranchRef(raw.branch),
     maintenances: Array.isArray(raw.maintenances) ? raw.maintenances.map(toMaintenanceRef) : [],
     created_at: String(raw.created_at ?? ""),
@@ -88,7 +88,7 @@ async function list(params: EquipmentListParams = {}): Promise<Paginated<Equipme
 }
 
 /** Trae el equipo con categoría, sede e historial de mantenimientos. */
-async function show(id: string): Promise<EquipmentRow> {
+async function show(id: number): Promise<EquipmentRow> {
   const { data } = await apiClient.get<unknown>(`${EQUIPMENT_ENDPOINT}/${encodeURIComponent(id)}`);
   return toEquipmentRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
@@ -98,7 +98,7 @@ async function create(input: CreateEquipmentInput): Promise<EquipmentRow> {
   return toEquipmentRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function update(id: string, input: UpdateEquipmentInput): Promise<EquipmentRow> {
+async function update(id: number, input: UpdateEquipmentInput): Promise<EquipmentRow> {
   const { data } = await apiClient.patch<unknown>(
     `${EQUIPMENT_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
@@ -106,12 +106,12 @@ async function update(id: string, input: UpdateEquipmentInput): Promise<Equipmen
   return toEquipmentRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
-async function remove(id: string): Promise<void> {
+async function remove(id: number): Promise<void> {
   await apiClient.delete(`${EQUIPMENT_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
 /** Restaura un equipo eliminado (soft-delete). */
-async function restore(id: string): Promise<EquipmentRow> {
+async function restore(id: number): Promise<EquipmentRow> {
   const { data } = await apiClient.patch<unknown>(
     `${EQUIPMENT_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );
@@ -122,7 +122,7 @@ async function restore(id: string): Promise<EquipmentRow> {
  * Da de baja el equipo (`status` -> `dado_de_baja`). Falla si tiene un
  * mantenimiento `programado` o `en_progreso` abierto. Sin body.
  */
-async function decommission(id: string): Promise<EquipmentRow> {
+async function decommission(id: number): Promise<EquipmentRow> {
   const { data } = await apiClient.patch<unknown>(
     `${EQUIPMENT_ENDPOINT}/${encodeURIComponent(id)}/decommission`,
   );

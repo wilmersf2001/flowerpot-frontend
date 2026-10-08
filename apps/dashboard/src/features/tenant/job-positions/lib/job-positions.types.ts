@@ -1,7 +1,3 @@
-// TODO(gen): `api.d.ts` no confirma el shape real de `GET /job-positions` (el
-// schema `JobPositionResource` tipa `is_active` como `string`). Se normaliza
-// a `boolean` en `job-positions.api.ts` al mapear la fila.
-
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface JobPositionRow {
@@ -9,7 +5,8 @@ export interface JobPositionRow {
   name: string;
   description: string;
   is_active: boolean;
-  staff_count: number | null;
+  /** Solo viene si el backend lo cargó (`withCount`). */
+  staff_count?: number;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

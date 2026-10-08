@@ -8,25 +8,25 @@ export type PurchaseOrderStatus = (typeof PURCHASE_ORDER_STATUSES)[number];
 
 /** Proveedor o sede referenciados desde una orden de compra. */
 export interface PurchaseOrderPartyRef {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface PurchaseOrderStaffRef {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
 }
 
 export interface PurchaseOrderItemProductRef {
-  id: string;
+  id: number;
   name: string;
   sku: string;
 }
 
 export interface PurchaseOrderItemRow {
-  id: string;
-  product_id: string;
+  id: number;
+  product_id: number;
   /** `null` si el producto fue eliminado. */
   product: PurchaseOrderItemProductRef | null;
   quantity: number;
@@ -35,16 +35,16 @@ export interface PurchaseOrderItemRow {
 }
 
 export interface PurchaseOrderRow {
-  id: string;
+  id: number;
   /** Fecha pura `YYYY-MM-DD`. */
   order_date: string;
   status: PurchaseOrderStatus;
   total: number;
-  supplier_id: string;
+  supplier_id: number;
   supplier: PurchaseOrderPartyRef | null;
-  branch_id: string;
+  branch_id: number;
   branch: PurchaseOrderPartyRef | null;
-  staff_id: string | null;
+  staff_id: number | null;
   staff: PurchaseOrderStaffRef | null;
   items: PurchaseOrderItemRow[];
   /** Fecha-hora ISO 8601, o `null` mientras esté `pending`. */

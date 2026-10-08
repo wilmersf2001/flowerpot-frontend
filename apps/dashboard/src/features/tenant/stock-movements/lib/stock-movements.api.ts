@@ -12,20 +12,20 @@ import {
 function toProductRef(raw: unknown): StockMovementProductRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
-  return { id: String(r.id), name: String(r.name ?? ""), sku: String(r.sku ?? "") };
+  return { id: Number(r.id), name: String(r.name ?? ""), sku: String(r.sku ?? "") };
 }
 
 function toBranchRef(raw: unknown): StockMovementBranchRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
-  return { id: String(r.id), name: String(r.name ?? "") };
+  return { id: Number(r.id), name: String(r.name ?? "") };
 }
 
 function toStaffRef(raw: unknown): StockMovementStaffRef | null {
   if (!raw || typeof raw !== "object") return null;
   const r = raw as Record<string, unknown>;
   return {
-    id: String(r.id),
+    id: Number(r.id),
     first_name: String(r.first_name ?? ""),
     last_name: String(r.last_name ?? ""),
   };
@@ -33,15 +33,15 @@ function toStaffRef(raw: unknown): StockMovementStaffRef | null {
 
 function toStockMovementRow(raw: Record<string, unknown>): StockMovementRow {
   return {
-    id: String(raw.id),
+    id: Number(raw.id),
     type: (raw.type as StockMovementRow["type"]) ?? "ajuste",
     quantity: Number(raw.quantity ?? 0),
     reason: raw.reason == null ? null : String(raw.reason),
-    product_id: String(raw.product_id),
+    product_id: Number(raw.product_id),
     product: toProductRef(raw.product),
-    branch_id: String(raw.branch_id),
+    branch_id: Number(raw.branch_id),
     branch: toBranchRef(raw.branch),
-    staff_id: raw.staff_id == null ? null : String(raw.staff_id),
+    staff_id: raw.staff_id == null ? null : Number(raw.staff_id),
     staff: toStaffRef(raw.staff),
     reference_type: raw.reference_type == null ? null : String(raw.reference_type),
     reference_id: raw.reference_id == null ? null : String(raw.reference_id),

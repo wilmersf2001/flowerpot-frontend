@@ -5,7 +5,7 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface UserRow {
-  id: string;
+  id: number;
   name: string;
   email: string;
   /** Nombre del rol asignado, p. ej. `"gym_owner"`. */

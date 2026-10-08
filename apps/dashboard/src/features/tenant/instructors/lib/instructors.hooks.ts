@@ -29,7 +29,7 @@ export function useCreateInstructor() {
 export function useUpdateInstructor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateInstructorInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateInstructorInput }) =>
       instructorsApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: instructorKeys.all }),
   });
@@ -38,7 +38,7 @@ export function useUpdateInstructor() {
 export function useDeleteInstructor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => instructorsApi.remove(id),
+    mutationFn: (id: number) => instructorsApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: instructorKeys.all }),
   });
 }
@@ -46,7 +46,7 @@ export function useDeleteInstructor() {
 export function useRestoreInstructor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => instructorsApi.restore(id),
+    mutationFn: (id: number) => instructorsApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: instructorKeys.all }),
   });
 }
@@ -88,7 +88,7 @@ export function useToggleInstructorActive() {
 }
 
 const toInstructorOption = (instructor: InstructorRow): ComboboxOption => ({
-  value: instructor.id,
+  value: String(instructor.id),
   label: instructor.staff?.full_name ?? "Instructor",
   hint: instructor.staff?.dni,
 });

@@ -55,9 +55,9 @@ function toTimeInputValue(value: string): string {
 /** Prellena el formulario con los datos de un horario existente (modo edición). */
 export function classScheduleToForm(schedule: ClassScheduleRow): ClassScheduleForm {
   return {
-    gym_class_id: schedule.gym_class_id,
-    instructor_id: schedule.instructor_id,
-    branch_id: schedule.branch_id,
+    gym_class_id: String(schedule.gym_class_id),
+    instructor_id: String(schedule.instructor_id),
+    branch_id: String(schedule.branch_id),
     day_of_week: String(schedule.day_of_week),
     start_time: toTimeInputValue(schedule.start_time),
     end_time: toTimeInputValue(schedule.end_time),

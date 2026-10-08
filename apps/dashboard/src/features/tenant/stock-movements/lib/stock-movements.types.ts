@@ -7,18 +7,18 @@ import type { STOCK_MOVEMENT_TYPES } from "./stock-movements.constants";
 export type StockMovementType = (typeof STOCK_MOVEMENT_TYPES)[number];
 
 export interface StockMovementProductRef {
-  id: string;
+  id: number;
   name: string;
   sku: string;
 }
 
 export interface StockMovementBranchRef {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface StockMovementStaffRef {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
 }
@@ -28,17 +28,17 @@ export interface StockMovementStaffRef {
  * crear/editar/eliminar, ni `updated_at` (nunca se modifica tras crearse).
  */
 export interface StockMovementRow {
-  id: string;
+  id: number;
   type: StockMovementType;
   /** Entero con signo: negativo = salió stock, positivo = entró. */
   quantity: number;
   /** Reservado para `ajuste`; hoy siempre `null`. */
   reason: string | null;
-  product_id: string;
+  product_id: number;
   product: StockMovementProductRef | null;
-  branch_id: string;
+  branch_id: number;
   branch: StockMovementBranchRef | null;
-  staff_id: string | null;
+  staff_id: number | null;
   staff: StockMovementStaffRef | null;
   /** P. ej. `"App\\Models\\Tenant\\Sale"` o `"...\\PurchaseOrder"`. */
   reference_type: string | null;

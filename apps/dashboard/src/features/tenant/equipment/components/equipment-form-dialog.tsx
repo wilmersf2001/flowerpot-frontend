@@ -77,7 +77,7 @@ export function EquipmentFormDialog({
   );
 
   const branchSelected: ComboboxOption | null = equipment?.branch
-    ? { value: equipment.branch.id, label: equipment.branch.name }
+    ? { value: String(equipment.branch.id), label: equipment.branch.name }
     : null;
 
   const onSubmit = handleSubmit(

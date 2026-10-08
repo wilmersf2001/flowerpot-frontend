@@ -155,6 +155,15 @@ export const CURRENCY_OPTIONS = Object.entries(SUPPORTED_CURRENCIES).map(
 );
 
 /**
+ * Interpreta un booleano que el backend manda con tipo inconsistente
+ * (`true`, `"true"` o `1`). Cualquier otro valor (`false`, `"false"`, `0`,
+ * `null`, `undefined`, ...) se considera `false`.
+ */
+export function toBoolean(value: unknown): boolean {
+  return value === true || value === "true" || value === 1;
+}
+
+/**
  * Texto libre -> identificador URL-safe: minúsculas, sin acentos, y cada
  * grupo de caracteres no alfanuméricos colapsado a un solo guion (sin
  * guiones al inicio ni al final). Ej.: `"Plan Pro ½"` -> `"plan-pro"`.

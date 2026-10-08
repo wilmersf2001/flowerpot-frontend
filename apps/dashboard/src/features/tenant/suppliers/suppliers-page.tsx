@@ -20,7 +20,7 @@ export function SuppliersPage() {
   const suppliers = useSuppliers({
     page,
     search: debouncedSearch,
-    isActive: activeFilter === "" ? undefined : activeFilter === "true",
+    is_active: activeFilter === "" ? undefined : activeFilter === "true",
   });
   const meta = suppliers.data;
 

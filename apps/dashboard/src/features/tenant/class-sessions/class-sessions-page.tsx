@@ -24,10 +24,10 @@ export function ClassSessionsPage() {
 
   const sessions = useClassSessions({
     page,
-    instructorId: instructorId || undefined,
+    instructor_id: instructorId || undefined,
     status: status || undefined,
-    sessionDateStart: dateStart || undefined,
-    sessionDateEnd: dateEnd || undefined,
+    session_date_start: dateStart || undefined,
+    session_date_end: dateEnd || undefined,
   });
   const meta = sessions.data;
 

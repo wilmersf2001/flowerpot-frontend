@@ -9,7 +9,7 @@ import type { BaseListParams, ListFilters } from "@/features/_shared/list-params
  * no hay forma de mostrarlos ni de restaurarlos desde la pantalla.
  */
 export interface SupplierRow {
-  id: string;
+  id: number;
   name: string;
   ruc: string | null;
   phone: string | null;
@@ -21,7 +21,7 @@ export interface SupplierRow {
 }
 
 export interface SupplierListParams extends BaseListParams {
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

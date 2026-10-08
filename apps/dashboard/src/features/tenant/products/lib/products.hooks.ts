@@ -26,7 +26,7 @@ export function useCreateProduct() {
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateProductInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateProductInput }) =>
       productsApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
   });
@@ -35,7 +35,7 @@ export function useUpdateProduct() {
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => productsApi.remove(id),
+    mutationFn: (id: number) => productsApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
   });
 }
@@ -43,7 +43,7 @@ export function useDeleteProduct() {
 export function useRestoreProduct() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => productsApi.restore(id),
+    mutationFn: (id: number) => productsApi.restore(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
   });
 }
@@ -85,7 +85,7 @@ export function useToggleProductActive() {
 }
 
 const toProductOption = (product: ProductRow): ComboboxOption => ({
-  value: product.id,
+  value: String(product.id),
   label: product.name,
   hint: product.sku,
 });

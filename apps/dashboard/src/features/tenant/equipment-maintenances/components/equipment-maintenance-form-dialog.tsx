@@ -79,10 +79,10 @@ export function EquipmentMaintenanceFormDialog({
   }, [open, maintenance, reset]);
 
   const equipmentSelected: ComboboxOption | null = maintenance?.equipment
-    ? { value: maintenance.equipment.id, label: maintenance.equipment.name }
+    ? { value: String(maintenance.equipment.id), label: maintenance.equipment.name }
     : null;
   const supplierSelected: ComboboxOption | null = maintenance?.supplier
-    ? { value: maintenance.supplier.id, label: maintenance.supplier.name }
+    ? { value: String(maintenance.supplier.id), label: maintenance.supplier.name }
     : null;
 
   const onSubmit = handleSubmit(

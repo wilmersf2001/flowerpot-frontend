@@ -33,7 +33,7 @@ export function DeleteAttendanceDialog({
     <ConfirmDialog
       open={attendance !== null}
       onOpenChange={onOpenChangeAction}
-      title={`Eliminar asistencia de "${attendance?.member_name ?? ""}"`}
+      title={`Eliminar asistencia de "${attendance?.member?.full_name ?? ""}"`}
       description="El registro de asistencia se eliminará. Esta acción no se puede deshacer."
       confirmLabel="Eliminar"
       destructive

@@ -1,5 +1,7 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
+import { toBoolean } from "@/features/_shared/format";
 import {
   PRODUCT_CATEGORIES_ENDPOINT,
   PRODUCT_CATEGORIES_PER_PAGE,
@@ -11,12 +13,11 @@ import {
   UpdateProductCategoryInput,
 } from "./product-categories.types";
 
-/** El backend manda `is_active` con un tipo inconsistente ("true"/true/1). */
 function toProductCategoryRow(raw: Record<string, unknown>): ProductCategoryRow {
   return {
     id: Number(raw.id),
     name: String(raw.name ?? ""),
-    is_active: raw.is_active === true || raw.is_active === "true" || raw.is_active === 1,
+    is_active: toBoolean(raw.is_active),
     created_at: String(raw.created_at ?? ""),
     updated_at: String(raw.updated_at ?? ""),
     deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),
@@ -26,14 +27,8 @@ function toProductCategoryRow(raw: Record<string, unknown>): ProductCategoryRow 
 async function list(
   params: ProductCategoryListParams = {},
 ): Promise<Paginated<ProductCategoryRow>> {
-  const search = params.search?.trim();
   const { data } = await apiClient.get<unknown>(PRODUCT_CATEGORIES_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? PRODUCT_CATEGORIES_PER_PAGE,
-      search: search ? search : undefined,
-      is_active: params.isActive,
-    },
+    params: buildListParams(params, PRODUCT_CATEGORIES_PER_PAGE),
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);
   return { ...page, data: page.data.map(toProductCategoryRow) };

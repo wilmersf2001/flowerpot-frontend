@@ -6,6 +6,7 @@ import {
   EM_DASH,
   RowActions,
   formatDate,
+  formatDateTime,
   type Column,
   type DataTablePagination,
 } from "@/features/_shared";
@@ -23,8 +24,10 @@ const columns: Column<AttendanceRow>[] = [
     cell: (row) => (
       <div className="flex flex-col">
         <span className="font-medium">{row.member_name || row.member_id}</span>
-        {row.member_dni ? (
-          <span className="text-xs text-muted-foreground">{row.member_dni}</span>
+        {row.member?.dni ? (
+          <span className="text-xs text-muted-foreground">
+            {row.member.dni}
+          </span>
         ) : null}
       </div>
     ),
@@ -34,7 +37,7 @@ const columns: Column<AttendanceRow>[] = [
     header: "Ingreso",
     cell: (row) => (
       <span className="text-muted-foreground tabular-nums">
-        {formatDate(row.checked_in_at, DATETIME_OPTIONS)}
+        {formatDateTime(row.checked_in_at, DATETIME_OPTIONS)}
       </span>
     ),
   },
@@ -42,7 +45,9 @@ const columns: Column<AttendanceRow>[] = [
     key: "branch_name",
     header: "Sede",
     cell: (row) => (
-      <span className="text-muted-foreground">{row.branch_name || EM_DASH}</span>
+      <span className="text-muted-foreground">
+        {row.branch_name || EM_DASH}
+      </span>
     ),
   },
   {
@@ -57,7 +62,7 @@ const columns: Column<AttendanceRow>[] = [
     header: "Membresía vence",
     cell: (row) => (
       <span className="text-muted-foreground tabular-nums">
-        {row.membership_ends_at ? formatDate(row.membership_ends_at) : EM_DASH}
+        {row.membership?.ends_at ? formatDate(row.membership.ends_at) : EM_DASH}
       </span>
     ),
   },
@@ -85,7 +90,7 @@ export function AttendanceTable({
       pagination={pagination}
       rowActions={(row) => (
         <RowActions
-          label={`Acciones de ${row.member_name || row.member_id}`}
+          label={`Acciones de ${row.member?.full_name || row.member_id}`}
           actions={[
             {
               label: "Eliminar",

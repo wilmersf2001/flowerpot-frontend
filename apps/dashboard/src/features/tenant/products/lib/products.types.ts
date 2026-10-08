@@ -4,21 +4,21 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 
 export interface ProductCategoryRef {
-  id: string;
+  id: number;
   name: string;
   is_active: boolean;
 }
 
 /** Cantidad disponible de un producto en una sede. Solo lectura desde esta API. */
 export interface ProductStock {
-  branch_id: string;
+  branch_id: number;
   branch_name: string;
   quantity: number;
 }
 
 export interface ProductRow {
-  id: string;
-  product_category_id: string | null;
+  id: number;
+  product_category_id: number | null;
   /** Solo viene cargada en `index`/`show`/`update`; en `store` es `null`. */
   category: ProductCategoryRef | null;
   name: string;
@@ -36,8 +36,8 @@ export interface ProductRow {
 }
 
 export interface ProductListParams extends BaseListParams {
-  categoryId?: string;
-  isActive?: boolean;
+  product_category_id?: string;
+  is_active?: boolean;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

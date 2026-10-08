@@ -55,8 +55,8 @@ export function equipmentMaintenanceToForm(
   maintenance: EquipmentMaintenanceRow,
 ): EquipmentMaintenanceForm {
   return {
-    equipment_id: maintenance.equipment_id,
-    supplier_id: maintenance.supplier_id,
+    equipment_id: String(maintenance.equipment_id),
+    supplier_id: String(maintenance.supplier_id),
     type: maintenance.type,
     description: maintenance.description,
     scheduled_date: maintenance.scheduled_date ?? "",

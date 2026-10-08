@@ -13,7 +13,7 @@ export interface EquipmentCategoryRow {
 }
 
 export interface EquipmentCategoryListParams extends BaseListParams {
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

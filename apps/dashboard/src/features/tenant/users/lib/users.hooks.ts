@@ -23,7 +23,7 @@ export function useCreateUser() {
 export function useUpdateUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateUserInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateUserInput }) =>
       usersApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
   });
@@ -32,7 +32,7 @@ export function useUpdateUser() {
 export function useDeleteUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => usersApi.remove(id),
+    mutationFn: (id: number) => usersApi.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
   });
 }
@@ -40,7 +40,7 @@ export function useDeleteUser() {
 export function useAssignRole() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, role }: { id: string; role: string }) =>
+    mutationFn: ({ id, role }: { id: number; role: string }) =>
       usersApi.assignRole(id, role),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
   });

@@ -35,7 +35,7 @@ export function EquipmentDetailDialog({
   equipmentId,
   onOpenChangeAction,
 }: {
-  equipmentId: string | null;
+  equipmentId: number | null;
   onOpenChangeAction: (open: boolean) => void;
 }) {
   const open = equipmentId !== null;

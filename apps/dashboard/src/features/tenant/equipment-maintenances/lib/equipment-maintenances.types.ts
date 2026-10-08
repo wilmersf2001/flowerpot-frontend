@@ -12,18 +12,18 @@ export type EquipmentMaintenanceStatus = (typeof EQUIPMENT_MAINTENANCE_STATUSES)
 
 /** Equipo referenciado desde un mantenimiento (no el `EquipmentRow` completo del otro módulo). */
 export interface EquipmentMaintenanceEquipmentRef {
-  id: string;
+  id: number;
   name: string;
   status: string;
 }
 
 export interface EquipmentMaintenanceSupplierRef {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface EquipmentMaintenanceRow {
-  id: string;
+  id: number;
   type: EquipmentMaintenanceType;
   status: EquipmentMaintenanceStatus;
   description: string;
@@ -33,10 +33,10 @@ export interface EquipmentMaintenanceRow {
   completed_at: string | null;
   cost: number | null;
   next_maintenance_date: string | null;
-  equipment_id: string;
+  equipment_id: number;
   /** `null` si el equipo fue eliminado. */
   equipment: EquipmentMaintenanceEquipmentRef | null;
-  supplier_id: string;
+  supplier_id: number;
   /** `null` si el proveedor fue eliminado. */
   supplier: EquipmentMaintenanceSupplierRef | null;
   created_at: string;

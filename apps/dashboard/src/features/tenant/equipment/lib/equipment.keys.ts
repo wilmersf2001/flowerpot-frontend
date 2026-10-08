@@ -6,6 +6,6 @@ export const equipmentKeys = {
   lists: () => [...equipmentKeys.all, "list"] as const,
   list: (params: EquipmentListParams) => [...equipmentKeys.lists(), params] as const,
   details: () => [...equipmentKeys.all, "detail"] as const,
-  detail: (id: string) => [...equipmentKeys.details(), id] as const,
+  detail: (id: number) => [...equipmentKeys.details(), id] as const,
   options: (search: string) => [...equipmentKeys.all, "options", search] as const,
 };

@@ -16,7 +16,7 @@ export function useClassSessions(params: ClassSessionListParams = {}) {
 export function useUpdateClassSession() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateClassSessionInput }) =>
+    mutationFn: ({ id, input }: { id: number; input: UpdateClassSessionInput }) =>
       classSessionsApi.update(id, input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: classSessionKeys.all }),
   });
