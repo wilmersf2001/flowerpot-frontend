@@ -10,10 +10,13 @@ const PANEL_LABEL: Record<PanelKind, string> = {
 export function Sidebar({
   panel,
   items,
+  footerItems = [],
   subtitle,
 }: {
   panel: PanelKind;
   items: NavItem[];
+  /** Items de configuración: van al pie, separados de los módulos diarios. */
+  footerItems?: NavItem[];
   /** Texto bajo la marca; por defecto el nombre del panel. */
   subtitle?: string;
 }) {
@@ -27,7 +30,17 @@ export function Sidebar({
           {subtitle ?? PANEL_LABEL[panel]}
         </p>
       </div>
-      <SidebarNav items={items} />
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <SidebarNav items={items} />
+      </div>
+      {footerItems.length > 0 ? (
+        <div className="mt-4 border-t pt-4">
+          <p className="display-label mb-2 px-2 text-[10px] text-muted-foreground">
+            Sistema
+          </p>
+          <SidebarNav items={footerItems} />
+        </div>
+      ) : null}
     </aside>
   );
 }

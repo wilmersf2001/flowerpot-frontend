@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useHasPermission } from "@/features/tenant/auth";
 import type { PanelTarget } from "@/lib/domain";
-import { NAV_BY_PANEL, type NavItem } from "./nav.config";
+import { NAV_BY_PANEL, TENANT_SETTINGS_NAV, type NavItem } from "./nav.config";
 import { Sidebar } from "./sidebar";
 import { SidebarNav } from "./sidebar-nav";
 import { Topbar } from "./topbar";
@@ -27,14 +27,22 @@ export function AppShell({
     return all.filter((item: NavItem) => hasPermission(item.permission));
   }, [panel.kind, hasPermission]);
 
+  const footerItems = useMemo(
+    () =>
+      panel.kind === "tenant"
+        ? TENANT_SETTINGS_NAV.filter((item) => hasPermission(item.permission))
+        : [],
+    [panel.kind, hasPermission],
+  );
+
   return (
     <div className="flex min-h-svh">
-      <Sidebar panel={panel.kind} items={items} />
+      <Sidebar panel={panel.kind} items={items} footerItems={footerItems} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar panel={panel} />
         {/* Navegación en móvil: el sidebar está oculto bajo `md`. */}
         <div className="border-b px-4 py-2 md:hidden">
-          <SidebarNav items={items} orientation="horizontal" />
+          <SidebarNav items={[...items, ...footerItems]} orientation="horizontal" />
         </div>
         <main className="flex-1 p-6">{children}</main>
       </div>

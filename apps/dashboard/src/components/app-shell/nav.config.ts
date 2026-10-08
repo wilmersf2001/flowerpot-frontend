@@ -85,6 +85,20 @@ const TENANT_NAV: NavItem[] = [
   },
 ];
 
+/**
+ * Zona de configuración del gimnasio. No es un módulo de uso diario: el sidebar
+ * la separa del resto (bloque propio al pie) y entra a `/settings`, que tiene
+ * su propio layout con sub-navegación.
+ */
+export const TENANT_SETTINGS_NAV: NavItem[] = [
+  {
+    href: ROUTES.tenant.settings,
+    label: "Configuración",
+    icon: "settings",
+    permission: "settings.view",
+  },
+];
+
 export const NAV_BY_PANEL: Record<PanelKind, NavItem[]> = {
   central: CENTRAL_NAV,
   tenant: TENANT_NAV,

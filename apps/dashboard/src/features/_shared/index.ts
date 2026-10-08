@@ -8,6 +8,7 @@ export {
   type DataTablePagination,
 } from "./data-table";
 export { ResourceHeader } from "./resource-header";
+export { SettingsSection } from "./settings-section";
 export { RowActions, type RowAction } from "./row-actions";
 export {
   StatusBadge,

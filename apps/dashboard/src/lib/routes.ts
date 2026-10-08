@@ -35,6 +35,8 @@ export const ROUTES = {
     users: "/users",
     branches: "/branches",
     cashRegister: "/cash-register",
+    settings: "/settings",
+    settingsCompany: "/settings/company",
   },
 } as const;
 
