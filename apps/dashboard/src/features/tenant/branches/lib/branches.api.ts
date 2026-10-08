@@ -1,47 +1,37 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
-import { toBoolean } from "@/features/_shared/format";
+import { buildListParams } from "@/features/_shared/list-params";
 import { BRANCHES_ENDPOINT, BRANCHES_PER_PAGE } from "./branches.constants";
-import { BranchListParams, BranchRow, CreateBranchInput, UpdateBranchInput } from "./branches.types";
+import {
+  BranchListParams,
+  BranchRow,
+  CreateBranchInput,
+  UpdateBranchInput,
+} from "./branches.types";
 
-function toBranchRow(raw: Record<string, unknown>): BranchRow {
-  return {
-    id: Number(raw.id),
-    name: String(raw.name ?? ""),
-    address: String(raw.address ?? ""),
-    phone: String(raw.phone ?? ""),
-    timezone: String(raw.timezone ?? ""),
-    is_active: toBoolean(raw.is_active),
-    created_at: String(raw.created_at ?? ""),
-    updated_at: String(raw.updated_at ?? ""),
-    deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),
-  };
-}
-
-async function list(params: BranchListParams = {}): Promise<Paginated<BranchRow>> {
-  const search = params.search?.trim();
+async function list(
+  params: BranchListParams = {},
+): Promise<Paginated<BranchRow>> {
   const { data } = await apiClient.get<unknown>(BRANCHES_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? BRANCHES_PER_PAGE,
-      search: search ? search : undefined,
-    },
+    params: buildListParams(params, BRANCHES_PER_PAGE),
   });
-  const page = unwrapPaginated<Record<string, unknown>>(data);
-  return { ...page, data: page.data.map(toBranchRow) };
+  return unwrapPaginated<BranchRow>(data);
 }
 
 async function create(input: CreateBranchInput): Promise<BranchRow> {
   const { data } = await apiClient.post<unknown>(BRANCHES_ENDPOINT, input);
-  return toBranchRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<BranchRow>(data);
 }
 
-async function update(id: number, input: UpdateBranchInput): Promise<BranchRow> {
+async function update(
+  id: number,
+  input: UpdateBranchInput,
+): Promise<BranchRow> {
   const { data } = await apiClient.patch<unknown>(
     `${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
   );
-  return toBranchRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<BranchRow>(data);
 }
 
 async function remove(id: number): Promise<void> {
@@ -53,7 +43,7 @@ async function toggleActive(id: number): Promise<BranchRow> {
   const { data } = await apiClient.patch<unknown>(
     `${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}/toggle-active`,
   );
-  return toBranchRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<BranchRow>(data);
 }
 
 /** Restaura una sede eliminada (soft-delete). */
@@ -61,7 +51,14 @@ async function restore(id: number): Promise<BranchRow> {
   const { data } = await apiClient.post<unknown>(
     `${BRANCHES_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );
-  return toBranchRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<BranchRow>(data);
 }
 
-export const branchesApi = { list, create, update, remove, toggleActive, restore };
+export const branchesApi = {
+  list,
+  create,
+  update,
+  remove,
+  toggleActive,
+  restore,
+};

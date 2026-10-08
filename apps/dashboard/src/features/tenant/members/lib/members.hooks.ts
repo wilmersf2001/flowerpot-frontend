@@ -12,6 +12,7 @@ import { membersApi } from "./members.api";
 import { memberKeys } from "./members.keys";
 import {
   CreateMemberInput,
+  MemberFilters,
   MemberListParams,
   MemberRow,
   UpdateMemberInput,
@@ -126,12 +127,12 @@ const toMemberOption = (member: MemberRow): ComboboxOption => ({
 });
 
 /** Opciones asíncronas de socio (buscador por nombre/DNI) para combobox. */
-export function useMemberOptions(enabled = true) {
+export function useMemberOptions(enabled = true, filters: MemberFilters = {}) {
   return useAsyncOptions<MemberRow>({
-    queryKey: (search) => memberKeys.options(search),
+    queryKey: (search) => memberKeys.options(search, filters),
     fetchPage: ({ search, page }) =>
       // Un selector nunca debe ofrecer socios eliminados ni inactivos.
-      membersApi.list({ search, page, perPage: 20, selectable: 1 }),
+      membersApi.list({ search, page, perPage: 20, selectable: 1, ...filters }),
     toOption: toMemberOption,
     enabled,
   });

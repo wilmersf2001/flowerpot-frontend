@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toLocalDate } from "@/features/_shared/format";
 import { enumFallback, optionalText, requiredText } from "@/features/_shared/form-schema";
 import { MEMBER_GENDERS, MEMBER_MAX_AGE, MEMBER_MIN_AGE } from "./members.constants";
 import type { CreateMemberInput, MemberRow, UpdateMemberInput } from "./members.types";
@@ -32,8 +33,8 @@ function yearsAgo(years: number): string {
 /** Límites del calendario de fecha de nacimiento. */
 export function birthDateBounds() {
   return {
-    fromDate: new Date(`${yearsAgo(MEMBER_MAX_AGE)}T00:00:00`),
-    toDate: new Date(`${yearsAgo(MEMBER_MIN_AGE)}T00:00:00`),
+    fromDate: toLocalDate(yearsAgo(MEMBER_MAX_AGE)),
+    toDate: toLocalDate(yearsAgo(MEMBER_MIN_AGE)),
   };
 }
 

@@ -10,6 +10,7 @@ import {
   StatusBadge,
   formatDate,
   formatMoney,
+  toLocalDate,
   type Column,
   type DataTablePagination,
   type StatusMap,
@@ -32,7 +33,7 @@ const DELETED_MAP: StatusMap = {
 function isWarrantyExpired(date: string): boolean {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return new Date(`${date}T00:00:00`) < today;
+  return toLocalDate(date) < today;
 }
 
 const baseColumns: Column<EquipmentRow>[] = [

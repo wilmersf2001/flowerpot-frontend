@@ -5,7 +5,7 @@ import { AlertTriangle, Plus } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
 import { DatePicker } from "@repo/ui/date-picker";
-import { ResourceHeader } from "@/features/_shared";
+import { ResourceHeader, toLocalDate } from "@/features/_shared";
 import { useCurrentCashRegister } from "@/features/tenant/cash-register";
 import { SALE_PAYMENT_METHOD_LABELS, SALE_PAYMENT_METHODS } from "./lib/sales.constants";
 import type { SalePaymentMethod, SaleRow, SaleStatus } from "./lib/sales.types";
@@ -41,10 +41,10 @@ export function SalesPage() {
 
   const sales = useSales({
     page,
-    paymentMethod: paymentMethod || undefined,
+    payment_method: paymentMethod || undefined,
     status: status || undefined,
-    dateFrom: dateFrom || undefined,
-    dateTo: dateTo ? `${dateTo} 23:59:59` : undefined,
+    date_from: dateFrom || undefined,
+    date_to: dateTo ? `${dateTo} 23:59:59` : undefined,
   });
   const meta = sales.data;
 
@@ -102,14 +102,14 @@ export function SalesPage() {
           value={dateFrom}
           onValueChange={withPageReset(setDateFrom)}
           placeholder="Desde"
-          toDate={dateTo ? new Date(`${dateTo}T00:00:00`) : undefined}
+          toDate={dateTo ? toLocalDate(dateTo) : undefined}
         />
         <DatePicker
           className="w-44"
           value={dateTo}
           onValueChange={withPageReset(setDateTo)}
           placeholder="Hasta"
-          fromDate={dateFrom ? new Date(`${dateFrom}T00:00:00`) : undefined}
+          fromDate={dateFrom ? toLocalDate(dateFrom) : undefined}
         />
       </div>
 

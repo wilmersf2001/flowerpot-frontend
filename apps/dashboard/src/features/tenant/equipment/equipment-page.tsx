@@ -44,8 +44,8 @@ export function EquipmentPage() {
   const equipment = useEquipmentList({
     page,
     search: debouncedSearch,
-    categoryId: categoryId || undefined,
-    branchId: branchId || undefined,
+    equipment_category_id: categoryId || undefined,
+    branch_id: branchId || undefined,
     status: status || undefined,
   });
   const meta = equipment.data;

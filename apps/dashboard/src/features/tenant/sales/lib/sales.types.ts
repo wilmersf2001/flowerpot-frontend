@@ -63,15 +63,15 @@ export interface SaleRow {
 }
 
 export interface SaleListParams extends BaseListParams {
-  branchId?: string;
-  memberId?: string;
-  staffId?: string;
-  paymentMethod?: SalePaymentMethod;
+  branch_id?: string;
+  member_id?: string;
+  staff_id?: string;
+  payment_method?: SalePaymentMethod;
   status?: SaleStatus;
   /** `created_at >=` (fecha-hora: incluye desde las 00:00:00 de ese día). */
-  dateFrom?: string;
+  date_from?: string;
   /** `created_at <=` (fecha-hora: usa `YYYY-MM-DD 23:59:59` para incluir el día completo). */
-  dateTo?: string;
+  date_to?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

@@ -47,13 +47,13 @@ export interface StockMovementRow {
 }
 
 export interface StockMovementListParams extends BaseListParams {
-  productId?: string;
-  branchId?: string;
+  product_id?: string;
+  branch_id?: string;
   type?: StockMovementType;
   /** `created_at >=` (fecha-hora: incluye desde las 00:00:00 de ese día). */
-  dateFrom?: string;
+  date_from?: string;
   /** `created_at <=` (fecha-hora: usa `YYYY-MM-DD 23:59:59` para incluir el día completo). */
-  dateTo?: string;
+  date_to?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

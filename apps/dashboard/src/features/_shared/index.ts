@@ -46,6 +46,7 @@ export {
   formatDateTime,
   formatMoney,
   toDateInputValue,
+  toLocalDate,
   splitLines,
   slugify,
   toBoolean,

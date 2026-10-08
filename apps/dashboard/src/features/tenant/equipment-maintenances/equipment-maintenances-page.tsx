@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
 import { DatePicker } from "@repo/ui/date-picker";
-import { AsyncCombobox, ResourceHeader } from "@/features/_shared";
+import { AsyncCombobox, ResourceHeader, toLocalDate } from "@/features/_shared";
 import { useEquipmentOptions } from "@/features/tenant/equipment";
 import { useSupplierOptions } from "@/features/tenant/suppliers";
 import type {
@@ -55,12 +55,12 @@ export function EquipmentMaintenancesPage() {
 
   const maintenances = useEquipmentMaintenances({
     page,
-    equipmentId: equipmentId || undefined,
-    supplierId: supplierId || undefined,
+    equipment_id: equipmentId || undefined,
+    supplier_id: supplierId || undefined,
     type: type || undefined,
     status: status || undefined,
-    dateFrom: dateFrom || undefined,
-    dateTo: dateTo || undefined,
+    date_from: dateFrom || undefined,
+    date_to: dateTo || undefined,
   });
   const meta = maintenances.data;
 
@@ -129,14 +129,14 @@ export function EquipmentMaintenancesPage() {
           value={dateFrom}
           onValueChange={withPageReset(setDateFrom)}
           placeholder="Desde"
-          toDate={dateTo ? new Date(`${dateTo}T00:00:00`) : undefined}
+          toDate={dateTo ? toLocalDate(dateTo) : undefined}
         />
         <DatePicker
           className="w-44"
           value={dateTo}
           onValueChange={withPageReset(setDateTo)}
           placeholder="Hasta"
-          fromDate={dateFrom ? new Date(`${dateFrom}T00:00:00`) : undefined}
+          fromDate={dateFrom ? toLocalDate(dateFrom) : undefined}
         />
       </div>
 

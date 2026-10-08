@@ -1,80 +1,37 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
 import { buildListParams } from "@/features/_shared/list-params";
-import { toBoolean } from "@/features/_shared/format";
 import { PRODUCTS_ENDPOINT, PRODUCTS_PER_PAGE } from "./products.constants";
 import {
   CreateProductInput,
-  ProductCategoryRef,
   ProductListParams,
   ProductRow,
-  ProductStock,
   UpdateProductInput,
 } from "./products.types";
 
-function toProductCategoryRef(raw: unknown): ProductCategoryRef | null {
-  if (!raw || typeof raw !== "object") return null;
-  const c = raw as Record<string, unknown>;
-  return {
-    id: Number(c.id),
-    name: String(c.name ?? ""),
-    is_active: toBoolean(c.is_active),
-  };
-}
-
-function toProductStocks(raw: unknown): ProductStock[] {
-  if (!Array.isArray(raw)) return [];
-  return raw.map((item) => {
-    const s = item as Record<string, unknown>;
-    return {
-      branch_id: Number(s.branch_id),
-      branch_name: String(s.branch_name ?? ""),
-      quantity: Number(s.quantity ?? 0),
-    };
-  });
-}
-
-/**
- * El `store` no devuelve `category` ni `stocks` (solo `product_category_id`);
- * `index`/`show`/`update` sí. `cost` llega en `0` cuando nunca se definió.
- */
-function toProductRow(raw: Record<string, unknown>): ProductRow {
-  return {
-    id: Number(raw.id),
-    product_category_id: raw.product_category_id == null ? null : Number(raw.product_category_id),
-    category: toProductCategoryRef(raw.category),
-    name: String(raw.name ?? ""),
-    description: String(raw.description ?? ""),
-    sku: String(raw.sku ?? ""),
-    sale_price: Number(raw.sale_price ?? 0),
-    cost: Number(raw.cost ?? 0),
-    is_active: toBoolean(raw.is_active),
-    stocks: toProductStocks(raw.stocks),
-    created_at: String(raw.created_at ?? ""),
-    updated_at: String(raw.updated_at ?? ""),
-    deleted_at: raw.deleted_at == null ? null : String(raw.deleted_at),
-  };
-}
-
-async function list(params: ProductListParams = {}): Promise<Paginated<ProductRow>> {
+async function list(
+  params: ProductListParams = {},
+): Promise<Paginated<ProductRow>> {
   const { data } = await apiClient.get<unknown>(PRODUCTS_ENDPOINT, {
     params: buildListParams(params, PRODUCTS_PER_PAGE),
   });
-  const page = unwrapPaginated<Record<string, unknown>>(data);
-  return { ...page, data: page.data.map(toProductRow) };
+  return unwrapPaginated<ProductRow>(data);
 }
 
 async function create(input: CreateProductInput): Promise<ProductRow> {
   const { data } = await apiClient.post<unknown>(PRODUCTS_ENDPOINT, input);
-  return toProductRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<ProductRow>(data);
 }
 
-async function update(id: number, input: UpdateProductInput): Promise<ProductRow> {
+async function update(
+  id: number,
+  input: UpdateProductInput,
+): Promise<ProductRow> {
   const { data } = await apiClient.patch<unknown>(
     `${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`,
     input,
   );
-  return toProductRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<ProductRow>(data);
 }
 
 async function remove(id: number): Promise<void> {
@@ -86,7 +43,7 @@ async function restore(id: number): Promise<ProductRow> {
   const { data } = await apiClient.patch<unknown>(
     `${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}/restore`,
   );
-  return toProductRow(unwrapEnvelope<Record<string, unknown>>(data));
+  return unwrapEnvelope<ProductRow>(data);
 }
 
 export const productsApi = { list, create, update, remove, restore };

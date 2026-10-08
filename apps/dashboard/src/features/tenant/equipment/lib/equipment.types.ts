@@ -69,8 +69,8 @@ export interface EquipmentRow {
 }
 
 export interface EquipmentListParams extends BaseListParams {
-  categoryId?: string;
-  branchId?: string;
+  equipment_category_id?: string;
+  branch_id?: string;
   status?: EquipmentStatus;
 }
 

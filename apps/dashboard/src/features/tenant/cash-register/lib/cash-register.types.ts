@@ -36,9 +36,9 @@ export interface CashRegisterRow {
 
 export interface CashRegisterListParams extends BaseListParams {
   status?: CashRegisterStatus;
-  branchId?: string | null;
-  dateFrom?: string;
-  dateTo?: string;
+  branch_id?: string | null;
+  date_from?: string;
+  date_to?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */
@@ -126,9 +126,9 @@ export interface CashMovementRow {
 export interface CashMovementListParams extends BaseListParams {
   type?: CashMovementType;
   category?: string;
-  paymentMethod?: CashPaymentMethod;
-  isVoided?: boolean;
-  isAutomatic?: boolean;
+  payment_method?: CashPaymentMethod;
+  is_voided?: boolean;
+  is_automatic?: boolean;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

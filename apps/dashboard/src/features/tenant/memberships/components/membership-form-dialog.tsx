@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
+import { Label } from "@repo/ui/label";
+import { Switch } from "@repo/ui/switch";
+import { useSelectedBranch } from "@/components/branch";
 import {
   AppDialog,
   AsyncCombobox,
@@ -12,6 +15,7 @@ import {
   Field,
   MultiCombobox,
   TextareaField,
+  toLocalDate,
   useFieldBinder,
   useResourceFormSubmit,
 } from "@/features/_shared";
@@ -49,15 +53,12 @@ const CREATE_STATUS_OPTIONS: ComboboxOption[] = MEMBERSHIP_CREATE_STATUSES.map(
 
 /** En edición solo se ofrece el estado actual y los cambios permitidos. */
 function editStatusOptions(current: MembershipStatus): ComboboxOption[] {
-  return [current, ...(MEMBERSHIP_STATUS_TRANSITIONS[current] ?? [])].map((status) => ({
-    value: status,
-    label: MEMBERSHIP_STATUS_LABELS[status],
-  }));
-}
-
-/** `YYYY-MM-DD` -> `Date` local, para los límites del calendario. */
-function toLocalDate(value: string): Date {
-  return new Date(`${value}T00:00:00`);
+  return [current, ...(MEMBERSHIP_STATUS_TRANSITIONS[current] ?? [])].map(
+    (status) => ({
+      value: status,
+      label: MEMBERSHIP_STATUS_LABELS[status],
+    }),
+  );
 }
 
 /**
@@ -78,11 +79,19 @@ export function MembershipFormDialog({
   const isEdit = membership !== null;
   const createMembership = useCreateMembership();
   const updateMembership = useUpdateMembership();
+  const { selectedBranchId } = useSelectedBranch();
+
+  // Por defecto el buscador de socios solo muestra los de la sede activa del
+  // switcher global; el usuario puede destildar para buscar en todas.
+  const [filterMembersByBranch, setFilterMembersByBranch] = useState(true);
 
   // Selects asíncronos: solo se usan en alta (en edición van de solo lectura)
   // y solo mientras el diálogo está abierto, para no precargar en cada visita
   // a la página aunque el usuario nunca abra el formulario.
-  const memberOptions = useMemberOptions(open && !isEdit);
+  const memberOptions = useMemberOptions(
+    open && !isEdit,
+    filterMembersByBranch ? { branch_id: selectedBranchId } : {},
+  );
   const planOptions = useMembershipPlanOptions(open && !isEdit, {
     is_active: "1",
   });
@@ -107,7 +116,9 @@ export function MembershipFormDialog({
 
   const form = useForm<MembershipForm>({
     // La ventana de fechas de inicio solo aplica al crear.
-    resolver: zodResolver(isEdit ? membershipFormSchema : createMembershipFormSchema),
+    resolver: zodResolver(
+      isEdit ? membershipFormSchema : createMembershipFormSchema,
+    ),
     defaultValues: membershipFormDefaults,
   });
   const {
@@ -131,6 +142,8 @@ export function MembershipFormDialog({
   useEffect(() => {
     if (open) {
       reset(membership ? membershipToForm(membership) : membershipFormDefaults);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFilterMembersByBranch(true);
     }
   }, [open, membership, reset]);
 
@@ -186,17 +199,29 @@ export function MembershipFormDialog({
         </>
       }
     >
-      <form
-        id={FORM_ID}
-        onSubmit={onSubmit}
-        className="flex flex-col gap-4"
-        noValidate
-      >
-        <Field
-          label="Socio"
-          htmlFor="membership-member"
-          error={errors.member_id?.message}
-        >
+      <div className="flex flex-col gap-4">
+        {/*
+         * Fuera del <form>: el `Switch` de Radix detecta un ancestro <form> y
+         * monta un <input type="checkbox"> oculto para sincronizarse con el
+         * submit nativo, cuyo efecto despacha un evento y dispara un
+         * `flushSync` anidado (warning de React 19). Este switch es un filtro
+         * de UI, no un campo del formulario, así que no necesita estar dentro.
+         */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="membership-member">Socio</Label>
+            {!isEdit ? (
+              <label className="flex items-center gap-2 text-xs font-normal text-muted-foreground">
+                Sede actual
+                <Switch
+                  size="sm"
+                  checked={filterMembersByBranch}
+                  onCheckedChange={setFilterMembersByBranch}
+                  aria-label="Filtrar socios por la sede actual"
+                />
+              </label>
+            ) : null}
+          </div>
           <Controller
             control={control}
             name="member_id"
@@ -215,108 +240,126 @@ export function MembershipFormDialog({
               />
             )}
           />
-        </Field>
+          {errors.member_id ? (
+            <p className="text-xs text-destructive">
+              {errors.member_id.message}
+            </p>
+          ) : null}
+        </div>
 
-        <Field
-          label="Plan"
-          htmlFor="membership-plan"
-          error={errors.membership_plan_id?.message}
+        <form
+          id={FORM_ID}
+          onSubmit={onSubmit}
+          className="flex flex-col gap-4"
+          noValidate
         >
-          <Controller
-            control={control}
-            name="membership_plan_id"
-            render={({ field }) => (
-              <AsyncCombobox
-                id="membership-plan"
-                value={field.value}
-                onValueChange={(value, option) => {
-                  field.onChange(value);
-                  // Guarda el modo de sedes del plan para pedir (o no) las sedes.
-                  setValue("plan_branch_access", option.data?.branch_access ?? "");
-                  setValue("plan_max_branches", option.data?.max_branches ?? "");
-                  setValue("branches", [], { shouldValidate: isSubmitted });
-                }}
-                source={planOptions}
-                selectedOption={selectedPlanOption}
-                disabled={isEdit}
-                placeholder="Selecciona un plan"
-                searchPlaceholder="Buscar plan…"
-                emptyText="Sin planes."
-                aria-invalid={errors.membership_plan_id ? true : undefined}
-              />
-            )}
-          />
-        </Field>
-
-        {!isEdit && planBranchAccess === "limited" ? (
           <Field
-            label="Sedes"
-            htmlFor="membership-branches"
-            error={errors.branches?.message}
-            hint={`Este plan permite elegir hasta ${planMaxBranches || 1} sede${planMaxBranches === "1" ? "" : "s"}.`}
+            label="Plan"
+            htmlFor="membership-plan"
+            error={errors.membership_plan_id?.message}
           >
             <Controller
               control={control}
-              name="branches"
+              name="membership_plan_id"
               render={({ field }) => (
-                <MultiCombobox
-                  id="membership-branches"
+                <AsyncCombobox
+                  id="membership-plan"
                   value={field.value}
-                  onValueChange={field.onChange}
-                  options={branchOptions.options}
-                  placeholder="Selecciona las sedes…"
-                  aria-invalid={errors.branches ? true : undefined}
+                  onValueChange={(value, option) => {
+                    field.onChange(value);
+                    // Guarda el modo de sedes del plan para pedir (o no) las sedes.
+                    setValue(
+                      "plan_branch_access",
+                      option.data?.branch_access ?? "",
+                    );
+                    setValue(
+                      "plan_max_branches",
+                      option.data?.max_branches ?? "",
+                    );
+                    setValue("branches", [], { shouldValidate: isSubmitted });
+                  }}
+                  source={planOptions}
+                  selectedOption={selectedPlanOption}
+                  disabled={isEdit}
+                  placeholder="Selecciona un plan"
+                  searchPlaceholder="Buscar plan…"
+                  emptyText="Sin planes."
+                  aria-invalid={errors.membership_plan_id ? true : undefined}
                 />
               )}
             />
           </Field>
-        ) : null}
 
-        <DateField
-          form={form}
-          name="starts_at"
-          idPrefix="membership"
-          label="Inicio"
-          disabled={isEdit}
-          fromDate={isEdit ? undefined : toLocalDate(startBounds.from)}
-          toDate={isEdit ? undefined : toLocalDate(startBounds.to)}
-        />
-
-        <Field
-          label="Estado"
-          htmlFor="membership-status"
-          error={errors.status?.message}
-          hint={
-            isEdit
-              ? statusOptions.length === 1
-                ? "Una membresía expirada o cancelada no se reactiva: crea una nueva."
-                : undefined
-              : "Se activa sola cuando el pago queda completo (los planes gratis nacen activos)."
-          }
-        >
-          <Controller
-            control={control}
-            name="status"
-            render={({ field }) => (
-              <Combobox
-                id="membership-status"
-                value={field.value}
-                onValueChange={field.onChange}
-                options={statusOptions}
-                disabled={statusOptions.length === 1}
-                aria-invalid={errors.status ? true : undefined}
+          {!isEdit && planBranchAccess === "limited" ? (
+            <Field
+              label="Sedes"
+              htmlFor="membership-branches"
+              error={errors.branches?.message}
+              hint={`Este plan permite elegir hasta ${planMaxBranches || 1} sede${planMaxBranches === "1" ? "" : "s"}.`}
+            >
+              <Controller
+                control={control}
+                name="branches"
+                render={({ field }) => (
+                  <MultiCombobox
+                    id="membership-branches"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    options={branchOptions.options}
+                    placeholder="Selecciona las sedes…"
+                    aria-invalid={errors.branches ? true : undefined}
+                  />
+                )}
               />
-            )}
-          />
-        </Field>
+            </Field>
+          ) : null}
 
-        <TextareaField
-          {...bind("notes")}
-          label="Notas"
-          hint="Opcional."
-          placeholder="Descuentos, acuerdos, observaciones…"
-        />
-      </form>
+          <DateField
+            form={form}
+            name="starts_at"
+            idPrefix="membership"
+            label="Inicio"
+            disabled={isEdit}
+            fromDate={isEdit ? undefined : toLocalDate(startBounds.from)}
+            toDate={isEdit ? undefined : toLocalDate(startBounds.to)}
+          />
+
+          <Field
+            label="Estado"
+            htmlFor="membership-status"
+            error={errors.status?.message}
+            hint={
+              isEdit
+                ? statusOptions.length === 1
+                  ? "Una membresía expirada o cancelada no se reactiva: crea una nueva."
+                  : undefined
+                : "Se activa sola cuando el pago queda completo (los planes gratis nacen activos)."
+            }
+          >
+            <Controller
+              control={control}
+              name="status"
+              render={({ field }) => (
+                <Combobox
+                  id="membership-status"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  options={statusOptions}
+                  disabled={statusOptions.length === 1}
+                  aria-invalid={errors.status ? true : undefined}
+                />
+              )}
+            />
+          </Field>
+
+          <TextareaField
+            {...bind("notes")}
+            label="Notas"
+            hint="Opcional."
+            placeholder="Descuentos, acuerdos, observaciones…"
+          />
+        </form>
+      </div>
     </AppDialog>
   );
 }

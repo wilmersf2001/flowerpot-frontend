@@ -1,18 +1,21 @@
 import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import {
   PERMISSIONS_ENDPOINT,
   ROLES_ENDPOINT,
   ROLES_PER_PAGE,
 } from "./roles.constants";
-import { PermissionCatalog, RoleInput, RoleListParams, RoleRow } from "./roles.types";
+import {
+  PermissionCatalog,
+  RoleInput,
+  RoleListParams,
+  RoleRow,
+} from "./roles.types";
 
 async function list(params: RoleListParams = {}): Promise<Paginated<RoleRow>> {
   const { data } = await apiClient.get<unknown>(ROLES_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? ROLES_PER_PAGE,
-    },
+    params: buildListParams(params, ROLES_PER_PAGE),
   });
   return unwrapPaginated<RoleRow>(data);
 }
@@ -23,7 +26,10 @@ async function create(input: RoleInput): Promise<RoleRow> {
 }
 
 async function update(id: number, input: RoleInput): Promise<RoleRow> {
-  const { data } = await apiClient.patch<unknown>(`${ROLES_ENDPOINT}/${id}`, input);
+  const { data } = await apiClient.patch<unknown>(
+    `${ROLES_ENDPOINT}/${id}`,
+    input,
+  );
   return unwrapEnvelope<RoleRow>(data);
 }
 

@@ -5,6 +5,7 @@ import {
   unwrapPaginated,
 } from "@repo/api-client";
 import { Paginated } from "@repo/types";
+import { buildListParams } from "@/features/_shared/list-params";
 import { toBoolean } from "@/features/_shared/format";
 import {
   CASH_MOVEMENTS_ENDPOINT,
@@ -88,9 +89,7 @@ function toCashMovementRow(raw: Record<string, unknown>): CashMovementRow {
   };
 }
 
-function toNamedRef(
-  raw: unknown,
-): { id: string; name: string } | null {
+function toNamedRef(raw: unknown): { id: string; name: string } | null {
   if (raw == null || typeof raw !== "object") return null;
   const ref = raw as Record<string, unknown>;
   return { id: String(ref.id), name: String(ref.name ?? "") };
@@ -214,16 +213,10 @@ async function currentMovements(
   const { data } = await apiClient.get<unknown>(
     `${CASH_REGISTER_CURRENT_ENDPOINT}/movements`,
     {
-      params: {
-        branch_id: branchId ? Number(branchId) : undefined,
-        page: params.page ?? 1,
-        per_page: params.perPage ?? CASH_MOVEMENTS_PER_PAGE,
-        type: params.type,
-        category: params.category,
-        payment_method: params.paymentMethod,
-        is_voided: params.isVoided,
-        is_automatic: params.isAutomatic,
-      },
+      params: buildListParams(
+        { ...params, branch_id: branchId ? Number(branchId) : undefined },
+        CASH_MOVEMENTS_PER_PAGE,
+      ),
     },
   );
   const page = unwrapPaginated<Record<string, unknown>>(data);
@@ -234,14 +227,7 @@ async function history(
   params: CashRegisterListParams = {},
 ): Promise<Paginated<CashRegisterRow>> {
   const { data } = await apiClient.get<unknown>(CASH_REGISTERS_ENDPOINT, {
-    params: {
-      page: params.page ?? 1,
-      per_page: params.perPage ?? CASH_REGISTERS_PER_PAGE,
-      status: params.status,
-      branch_id: params.branchId ? Number(params.branchId) : undefined,
-      date_from: params.dateFrom,
-      date_to: params.dateTo,
-    },
+    params: buildListParams(params, CASH_REGISTERS_PER_PAGE),
   });
   const page = unwrapPaginated<Record<string, unknown>>(data);
   return { ...page, data: page.data.map(toCashRegisterRow) };
@@ -268,15 +254,7 @@ async function historyMovements(
   const { data } = await apiClient.get<unknown>(
     `${CASH_REGISTERS_ENDPOINT}/${encodeURIComponent(id)}/movements`,
     {
-      params: {
-        page: params.page ?? 1,
-        per_page: params.perPage ?? CASH_MOVEMENTS_PER_PAGE,
-        type: params.type,
-        category: params.category,
-        payment_method: params.paymentMethod,
-        is_voided: params.isVoided,
-        is_automatic: params.isAutomatic,
-      },
+      params: buildListParams(params, CASH_MOVEMENTS_PER_PAGE),
     },
   );
   const page = unwrapPaginated<Record<string, unknown>>(data);

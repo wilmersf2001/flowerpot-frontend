@@ -85,7 +85,7 @@ export function useVoidCashMovement() {
 /** Historial de cajas (abiertas y cerradas), acotado a la sede activa. */
 export function useCashRegisterHistory(params: CashRegisterListParams = {}) {
   const { selectedBranchId } = useSelectedBranch();
-  const listParams: CashRegisterListParams = { ...params, branchId: selectedBranchId };
+  const listParams: CashRegisterListParams = { ...params, branch_id: selectedBranchId };
   return useQuery({
     queryKey: cashRegisterKeys.historyList(listParams),
     queryFn: () => cashRegisterApi.history(listParams),

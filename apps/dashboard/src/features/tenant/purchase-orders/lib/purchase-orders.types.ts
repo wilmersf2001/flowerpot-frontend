@@ -55,13 +55,13 @@ export interface PurchaseOrderRow {
 }
 
 export interface PurchaseOrderListParams extends BaseListParams {
-  supplierId?: string;
-  branchId?: string;
+  supplier_id?: string;
+  branch_id?: string;
   status?: PurchaseOrderStatus;
   /** `order_date >=` (inclusive). */
-  dateFrom?: string;
+  date_from?: string;
   /** `order_date <=` (inclusive). */
-  dateTo?: string;
+  date_to?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

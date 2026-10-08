@@ -45,14 +45,14 @@ export interface EquipmentMaintenanceRow {
 }
 
 export interface EquipmentMaintenanceListParams extends BaseListParams {
-  equipmentId?: string;
-  supplierId?: string;
+  equipment_id?: string;
+  supplier_id?: string;
   type?: EquipmentMaintenanceType;
   status?: EquipmentMaintenanceStatus;
   /** `scheduled_date >=` (inclusive). Deja fuera los que no tienen `scheduled_date`. */
-  dateFrom?: string;
+  date_from?: string;
   /** `scheduled_date <=` (inclusive). Deja fuera los que no tienen `scheduled_date`. */
-  dateTo?: string;
+  date_to?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

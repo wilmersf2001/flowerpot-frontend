@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
 import { DatePicker } from "@repo/ui/date-picker";
-import { AsyncCombobox, ResourceHeader } from "@/features/_shared";
+import { AsyncCombobox, ResourceHeader, toLocalDate } from "@/features/_shared";
 import { useProductOptions } from "@/features/tenant/products";
 import { useBranchOptions } from "@/features/tenant/branches";
 import { STOCK_MOVEMENT_TYPES } from "./lib/stock-movements.constants";
@@ -37,12 +37,12 @@ export function StockMovementsPage() {
 
   const movements = useStockMovements({
     page,
-    productId: productId || undefined,
-    branchId: branchId || undefined,
+    product_id: productId || undefined,
+    branch_id: branchId || undefined,
     type: type || undefined,
-    dateFrom: dateFrom || undefined,
+    date_from: dateFrom || undefined,
     // El backend filtra `created_at <=` con hora; sin hora se pierde el día completo.
-    dateTo: dateTo ? `${dateTo} 23:59:59` : undefined,
+    date_to: dateTo ? `${dateTo} 23:59:59` : undefined,
   });
   const meta = movements.data;
 
@@ -93,14 +93,14 @@ export function StockMovementsPage() {
           value={dateFrom}
           onValueChange={withPageReset(setDateFrom)}
           placeholder="Desde"
-          toDate={dateTo ? new Date(`${dateTo}T00:00:00`) : undefined}
+          toDate={dateTo ? toLocalDate(dateTo) : undefined}
         />
         <DatePicker
           className="w-44"
           value={dateTo}
           onValueChange={withPageReset(setDateTo)}
           placeholder="Hasta"
-          fromDate={dateFrom ? new Date(`${dateFrom}T00:00:00`) : undefined}
+          fromDate={dateFrom ? toLocalDate(dateFrom) : undefined}
         />
       </div>
 

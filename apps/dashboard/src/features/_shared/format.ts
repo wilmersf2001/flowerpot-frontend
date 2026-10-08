@@ -178,6 +178,16 @@ export function slugify(value: string): string {
 }
 
 /**
+ * `YYYY-MM-DD` -> `Date` local a medianoche, para límites de calendario
+ * (`fromDate`/`toDate` de `DatePicker`) y comparaciones día a día. A
+ * diferencia de `new Date("YYYY-MM-DD")`, que lo interpreta como UTC y puede
+ * mostrar el día anterior en zonas horarias negativas, esto usa hora local.
+ */
+export function toLocalDate(value: string): Date {
+  return new Date(`${value}T00:00:00`);
+}
+
+/**
  * Fecha de hoy desplazada `days` días, en `YYYY-MM-DD` y hora local (no UTC:
  * de noche en Perú, `toISOString()` ya daría el día siguiente).
  * `localDateOffset(-7)` = hace una semana.
