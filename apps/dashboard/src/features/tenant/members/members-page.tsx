@@ -9,6 +9,7 @@ import { useMembers } from "./lib/members.hooks";
 import { MembersTable } from "./components/members-table";
 import { MemberFormDialog } from "./components/member-form-dialog";
 import { DeleteMemberDialog } from "./components/delete-member-dialog";
+import { MemberQrDialog } from "./components/member-qr-dialog";
 
 /** Pantalla de socios: lista + búsqueda + paginación + alta + edición + borrado. */
 export function MembersPage() {
@@ -23,6 +24,7 @@ export function MembersPage() {
   // Diálogo de alta/edición: "new" para crear, un socio para editar, null cerrado.
   const [editing, setEditing] = useState<MemberRow | "new" | null>(null);
   const [deleting, setDeleting] = useState<MemberRow | null>(null);
+  const [showingQr, setShowingQr] = useState<MemberRow | null>(null);
 
   function handleSearch(value: string) {
     setSearch(value);
@@ -65,6 +67,7 @@ export function MembersPage() {
           isLoading={members.isPending}
           onEditAction={setEditing}
           onDeleteAction={setDeleting}
+          onShowQrAction={setShowingQr}
           emptyMessage={
             debouncedSearch
               ? "Ningún socio coincide con la búsqueda."
@@ -93,6 +96,12 @@ export function MembersPage() {
         member={deleting}
         onOpenChangeAction={(open) => {
           if (!open) setDeleting(null);
+        }}
+      />
+      <MemberQrDialog
+        member={showingQr}
+        onOpenChangeAction={(open) => {
+          if (!open) setShowingQr(null);
         }}
       />
     </div>
