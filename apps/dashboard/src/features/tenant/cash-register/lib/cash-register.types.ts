@@ -48,13 +48,21 @@ export type CashRegisterFilters = ListFilters<CashRegisterListParams>;
 export interface OpenCashRegisterInput {
   branch_id?: number | null;
   opening_balance: number;
-  notes?: string | null;
+  opening_notes?: string | null;
 }
 
 /** Cuerpo de `POST /cash-register/close` (`CloseCashRegisterRequest`). */
 export interface CloseCashRegisterInput {
-  closing_amount: number;
-  notes?: string | null;
+  /** Sede de la caja a cerrar (`useCloseCashRegister` la inyecta). */
+  branch_id?: number | null;
+  closing_balance: number;
+  closing_notes?: string | null;
+}
+
+/** `GET /cash-register/last-closing`: se sugiere al abrir la caja. */
+export interface LastClosing {
+  closing_balance: number;
+  closed_at: string | null;
 }
 
 /** `GET /cash-register/current/summary` y `GET /cash-registers/{id}/summary`. */
@@ -136,6 +144,8 @@ export type CashMovementFilters = ListFilters<CashMovementListParams>;
 
 /** Cuerpo de `POST /cash-movements` (`StoreCashMovementRequest`). */
 export interface CreateCashMovementInput {
+  /** Sede de la caja abierta (`useCreateCashMovement` la inyecta). */
+  branch_id?: number | null;
   type: CashMovementType;
   category: string;
   payment_method: CashPaymentMethod;

@@ -58,8 +58,14 @@ export function useOpenCashRegister() {
 
 export function useCloseCashRegister() {
   const queryClient = useQueryClient();
+  const { selectedBranchId } = useSelectedBranch();
   return useMutation({
-    mutationFn: (input: CloseCashRegisterInput) => cashRegisterApi.close(input),
+    // La API necesita la sede de la caja (los usuarios no tienen una sede fija)
+    mutationFn: (input: CloseCashRegisterInput) =>
+      cashRegisterApi.close({
+        ...input,
+        branch_id: selectedBranchId ? Number(selectedBranchId) : null,
+      }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: cashRegisterKeys.all }),
   });
 }
@@ -67,8 +73,13 @@ export function useCloseCashRegister() {
 /** Registra un movimiento manual (venta, retiro, depósito…) en la caja abierta. */
 export function useCreateCashMovement() {
   const queryClient = useQueryClient();
+  const { selectedBranchId } = useSelectedBranch();
   return useMutation({
-    mutationFn: (input: CreateCashMovementInput) => cashRegisterApi.createMovement(input),
+    mutationFn: (input: CreateCashMovementInput) =>
+      cashRegisterApi.createMovement({
+        ...input,
+        branch_id: selectedBranchId ? Number(selectedBranchId) : null,
+      }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: cashRegisterKeys.all }),
   });
 }
@@ -117,6 +128,16 @@ export function useCashRegisterHistoryMovements(
 }
 
 /** Catálogo de enums (métodos de pago, categorías…) para construir selects. */
+/** Último cierre de la sede activa: se sugiere como monto de apertura. */
+export function useLastCashClosing(enabled = true) {
+  const { selectedBranchId } = useSelectedBranch();
+  return useQuery({
+    queryKey: [...cashRegisterKeys.all, "last-closing", selectedBranchId],
+    queryFn: () => cashRegisterApi.lastClosing(selectedBranchId!),
+    enabled: enabled && selectedBranchId != null,
+  });
+}
+
 export function useCashRegisterCatalog() {
   return useQuery({
     queryKey: cashRegisterKeys.catalog(),

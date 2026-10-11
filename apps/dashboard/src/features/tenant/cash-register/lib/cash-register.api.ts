@@ -12,6 +12,7 @@ import {
   CASH_MOVEMENTS_PER_PAGE,
   CASH_REGISTER_CLOSE_ENDPOINT,
   CASH_REGISTER_CURRENT_ENDPOINT,
+  CASH_REGISTER_LAST_CLOSING_ENDPOINT,
   CASH_REGISTER_OPEN_ENDPOINT,
   CASH_REGISTERS_ENDPOINT,
   CASH_REGISTERS_PER_PAGE,
@@ -20,6 +21,7 @@ import {
   CashMovementListParams,
   CashMovementRow,
   CashRegisterCatalog,
+  LastClosing,
   CashRegisterListParams,
   CashRegisterRow,
   CashRegisterSummary,
@@ -282,6 +284,14 @@ async function voidMovement(
   return toCashMovementRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
+/** Último cierre de la sede (o `null` si nunca se cerró una caja ahí). */
+async function lastClosing(branchId: string): Promise<LastClosing | null> {
+  const { data } = await apiClient.get<unknown>(CASH_REGISTER_LAST_CLOSING_ENDPOINT, {
+    params: { branch_id: Number(branchId) },
+  });
+  return unwrapEnvelope<LastClosing | null>(data);
+}
+
 async function catalog(): Promise<CashRegisterCatalog> {
   const { data } = await apiClient.get<unknown>("/cash-register/catalog");
   const raw = unwrapEnvelope<Record<string, unknown>>(data);
@@ -307,4 +317,5 @@ export const cashRegisterApi = {
   createMovement,
   voidMovement,
   catalog,
+  lastClosing,
 };
