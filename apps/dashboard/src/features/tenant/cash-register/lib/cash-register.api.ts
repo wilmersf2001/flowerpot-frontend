@@ -289,7 +289,12 @@ async function lastClosing(branchId: string): Promise<LastClosing | null> {
   const { data } = await apiClient.get<unknown>(CASH_REGISTER_LAST_CLOSING_ENDPOINT, {
     params: { branch_id: Number(branchId) },
   });
-  return unwrapEnvelope<LastClosing | null>(data);
+  // Sin cierre previo la API responde sin `data` (successResponse omite el
+  // null), así que unwrapEnvelope devolvería el sobre entero: se valida el campo.
+  const closing = unwrapEnvelope<Partial<LastClosing> | null>(data);
+  return closing && typeof closing.closing_balance === "number"
+    ? { closing_balance: closing.closing_balance, closed_at: closing.closed_at ?? null }
+    : null;
 }
 
 async function catalog(): Promise<CashRegisterCatalog> {
