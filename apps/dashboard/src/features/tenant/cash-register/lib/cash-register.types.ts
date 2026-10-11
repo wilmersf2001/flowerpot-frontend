@@ -91,6 +91,8 @@ export interface CashRegisterSummary {
     cash_difference: number | null;
     difference_type: string | null;
   };
+  /** Gastos en efectivo de la sede aún sin aprobar (aviso al cerrar). */
+  pending_cash_expenses: { count: number; total: number };
   movements_count: {
     total: number;
     income: number;

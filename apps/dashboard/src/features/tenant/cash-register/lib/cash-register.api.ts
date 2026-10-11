@@ -142,6 +142,10 @@ function toCashRegisterSummary(
       difference_type:
         totals.difference_type == null ? null : String(totals.difference_type),
     },
+    pending_cash_expenses: {
+      count: Number((raw.pending_cash_expenses as Record<string, unknown> | undefined)?.count ?? 0),
+      total: Number((raw.pending_cash_expenses as Record<string, unknown> | undefined)?.total ?? 0),
+    },
     movements_count: {
       total: Number(movementsCount?.total ?? 0),
       income: Number(movementsCount?.income ?? 0),

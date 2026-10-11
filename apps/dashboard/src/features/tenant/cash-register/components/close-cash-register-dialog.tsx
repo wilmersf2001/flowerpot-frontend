@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
 import { AppDialog, TextField, TextareaField, useFieldBinder, useResourceFormSubmit } from "@/features/_shared";
-import { useCloseCashRegister } from "../lib/cash-register.hooks";
+import { TriangleAlert } from "lucide-react";
+import { useCloseCashRegister, useCurrentCashRegisterSummary } from "../lib/cash-register.hooks";
 import { formatSoles } from "../lib/cash-register.constants";
 import {
   CLOSE_CASH_REGISTER_FORM_FIELDS,
@@ -32,6 +33,8 @@ export function CloseCashRegisterDialog({
 }) {
   const closeCashRegister = useCloseCashRegister();
   const open = register !== null;
+  const summary = useCurrentCashRegisterSummary(open);
+  const pending = summary.data?.pending_cash_expenses;
 
   const form = useForm<CloseCashRegisterForm>({
     resolver: zodResolver(closeCashRegisterFormSchema),
@@ -87,6 +90,22 @@ export function CloseCashRegisterDialog({
       }
     >
       <form id={FORM_ID} onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+        {/* Solo un aviso: un gasto pendiente no descuenta la caja, pero si el
+            dinero ya salió del cajón el cierre mostraría un faltante. */}
+        {pending && pending.count > 0 ? (
+          <div
+            role="alert"
+            className="flex gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-100"
+          >
+            <TriangleAlert className="mt-0.5 size-4 shrink-0" />
+            <p>
+              Hay {pending.count} {pending.count === 1 ? "gasto" : "gastos"} en efectivo
+              pendiente{pending.count === 1 ? "" : "s"} de aprobar ({formatSoles(pending.total)}).
+              Si el dinero ya salió del cajón, apruébalo antes de cerrar o el cierre
+              mostrará un faltante.
+            </p>
+          </div>
+        ) : null}
         <TextField
           {...bind("closing_amount")}
           label="Conteo físico de efectivo"
