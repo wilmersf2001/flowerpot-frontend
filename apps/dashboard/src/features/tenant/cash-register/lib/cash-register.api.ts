@@ -34,19 +34,22 @@ import {
 /** El backend manda varios campos numéricos/anidados con forma inconsistente. */
 function toCashRegisterRow(raw: Record<string, unknown>): CashRegisterRow {
   const branch = raw.branch as Record<string, unknown> | undefined;
-  const openedBy = raw.opened_by_user as Record<string, unknown> | undefined;
-  const closedBy = raw.closed_by_user as Record<string, unknown> | undefined;
+  // `CashRegisterResource` manda opened_by/closed_by como { id, name }
+  const openedBy = (raw.opened_by ?? raw.opened_by_user) as Record<string, unknown> | null | undefined;
+  const closedBy = (raw.closed_by ?? raw.closed_by_user) as Record<string, unknown> | null | undefined;
   return {
     id: String(raw.id),
     branch_id: String(raw.branch_id ?? branch?.id ?? ""),
-    opened_by: raw.opened_by == null ? null : String(raw.opened_by),
-    closed_by: raw.closed_by == null ? null : String(raw.closed_by),
+    opened_by: openedBy?.id == null ? null : String(openedBy.id),
+    closed_by: closedBy?.id == null ? null : String(closedBy.id),
     status: String(raw.status ?? "open") as CashRegisterRow["status"],
     opening_balance: Number(raw.opening_balance ?? 0),
+    // Nombres reales de la API: closing_balance, expected_cash_balance y
+    // cash_difference (antes se leían otros y salían en 0 o vacíos).
     closing_amount:
-      raw.closing_amount == null ? null : Number(raw.closing_amount),
-    current_balance: Number(raw.current_balance ?? 0),
-    difference: raw.difference == null ? null : Number(raw.difference),
+      raw.closing_balance == null ? null : Number(raw.closing_balance),
+    current_balance: Number(raw.expected_cash_balance ?? 0),
+    difference: raw.cash_difference == null ? null : Number(raw.cash_difference),
     opened_at: String(raw.opened_at ?? ""),
     closed_at: raw.closed_at == null ? null : String(raw.closed_at),
     opening_notes: raw.opening_notes == null ? null : String(raw.opening_notes),
