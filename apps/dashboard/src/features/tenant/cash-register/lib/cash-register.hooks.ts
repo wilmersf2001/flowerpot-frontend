@@ -43,6 +43,17 @@ export function useCurrentCashMovements(params: CashMovementListParams = {}, ena
 }
 
 /** Abre una caja para la sede activa del switcher global. */
+/**
+ * Al abrir o cerrar una caja cambia "la caja actual" de la sede, pero el
+ * resumen y los movimientos se guardan en caché por sede: sin borrarlos se
+ * verían por un momento los de la caja anterior. Se eliminan y se recarga todo.
+ */
+function resetCurrentRegisterCache(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.removeQueries({ queryKey: [...cashRegisterKeys.all, "current-summary"] });
+  queryClient.removeQueries({ queryKey: [...cashRegisterKeys.all, "current-movements"] });
+  return queryClient.invalidateQueries({ queryKey: cashRegisterKeys.all });
+}
+
 export function useOpenCashRegister() {
   const queryClient = useQueryClient();
   const { selectedBranchId } = useSelectedBranch();
@@ -52,7 +63,7 @@ export function useOpenCashRegister() {
         ...input,
         branch_id: selectedBranchId ? Number(selectedBranchId) : null,
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: cashRegisterKeys.all }),
+    onSuccess: () => resetCurrentRegisterCache(queryClient),
   });
 }
 
@@ -66,7 +77,7 @@ export function useCloseCashRegister() {
         ...input,
         branch_id: selectedBranchId ? Number(selectedBranchId) : null,
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: cashRegisterKeys.all }),
+    onSuccess: () => resetCurrentRegisterCache(queryClient),
   });
 }
 
