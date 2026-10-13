@@ -24,6 +24,7 @@ const CENTRAL_NAV: NavItem[] = [
     icon: "creditCard",
   },
   { href: ROUTES.central.gymSettings, label: "Configuración", icon: "settings" },
+  { href: ROUTES.central.devices, label: "Lectores", icon: "fingerprint" },
 ];
 
 const TENANT_NAV: NavItem[] = [
@@ -82,6 +83,12 @@ const TENANT_NAV: NavItem[] = [
     label: "Caja",
     icon: "wallet",
     permission: "cash_register.view",
+  },
+  {
+    href: ROUTES.tenant.devices,
+    label: "Lectores",
+    icon: "fingerprint",
+    permission: "devices.view",
   },
 ];
 

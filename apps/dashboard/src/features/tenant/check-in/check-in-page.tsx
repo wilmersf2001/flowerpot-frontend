@@ -9,6 +9,7 @@ import { Input } from "@repo/ui/input";
 import { cn } from "@repo/ui/lib/utils";
 import { useSelectedBranch } from "@/components/branch";
 import { ResourceHeader, formatDate } from "@/features/_shared";
+import { BiometricScansPanel } from "@/features/tenant/biometric-scans";
 import { isDni, useCheckIn } from "./lib/check-in.hooks";
 import type { CheckInOutcome } from "./lib/check-in.types";
 
@@ -160,6 +161,8 @@ export function CheckInPage() {
           </ul>
         </section>
       ) : null}
+
+      <BiometricScansPanel />
     </div>
   );
 }

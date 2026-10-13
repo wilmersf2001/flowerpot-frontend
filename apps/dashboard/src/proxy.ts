@@ -27,7 +27,7 @@ const AFTER_LOGIN: Record<PanelKind, string> = {
 };
 
 /** Rutas que pertenecen a cada panel (route groups `(central)` / `(tenant)`). */
-const CENTRAL_PREFIXES = ["/tenants", "/plans", "/subscriptions", "/gym-settings"];
+const CENTRAL_PREFIXES = ["/tenants", "/plans", "/subscriptions", "/gym-settings", "/devices"];
 const TENANT_PREFIXES = [
   "/members",
   "/memberships",
@@ -37,6 +37,7 @@ const TENANT_PREFIXES = [
   "/staff",
   "/branches",
   "/cash-register",
+  "/readers",
 ];
 
 function matchesPrefix(pathname: string, prefixes: readonly string[]): boolean {
