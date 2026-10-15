@@ -2,10 +2,12 @@ import { apiClient, unwrapEnvelope, unwrapPaginated } from "@repo/api-client";
 import { Paginated } from "@repo/types";
 import { buildListParams } from "@/features/_shared/list-params";
 import {
+  ATTENDANCE_CALENDAR_ENDPOINT,
   ATTENDANCE_ENDPOINT,
   ATTENDANCE_PER_PAGE,
 } from "./attendance.constants";
 import {
+  AttendanceCalendar,
   AttendanceListParams,
   AttendanceRow,
   CreateAttendanceInput,
@@ -20,6 +22,16 @@ async function list(
   return unwrapPaginated<AttendanceRow>(data);
 }
 
+async function calendar(
+  month: string,
+  branchId: string | null,
+): Promise<AttendanceCalendar> {
+  const { data } = await apiClient.get<unknown>(ATTENDANCE_CALENDAR_ENDPOINT, {
+    params: { month, branch_id: branchId ?? undefined },
+  });
+  return unwrapEnvelope<AttendanceCalendar>(data);
+}
+
 async function create(input: CreateAttendanceInput): Promise<AttendanceRow> {
   const { data } = await apiClient.post<unknown>(ATTENDANCE_ENDPOINT, input);
   return unwrapEnvelope<AttendanceRow>(data);
@@ -29,4 +41,4 @@ async function remove(id: number): Promise<void> {
   await apiClient.delete(`${ATTENDANCE_ENDPOINT}/${encodeURIComponent(id)}`);
 }
 
-export const attendanceApi = { list, create, remove };
+export const attendanceApi = { list, calendar, create, remove };
