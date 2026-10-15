@@ -7,12 +7,11 @@ export type CheckInStatus =
   | "no_membership"
   | "branch_denied";
 
-/** Cuerpo de `POST /checkin`: QR o, si el socio lo olvidó, DNI. */
+/** Cuerpo de `POST /checkin`: el código del QR del socio. */
 export interface CheckInInput {
-  qr_code?: string;
-  dni?: string;
+  qr_code: string;
   branch_id: number;
-  source: "qr" | "manual";
+  source: "qr";
 }
 
 /** `data` de la respuesta (`CheckInResource`). */
