@@ -2,6 +2,7 @@ export { InstructorsPage } from "./instructors-page";
 
 export {
   useInstructors,
+  useInstructor,
   useInstructorOptions,
   useCreateInstructor,
   useUpdateInstructor,

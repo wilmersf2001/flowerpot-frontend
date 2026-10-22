@@ -23,13 +23,20 @@ const DELETED_MAP: StatusMap = {
   true: { label: "Eliminado", tone: "danger" },
 };
 
+/** `full_name` puede venir null del backend; se arma con nombres y apellidos. */
+function staffName(row: StaffRow) {
+  return (
+    row.full_name || [row.first_name, row.last_name].filter(Boolean).join(" ")
+  );
+}
+
 const baseColumns: Column<StaffRow>[] = [
   {
     key: "full_name",
     header: "Personal",
     cell: (row) => (
       <div className="flex flex-col">
-        <span className="font-medium">{row.full_name}</span>
+        <span className="font-medium">{staffName(row)}</span>
         <span className="text-xs text-muted-foreground">{row.dni}</span>
       </div>
     ),
@@ -98,26 +105,26 @@ export function StaffTable({
       onSuccess: (updated) =>
         toast.success(
           updated.is_active
-            ? `"${staff.full_name}" activado.`
-            : `"${staff.full_name}" desactivado.`,
+            ? `"${staffName(staff)}" activado.`
+            : `"${staffName(staff)}" desactivado.`,
         ),
       onError: (err) =>
         toast.error(
           err instanceof ApiError
             ? err.message
-            : `No se pudo cambiar el estado de "${staff.full_name}".`,
+            : `No se pudo cambiar el estado de "${staffName(staff)}".`,
         ),
     });
   }
 
   function handleRestore(staff: StaffRow) {
     restoreStaff.mutate(staff.id, {
-      onSuccess: () => toast.success(`"${staff.full_name}" restaurado.`),
+      onSuccess: () => toast.success(`"${staffName(staff)}" restaurado.`),
       onError: (err) =>
         toast.error(
           err instanceof ApiError
             ? err.message
-            : `No se pudo restaurar "${staff.full_name}".`,
+            : `No se pudo restaurar "${staffName(staff)}".`,
         ),
     });
   }
@@ -140,7 +147,7 @@ export function StaffTable({
               checked={Boolean(row.is_active)}
               disabled={pendingId === row.id}
               onCheckedChange={() => handleToggle(row)}
-              aria-label={`Activar a ${row.full_name}`}
+              aria-label={`Activar a ${staffName(row)}`}
             />
             <StatusBadge value={Boolean(row.is_active)} map={ACTIVE_MAP} />
           </div>
@@ -160,7 +167,7 @@ export function StaffTable({
           const isDeleted = Boolean(row.deleted_at);
           return (
             <RowActions
-              label={`Acciones de ${row.full_name}`}
+              label={`Acciones de ${staffName(row)}`}
               actions={[
                 isDeleted
                   ? {
@@ -174,7 +181,7 @@ export function StaffTable({
                       icon: Pencil,
                       onSelect: () => onEditAction(row),
                     },
-                ...(isDeleted ? [] : docs.actionsFor(row.id, { subject: row.full_name })),
+                ...(isDeleted ? [] : docs.actionsFor(row.id, { subject: staffName(row) })),
                 !isDeleted && {
                   label: "Eliminar",
                   icon: Trash2,

@@ -28,6 +28,8 @@ export const ROUTES = {
     attendance: "/attendance",
     checkIn: "/check-in",
     staff: "/staff",
+    leads: "/leads",
+    visits: "/visits",
     instructors: "/instructors",
     classes: "/classes",
     equipment: "/equipment",

@@ -9,8 +9,7 @@ import {
   AppDialog,
   AsyncCombobox,
   Field,
-  TextField,
-  useFieldBinder,
+  TimeField,
   useResourceFormSubmit,
 } from "@/features/_shared";
 import { useBranchOptions } from "@/features/tenant/branches";
@@ -69,7 +68,6 @@ export function InstructorScheduleFormDialog({
     reset,
     formState: { errors, isSubmitting },
   } = form;
-  const bind = useFieldBinder(form, "instructor-schedule");
 
   // Cada vez que se abre, sincroniza con el horario (edición) o limpia (alta).
   useEffect(() => {
@@ -175,8 +173,20 @@ export function InstructorScheduleFormDialog({
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <TextField {...bind("start_time")} label="Hora de inicio" type="time" />
-          <TextField {...bind("end_time")} label="Hora de fin" type="time" />
+          <TimeField
+            form={form}
+            name="start_time"
+            idPrefix="instructor-schedule"
+            label="Hora de inicio"
+            placeholder="Inicio"
+          />
+          <TimeField
+            form={form}
+            name="end_time"
+            idPrefix="instructor-schedule"
+            label="Hora de fin"
+            placeholder="Fin"
+          />
         </div>
       </form>
     </AppDialog>

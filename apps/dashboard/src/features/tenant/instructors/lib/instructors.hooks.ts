@@ -9,6 +9,14 @@ import { CreateInstructorInput, InstructorListParams, InstructorRow, UpdateInstr
 export { useStaffOptions } from "@/features/tenant/staff";
 export { useSpecialtyOptions } from "@/features/tenant/specialties";
 
+/** Un instructor por id (para encabezados de pantallas anidadas). */
+export function useInstructor(id: string) {
+  return useQuery({
+    queryKey: instructorKeys.detail(id),
+    queryFn: () => instructorsApi.get(id),
+  });
+}
+
 /** Lista paginada de instructores (incluye eliminados), con búsqueda opcional (`search`). */
 export function useInstructors(params: InstructorListParams = {}) {
   return useQuery({

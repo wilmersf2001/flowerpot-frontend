@@ -5,5 +5,6 @@ export const instructorKeys = {
   all: ["instructors"] as const,
   lists: () => [...instructorKeys.all, "list"] as const,
   list: (params: InstructorListParams) => [...instructorKeys.lists(), params] as const,
+  detail: (id: string) => [...instructorKeys.all, "detail", id] as const,
   options: (search: string) => [...instructorKeys.all, "options", search] as const,
 };

@@ -1,4 +1,4 @@
-export { InstructorSchedulesDialog } from "./components/instructor-schedules-dialog";
+export { InstructorSchedulesPage } from "./components/instructor-schedules-page";
 
 export {
   useInstructorSchedules,

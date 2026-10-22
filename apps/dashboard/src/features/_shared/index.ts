@@ -26,6 +26,7 @@ export {
   type FieldBinding,
 } from "./form-field";
 export { DateField } from "./date-field";
+export { TimeField } from "./time-field";
 export { ConfirmDialog } from "./confirm-dialog";
 export { CopyRow } from "./copy-row";
 export { SearchInput } from "./search-input";

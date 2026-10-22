@@ -35,6 +35,8 @@ const TENANT_PREFIXES = [
   "/attendance",
   "/check-in",
   "/staff",
+  "/leads",
+  "/visits",
   "/branches",
   "/cash-register",
   "/readers",

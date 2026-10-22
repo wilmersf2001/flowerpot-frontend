@@ -70,13 +70,18 @@ export function InstructorFormDialog({
 
   // Cada vez que se abre, sincroniza con el instructor (edición) o limpia (alta).
   useEffect(() => {
-    if (open) reset(instructor ? instructorToForm(instructor) : instructorFormDefaults);
+    if (open)
+      reset(instructor ? instructorToForm(instructor) : instructorFormDefaults);
   }, [open, instructor, reset]);
 
   const selectedStaff: ComboboxOption | null = useMemo(
     () =>
       instructor?.staff
-        ? { value: String(instructor.staff.id), label: instructor.staff.full_name, hint: instructor.staff.dni }
+        ? {
+            value: String(instructor.staff.id),
+            label: instructor.staff.full_name,
+            hint: instructor.staff.dni,
+          }
         : null,
     [instructor],
   );
@@ -138,9 +143,18 @@ export function InstructorFormDialog({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form
+        id={FORM_ID}
+        onSubmit={onSubmit}
+        className="flex flex-col gap-4"
+        noValidate
+      >
         {isEdit ? (
-          <Field label="Personal" htmlFor="instructor-staff-readonly" hint="No se puede cambiar.">
+          <Field
+            label="Personal"
+            htmlFor="instructor-staff-readonly"
+            hint="No se puede cambiar."
+          >
             <div
               id="instructor-staff-readonly"
               className="flex h-9 items-center rounded-md border border-input bg-muted/40 px-3 text-sm text-muted-foreground"
@@ -150,7 +164,11 @@ export function InstructorFormDialog({
             </div>
           </Field>
         ) : (
-          <Field label="Personal" htmlFor="instructor-staff" error={errors.staff_id?.message}>
+          <Field
+            label="Personal"
+            htmlFor="instructor-staff"
+            error={errors.staff_id?.message}
+          >
             <Controller
               control={control}
               name="staff_id"
