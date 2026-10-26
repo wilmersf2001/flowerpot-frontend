@@ -112,6 +112,16 @@ export function BranchFormDialog({
           <TextField {...bind("phone")} label="Teléfono" placeholder="+51 999 999 999" />
           <TextField {...bind("timezone")} label="Zona horaria" placeholder="America/Lima" />
         </div>
+
+        <TextField
+          {...bind("day_pass_price")}
+          label="Precio del pase diario"
+          type="number"
+          inputMode="decimal"
+          min={0}
+          step="0.01"
+          placeholder="10.00"
+        />
       </form>
     </AppDialog>
   );

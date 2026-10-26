@@ -10,9 +10,12 @@ import { ClassSessionsPage } from "@/features/tenant/class-sessions";
  * capas del dominio — catálogo de clases, horarios recurrentes por sede e
  * instructor, y las sesiones concretas que el backend genera cada semana.
  */
-export function ClassesPage() {
+export function ClassesPage({ defaultTab }: { defaultTab?: string }) {
+  const initialTab = ["gym-classes", "schedules", "sessions"].includes(defaultTab ?? "")
+    ? (defaultTab as string)
+    : "gym-classes";
   return (
-    <Tabs defaultValue="gym-classes" className="flex flex-col gap-6">
+    <Tabs defaultValue={initialTab} className="flex flex-col gap-6">
       <TabsList className="w-fit">
         <TabsTrigger value="gym-classes">Clases</TabsTrigger>
         <TabsTrigger value="schedules">Horarios</TabsTrigger>

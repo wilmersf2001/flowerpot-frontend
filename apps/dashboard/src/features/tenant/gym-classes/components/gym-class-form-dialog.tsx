@@ -173,6 +173,17 @@ export function GymClassFormDialog({
             placeholder="20"
           />
         </div>
+
+        <TextField
+          {...bind("drop_in_price")}
+          label="Precio de clase suelta"
+          hint="Opcional. Vacío = la clase no admite clase suelta."
+          type="number"
+          inputMode="decimal"
+          min={0}
+          step="0.01"
+          placeholder="15.00"
+        />
       </form>
     </AppDialog>
   );

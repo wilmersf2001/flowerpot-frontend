@@ -14,6 +14,8 @@ export interface GymClassRow {
   description: string | null;
   duration_minutes: number;
   max_capacity: number;
+  /** Precio de clase suelta (decimal, ej. `"15.00"`); `null` = no admite clase suelta. */
+  drop_in_price: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -32,6 +34,7 @@ export interface CreateGymClassInput {
   description?: string | null;
   duration_minutes: number;
   max_capacity: number;
+  drop_in_price?: number | null;
   is_active?: boolean;
 }
 
@@ -42,5 +45,6 @@ export interface UpdateGymClassInput {
   description?: string | null;
   duration_minutes?: number;
   max_capacity?: number;
+  drop_in_price?: number | null;
   is_active?: boolean;
 }

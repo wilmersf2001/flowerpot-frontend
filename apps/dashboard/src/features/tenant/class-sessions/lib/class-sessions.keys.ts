@@ -4,5 +4,7 @@ import { ClassSessionListParams } from "./class-sessions.types";
 export const classSessionKeys = {
   all: ["class-sessions"] as const,
   lists: () => [...classSessionKeys.all, "list"] as const,
+  details: () => [...classSessionKeys.all, "detail"] as const,
+  detail: (id: number | string) => [...classSessionKeys.details(), String(id)] as const,
   list: (params: ClassSessionListParams) => [...classSessionKeys.lists(), params] as const,
 };

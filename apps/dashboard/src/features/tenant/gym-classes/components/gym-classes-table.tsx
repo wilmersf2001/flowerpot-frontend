@@ -6,9 +6,11 @@ import { toast } from "@repo/ui/toast";
 import { ApiError } from "@repo/api-client";
 import {
   DataTable,
+  EM_DASH,
   RowActions,
   StatusBadge,
   ACTIVE_MAP,
+  formatMoney,
   type Column,
   type DataTablePagination,
   type StatusMap,
@@ -42,6 +44,15 @@ const baseColumns: Column<GymClassRow>[] = [
     key: "max_capacity",
     header: "Cupo",
     cell: (row) => <span className="text-muted-foreground">{row.max_capacity}</span>,
+  },
+  {
+    key: "drop_in_price",
+    header: "Clase suelta",
+    cell: (row) => (
+      <span className="text-muted-foreground tabular-nums">
+        {row.drop_in_price == null ? EM_DASH : formatMoney(row.drop_in_price)}
+      </span>
+    ),
   },
 ];
 
