@@ -6,6 +6,7 @@ export {
   useDeleteAttendance,
 } from "./lib/attendance.hooks";
 export { attendanceApi } from "./lib/attendance.api";
+export { attendanceKeys } from "./lib/attendance.keys";
 export type {
   AttendanceRow,
   AttendanceListParams,

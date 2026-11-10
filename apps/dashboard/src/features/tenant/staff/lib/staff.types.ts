@@ -30,6 +30,8 @@ export interface StaffRow {
 export interface StaffListParams extends BaseListParams {
   /** Sede activa (switcher global). `useMembers` la inyecta; no la pasa la página. */
   branch_id?: string | null;
+  /** Filtro por cargo. */
+  job_position_id?: string;
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

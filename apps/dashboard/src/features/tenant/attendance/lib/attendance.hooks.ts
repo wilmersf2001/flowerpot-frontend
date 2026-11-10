@@ -25,6 +25,17 @@ export function useAttendances(params: AttendanceListParams = {}) {
   });
 }
 
+/** Resumen mensual (conteos por día + KPIs) de la sede activa. `month` = `YYYY-MM`. */
+export function useAttendanceCalendar(month: string) {
+  const { selectedBranchId } = useSelectedBranch();
+  return useQuery({
+    queryKey: attendanceKeys.calendar(month, selectedBranchId),
+    queryFn: () => attendanceApi.calendar(month, selectedBranchId),
+    placeholderData: keepPreviousData,
+    enabled: selectedBranchId != null,
+  });
+}
+
 /** Registro manual de asistencia (check-in) en la sede activa del switcher global. */
 export function useCreateAttendance() {
   const queryClient = useQueryClient();

@@ -24,6 +24,7 @@ const CENTRAL_NAV: NavItem[] = [
     icon: "creditCard",
   },
   { href: ROUTES.central.gymSettings, label: "Configuración", icon: "settings" },
+  { href: ROUTES.central.devices, label: "Lectores", icon: "fingerprint" },
 ];
 
 const TENANT_NAV: NavItem[] = [
@@ -49,6 +50,8 @@ const TENANT_NAV: NavItem[] = [
     permission: "attendance.view",
   },
   { href: ROUTES.tenant.checkIn, label: "Check-in", icon: "qrCode", permission: "checkin.view" },
+  { href: ROUTES.tenant.leads, label: "Leads", icon: "userPlus", permission: "leads.view" },
+  { href: ROUTES.tenant.visits, label: "Visitas", icon: "doorOpen", permission: "visits.view" },
   { href: ROUTES.tenant.staff, label: "Personal", icon: "userCog", permission: "staff.view" },
   {
     href: ROUTES.tenant.instructors,
@@ -82,6 +85,12 @@ const TENANT_NAV: NavItem[] = [
     label: "Caja",
     icon: "wallet",
     permission: "cash_register.view",
+  },
+  {
+    href: ROUTES.tenant.devices,
+    label: "Lectores",
+    icon: "fingerprint",
+    permission: "devices.view",
   },
 ];
 

@@ -6,6 +6,8 @@ export type ClassSessionStatus = (typeof CLASS_SESSION_STATUSES)[number];
 export interface ClassSessionGymClass {
   id: number;
   name: string;
+  /** Precio de clase suelta; `null` = la clase no la admite. Ausente si el backend no lo envía. */
+  drop_in_price?: string | number | null;
 }
 
 export interface ClassSessionBranch {
@@ -50,6 +52,10 @@ export interface ClassSessionRow {
   instructor_id: number;
   instructor?: ClassSessionInstructor;
   max_capacity: number;
+  /** Inscritos que ocupan cupo (inscritos, asistieron, faltaron). */
+  enrolled_count?: number;
+  /** Personas en lista de espera. */
+  waitlist_count?: number;
   status: ClassSessionStatus;
   created_at: string;
   updated_at: string;

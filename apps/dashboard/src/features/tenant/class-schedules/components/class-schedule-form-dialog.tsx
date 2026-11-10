@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
 import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
@@ -10,6 +10,7 @@ import {
   AsyncCombobox,
   Field,
   TextField,
+  TimeField,
   useFieldBinder,
   useResourceFormSubmit,
 } from "@/features/_shared";
@@ -31,6 +32,7 @@ import {
   type ClassScheduleForm,
 } from "../lib/class-schedules.schema";
 import type { ClassScheduleRow } from "../lib/class-schedules.types";
+import { InstructorAvailabilityPicker } from "./instructor-availability-picker";
 
 const FORM_ID = "class-schedule-form";
 
@@ -66,11 +68,17 @@ export function ClassScheduleFormDialog({
   });
   const {
     control,
+    setValue,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = form;
   const bind = useFieldBinder(form, "class-schedule");
+
+  const [instructorId, branchId, dayOfWeek, startTime, endTime] = useWatch({
+    control,
+    name: ["instructor_id", "branch_id", "day_of_week", "start_time", "end_time"],
+  });
 
   // Cada vez que se abre, sincroniza con el horario (edición) o limpia (alta).
   useEffect(() => {
@@ -217,6 +225,25 @@ export function ClassScheduleFormDialog({
           </Field>
         </div>
 
+        {instructorId ? (
+          <InstructorAvailabilityPicker
+            instructorId={instructorId}
+            value={{
+              branch_id: branchId,
+              day_of_week: dayOfWeek,
+              start_time: startTime,
+              end_time: endTime,
+            }}
+            onPick={(slot) => {
+              const opts = { shouldDirty: true, shouldValidate: true } as const;
+              setValue("branch_id", String(slot.branch_id), opts);
+              setValue("day_of_week", String(slot.day_of_week), opts);
+              setValue("start_time", slot.start_time.slice(0, 5), opts);
+              setValue("end_time", slot.end_time.slice(0, 5), opts);
+            }}
+          />
+        ) : null}
+
         <Field label="Día" htmlFor="class-schedule-day" error={errors.day_of_week?.message}>
           <Controller
             control={control}
@@ -235,8 +262,20 @@ export function ClassScheduleFormDialog({
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <TextField {...bind("start_time")} label="Hora de inicio" type="time" />
-          <TextField {...bind("end_time")} label="Hora de fin" type="time" />
+          <TimeField
+            form={form}
+            name="start_time"
+            idPrefix="class-schedule"
+            label="Hora de inicio"
+            placeholder="Inicio"
+          />
+          <TimeField
+            form={form}
+            name="end_time"
+            idPrefix="class-schedule"
+            label="Hora de fin"
+            placeholder="Fin"
+          />
         </div>
 
         <TextField

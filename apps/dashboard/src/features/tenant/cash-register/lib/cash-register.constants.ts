@@ -4,6 +4,10 @@ export const CASH_REGISTER_OPEN_ENDPOINT = "/cash-register/open";
 export const CASH_REGISTER_CLOSE_ENDPOINT = "/cash-register/close";
 export const CASH_REGISTERS_ENDPOINT = "/cash-registers";
 export const CASH_MOVEMENTS_ENDPOINT = "/cash-movements";
+export const CASH_REGISTER_LAST_CLOSING_ENDPOINT = "/cash-register/last-closing";
+
+/** Tope de montos de caja (igual que la API). */
+export const CASH_MAX_AMOUNT = 999999.99;
 
 /** Tamaño de página del historial de cajas y de los listados de movimientos. */
 export const CASH_REGISTERS_PER_PAGE = 15;

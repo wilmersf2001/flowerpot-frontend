@@ -5,6 +5,7 @@ import {
   optionalText,
 } from "@/features/_shared/form-schema";
 import { CASH_PAYMENT_METHODS } from "./cash-register.constants";
+import { CASH_MAX_AMOUNT } from "./cash-register.constants";
 import type {
   CloseCashRegisterInput,
   CreateCashMovementInput,
@@ -14,7 +15,7 @@ import type {
 
 /** Formulario de apertura de caja (`POST /cash-register/open`). */
 export const openCashRegisterFormSchema = z.object({
-  opening_balance: numericText("El monto de apertura", { min: 0 }),
+  opening_balance: numericText("El monto de apertura", { min: 0, max: CASH_MAX_AMOUNT, decimals: 2 }),
   notes: optionalText(500),
 });
 
@@ -35,13 +36,14 @@ export function toOpenCashRegisterInput(
 ): OpenCashRegisterInput {
   return {
     opening_balance: Number(form.opening_balance),
-    notes: form.notes || undefined,
+    // La API espera `opening_notes` (antes se enviaba `notes` y se perdía)
+    opening_notes: form.notes || undefined,
   };
 }
 
 /** Formulario de cierre de caja (`POST /cash-register/close`). */
 export const closeCashRegisterFormSchema = z.object({
-  closing_amount: numericText("El conteo de efectivo", { min: 0 }),
+  closing_amount: numericText("El conteo de efectivo", { min: 0, max: CASH_MAX_AMOUNT, decimals: 2 }),
   notes: optionalText(500),
 });
 
@@ -61,8 +63,9 @@ export function toCloseCashRegisterInput(
   form: CloseCashRegisterForm,
 ): CloseCashRegisterInput {
   return {
-    closing_amount: Number(form.closing_amount),
-    notes: form.notes || undefined,
+    // La API espera `closing_balance`/`closing_notes` (antes el cierre fallaba)
+    closing_balance: Number(form.closing_amount),
+    closing_notes: form.notes || undefined,
   };
 }
 
@@ -76,7 +79,7 @@ export const cashMovementFormSchema = z.object({
   type: z.enum(["income", "expense"]),
   category: z.string().trim().min(1, "La categoría es obligatoria."),
   payment_method: z.enum(CASH_PAYMENT_METHODS),
-  amount: numericText("El monto", { min: 0.01 }),
+  amount: numericText("El monto", { min: 0.01, max: CASH_MAX_AMOUNT, decimals: 2 }),
   description: boundedText("La descripción", { min: 3, max: 255 }),
   reference: optionalText(100),
   movement_at: z.string(),

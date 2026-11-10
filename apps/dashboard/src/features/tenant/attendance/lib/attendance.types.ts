@@ -22,6 +22,31 @@ export interface AttendanceRow {
 export interface AttendanceListParams extends BaseListParams {
   /** Sede activa (switcher global). `useAttendances` la inyecta; no la pasa la página. */
   branch_id?: string | null;
+  /** Día local del tenant (`YYYY-MM-DD`): todas las asistencias de ese día. */
+  date?: string;
+  /** Rango inclusivo (`YYYY-MM-DD`), para el historial. */
+  from?: string;
+  to?: string;
+}
+
+/** Un día del calendario mensual (`GET /attendances/calendar`). */
+export interface AttendanceCalendarDay {
+  date: string;
+  total: number;
+  unique_members: number;
+}
+
+export interface AttendanceCalendar {
+  month: string;
+  timezone: string;
+  days: AttendanceCalendarDay[];
+  summary: {
+    total: number;
+    unique_members: number;
+    avg_per_day: number;
+    busiest_day: { date: string; total: number } | null;
+    peak_hour: number | null;
+  };
 }
 
 /** Filtros extra del list (todo salvo paginación/búsqueda), para los combobox. */

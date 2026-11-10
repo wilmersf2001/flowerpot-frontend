@@ -4,6 +4,7 @@ import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import {
   DataTable,
   EM_DASH,
+  ACTIVE_MAP,
   RowActions,
   StatusBadge,
   type Column,
@@ -71,7 +72,11 @@ export function InstructorSchedulesTable({
       key: "status",
       header: "Estado",
       cell: (row) =>
-        row.deleted_at ? <StatusBadge value={true} map={DELETED_MAP} /> : EM_DASH,
+        row.deleted_at ? (
+          <StatusBadge value={true} map={DELETED_MAP} />
+        ) : (
+          <StatusBadge value={true} map={ACTIVE_MAP} />
+        ),
     },
   ];
 

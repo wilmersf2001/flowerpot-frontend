@@ -55,9 +55,17 @@ export function formatDateTime(
   options: Intl.DateTimeFormatOptions = { dateStyle: "short", timeStyle: "short" },
 ): string {
   if (typeof value !== "string" && !(value instanceof Date)) return EM_DASH;
-  const date = toCalendarDate(value);
+  // Solo un "YYYY-MM-DD" puro es fecha de calendario. Un "YYYY-MM-DD HH:MM:SS"
+  // trae hora y debe conservarla: antes también pasaba por toCalendarDate y
+  // toda fecha-hora salía "12:00 p. m.". La API la manda en hora local (Lima).
+  const isDateOnly = typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.trim());
+  const date = isDateOnly
+    ? toCalendarDate(value)
+    : value instanceof Date
+      ? value
+      : new Date(value.trim().replace(" ", "T"));
   if (Number.isNaN(date.getTime())) return EM_DASH;
-  return DATE_ONLY_RE.test(typeof value === "string" ? value : "")
+  return isDateOnly
     ? date.toLocaleString("es-PE", { ...options, timeZone: "UTC" })
     : date.toLocaleString("es-PE", options);
 }

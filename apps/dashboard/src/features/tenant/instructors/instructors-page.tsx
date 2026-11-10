@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import { ResourceHeader, SearchInput, useDebouncedValue } from "@/features/_shared";
 import { SpecialtiesPage } from "@/features/tenant/specialties";
-import { InstructorSchedulesDialog } from "@/features/tenant/instructor-schedules";
 import type { InstructorRow } from "./lib/instructors.types";
 import { useInstructors } from "./lib/instructors.hooks";
 import { InstructorsTable } from "./components/instructors-table";
@@ -42,7 +42,7 @@ function InstructorsListSection() {
   // Diálogo de alta/edición: "new" para crear, un instructor para editar, null cerrado.
   const [editing, setEditing] = useState<InstructorRow | "new" | null>(null);
   const [deleting, setDeleting] = useState<InstructorRow | null>(null);
-  const [schedulesFor, setSchedulesFor] = useState<InstructorRow | null>(null);
+  const router = useRouter();
 
   function handleSearch(value: string) {
     setSearch(value);
@@ -85,7 +85,9 @@ function InstructorsListSection() {
           isLoading={instructors.isPending}
           onEditAction={setEditing}
           onDeleteAction={setDeleting}
-          onSchedulesAction={setSchedulesFor}
+          onSchedulesAction={(instructor) =>
+            router.push(`/instructors/${instructor.id}/schedules`)
+          }
           emptyMessage={
             debouncedSearch ? "Ningún instructor coincide con la búsqueda." : undefined
           }
@@ -112,14 +114,6 @@ function InstructorsListSection() {
         instructor={deleting}
         onOpenChangeAction={(open) => {
           if (!open) setDeleting(null);
-        }}
-      />
-      <InstructorSchedulesDialog
-        open={schedulesFor !== null}
-        instructorId={schedulesFor ? String(schedulesFor.id) : null}
-        instructorName={schedulesFor?.staff?.full_name}
-        onOpenChangeAction={(open) => {
-          if (!open) setSchedulesFor(null);
         }}
       />
     </div>

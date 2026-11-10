@@ -16,6 +16,11 @@ async function list(params: GymClassListParams = {}): Promise<Paginated<GymClass
   return unwrapPaginated<GymClassRow>(data);
 }
 
+async function get(id: number | string): Promise<GymClassRow> {
+  const { data } = await apiClient.get<unknown>(`${GYM_CLASSES_ENDPOINT}/${encodeURIComponent(id)}`);
+  return unwrapEnvelope<GymClassRow>(data);
+}
+
 async function create(input: CreateGymClassInput): Promise<GymClassRow> {
   const { data } = await apiClient.post<unknown>(GYM_CLASSES_ENDPOINT, input);
   return unwrapEnvelope<GymClassRow>(data);
@@ -41,4 +46,4 @@ async function restore(id: number): Promise<GymClassRow> {
   return unwrapEnvelope<GymClassRow>(data);
 }
 
-export const gymClassesApi = { list, create, update, remove, restore };
+export const gymClassesApi = { list, get, create, update, remove, restore };

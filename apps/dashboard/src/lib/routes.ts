@@ -16,6 +16,7 @@ export const ROUTES = {
     plans: "/plans",
     subscriptions: "/subscriptions",
     gymSettings: "/gym-settings",
+    devices: "/devices",
   },
 
   tenant: {
@@ -27,6 +28,8 @@ export const ROUTES = {
     attendance: "/attendance",
     checkIn: "/check-in",
     staff: "/staff",
+    leads: "/leads",
+    visits: "/visits",
     instructors: "/instructors",
     classes: "/classes",
     equipment: "/equipment",
@@ -35,6 +38,7 @@ export const ROUTES = {
     users: "/users",
     branches: "/branches",
     cashRegister: "/cash-register",
+    devices: "/readers",
     settings: "/settings",
     settingsCompany: "/settings/company",
     settingsDocuments: "/settings/documents",

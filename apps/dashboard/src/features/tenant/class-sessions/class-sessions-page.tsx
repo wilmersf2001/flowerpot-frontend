@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DatePicker } from "@repo/ui/date-picker";
 import { ResourceHeader, AsyncCombobox } from "@/features/_shared";
+import { useHasPermission } from "@/features/tenant/auth";
+import { CLASS_VIEW_ATTENDANCE_PERMISSION } from "@/features/tenant/class-enrollments/lib/class-enrollments.constants";
 import { useInstructorOptions } from "@/features/tenant/instructors";
 import type { ClassSessionRow, ClassSessionStatus } from "./lib/class-sessions.types";
 import { useClassSessions } from "./lib/class-sessions.hooks";
@@ -14,6 +17,7 @@ const ALL_INSTRUCTORS_OPTION = { value: "", label: "Todos los instructores" };
 
 /** Pantalla de sesiones: filtros + tabla. Solo lectura + edición puntual (cancelar / reasignar). */
 export function ClassSessionsPage() {
+  const router = useRouter();
   const [instructorId, setInstructorId] = useState("");
   const [status, setStatus] = useState<ClassSessionStatus | "">("");
   const [dateStart, setDateStart] = useState("");
@@ -32,6 +36,7 @@ export function ClassSessionsPage() {
   const meta = sessions.data;
 
   const [editing, setEditing] = useState<ClassSessionRow | null>(null);
+  const canViewEnrollments = useHasPermission()(CLASS_VIEW_ATTENDANCE_PERMISSION);
 
   const hasFilters = Boolean(instructorId || status || dateStart || dateEnd);
 
@@ -90,6 +95,11 @@ export function ClassSessionsPage() {
           rows={meta?.data ?? []}
           isLoading={sessions.isPending}
           onEditAction={setEditing}
+          onEnrollmentsAction={
+            canViewEnrollments
+              ? (session) => router.push(`/classes/sessions/${session.id}`)
+              : undefined
+          }
           emptyMessage={
             hasFilters ? "Ninguna sesión coincide con el filtro." : "Aún no hay sesiones generadas."
           }

@@ -10,8 +10,9 @@ import {
   TextareaField,
   useFieldBinder,
   useResourceFormSubmit,
+  formatDateTime,
 } from "@/features/_shared";
-import { useOpenCashRegister } from "../lib/cash-register.hooks";
+import { useLastCashClosing, useOpenCashRegister } from "../lib/cash-register.hooks";
 import {
   OPEN_CASH_REGISTER_FORM_FIELDS,
   openCashRegisterFormDefaults,
@@ -32,6 +33,9 @@ export function OpenCashRegisterDialog({
   onOpenChangeAction: (open: boolean) => void;
 }) {
   const openCashRegister = useOpenCashRegister();
+  // El efectivo que quedó al cerrar la última caja es con el que se abre hoy.
+  const lastClosing = useLastCashClosing(open);
+  const suggested = lastClosing.data?.closing_balance;
 
   const form = useForm<OpenCashRegisterForm>({
     resolver: zodResolver(openCashRegisterFormSchema),
@@ -45,8 +49,12 @@ export function OpenCashRegisterDialog({
   const bind = useFieldBinder(form, "open-cash-register");
 
   useEffect(() => {
-    if (open) reset(openCashRegisterFormDefaults);
-  }, [open, reset]);
+    if (!open) return;
+    reset({
+      ...openCashRegisterFormDefaults,
+      opening_balance: suggested != null ? suggested.toFixed(2) : "",
+    });
+  }, [open, suggested, reset]);
 
   const onSubmit = handleSubmit(
     useResourceFormSubmit<OpenCashRegisterForm, CashRegisterRow>({
@@ -96,6 +104,13 @@ export function OpenCashRegisterDialog({
           step="0.01"
           min="0"
           placeholder="1000.00"
+          hint={
+            lastClosing.data
+              ? `Sugerido: el último cierre fue de S/ ${lastClosing.data.closing_balance.toFixed(2)}${
+                  lastClosing.data.closed_at ? ` (${formatDateTime(lastClosing.data.closed_at)})` : ""
+                }. Cuenta el efectivo y cámbialo si es distinto.`
+              : "Cuenta el efectivo que hay en el cajón."
+          }
           autoFocus
         />
         <TextareaField

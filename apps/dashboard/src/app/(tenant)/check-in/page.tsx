@@ -1,7 +1,8 @@
-import { ResourceScaffold } from "@/components/resource-scaffold";
+import { CheckInPage } from "@/features/tenant/check-in";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Check-in" };
+export const metadata: Metadata = { title: "Check-in" };
 
 export default function Page() {
-  return <ResourceScaffold title="Check-in" description="Control de acceso en recepción / torniquete." />;
+  return <CheckInPage />;
 }

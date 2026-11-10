@@ -21,6 +21,13 @@ async function list(
   return unwrapPaginated<InstructorRow>(data);
 }
 
+async function get(id: number | string): Promise<InstructorRow> {
+  const { data } = await apiClient.get<unknown>(
+    `${INSTRUCTORS_ENDPOINT}/${encodeURIComponent(id)}`,
+  );
+  return unwrapEnvelope<InstructorRow>(data);
+}
+
 async function create(input: CreateInstructorInput): Promise<InstructorRow> {
   const { data } = await apiClient.post<unknown>(INSTRUCTORS_ENDPOINT, input);
   return unwrapEnvelope<InstructorRow>(data);
@@ -49,4 +56,4 @@ async function restore(id: number): Promise<InstructorRow> {
   return unwrapEnvelope<InstructorRow>(data);
 }
 
-export const instructorsApi = { list, create, update, remove, restore };
+export const instructorsApi = { list, get, create, update, remove, restore };

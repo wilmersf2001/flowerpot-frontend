@@ -10,6 +10,8 @@ export interface BranchRow {
   address: string;
   phone: string;
   timezone: string;
+  /** Precio del pase diario de la sede (monto en soles). `null` si no se definió. */
+  day_pass_price: number | string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -27,6 +29,7 @@ export interface CreateBranchInput {
   address?: string | null;
   phone?: string | null;
   timezone?: string | null;
+  day_pass_price?: number | null;
 }
 
 /** Cuerpo de `PATCH /branches/{branch}` (`UpdateBranchRequest`). */
@@ -35,4 +38,5 @@ export interface UpdateBranchInput {
   address?: string | null;
   phone?: string | null;
   timezone?: string | null;
+  day_pass_price?: number | null;
 }

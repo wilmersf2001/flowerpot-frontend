@@ -12,6 +12,7 @@ import {
   CASH_MOVEMENTS_PER_PAGE,
   CASH_REGISTER_CLOSE_ENDPOINT,
   CASH_REGISTER_CURRENT_ENDPOINT,
+  CASH_REGISTER_LAST_CLOSING_ENDPOINT,
   CASH_REGISTER_OPEN_ENDPOINT,
   CASH_REGISTERS_ENDPOINT,
   CASH_REGISTERS_PER_PAGE,
@@ -20,6 +21,7 @@ import {
   CashMovementListParams,
   CashMovementRow,
   CashRegisterCatalog,
+  LastClosing,
   CashRegisterListParams,
   CashRegisterRow,
   CashRegisterSummary,
@@ -32,19 +34,22 @@ import {
 /** El backend manda varios campos numéricos/anidados con forma inconsistente. */
 function toCashRegisterRow(raw: Record<string, unknown>): CashRegisterRow {
   const branch = raw.branch as Record<string, unknown> | undefined;
-  const openedBy = raw.opened_by_user as Record<string, unknown> | undefined;
-  const closedBy = raw.closed_by_user as Record<string, unknown> | undefined;
+  // `CashRegisterResource` manda opened_by/closed_by como { id, name }
+  const openedBy = (raw.opened_by ?? raw.opened_by_user) as Record<string, unknown> | null | undefined;
+  const closedBy = (raw.closed_by ?? raw.closed_by_user) as Record<string, unknown> | null | undefined;
   return {
     id: String(raw.id),
     branch_id: String(raw.branch_id ?? branch?.id ?? ""),
-    opened_by: raw.opened_by == null ? null : String(raw.opened_by),
-    closed_by: raw.closed_by == null ? null : String(raw.closed_by),
+    opened_by: openedBy?.id == null ? null : String(openedBy.id),
+    closed_by: closedBy?.id == null ? null : String(closedBy.id),
     status: String(raw.status ?? "open") as CashRegisterRow["status"],
     opening_balance: Number(raw.opening_balance ?? 0),
+    // Nombres reales de la API: closing_balance, expected_cash_balance y
+    // cash_difference (antes se leían otros y salían en 0 o vacíos).
     closing_amount:
-      raw.closing_amount == null ? null : Number(raw.closing_amount),
-    current_balance: Number(raw.current_balance ?? 0),
-    difference: raw.difference == null ? null : Number(raw.difference),
+      raw.closing_balance == null ? null : Number(raw.closing_balance),
+    current_balance: Number(raw.expected_cash_balance ?? 0),
+    difference: raw.cash_difference == null ? null : Number(raw.cash_difference),
     opened_at: String(raw.opened_at ?? ""),
     closed_at: raw.closed_at == null ? null : String(raw.closed_at),
     opening_notes: raw.opening_notes == null ? null : String(raw.opening_notes),
@@ -136,6 +141,10 @@ function toCashRegisterSummary(
         totals.cash_difference == null ? null : Number(totals.cash_difference),
       difference_type:
         totals.difference_type == null ? null : String(totals.difference_type),
+    },
+    pending_cash_expenses: {
+      count: Number((raw.pending_cash_expenses as Record<string, unknown> | undefined)?.count ?? 0),
+      total: Number((raw.pending_cash_expenses as Record<string, unknown> | undefined)?.total ?? 0),
     },
     movements_count: {
       total: Number(movementsCount?.total ?? 0),
@@ -282,6 +291,19 @@ async function voidMovement(
   return toCashMovementRow(unwrapEnvelope<Record<string, unknown>>(data));
 }
 
+/** Último cierre de la sede (o `null` si nunca se cerró una caja ahí). */
+async function lastClosing(branchId: string): Promise<LastClosing | null> {
+  const { data } = await apiClient.get<unknown>(CASH_REGISTER_LAST_CLOSING_ENDPOINT, {
+    params: { branch_id: Number(branchId) },
+  });
+  // Sin cierre previo la API responde sin `data` (successResponse omite el
+  // null), así que unwrapEnvelope devolvería el sobre entero: se valida el campo.
+  const closing = unwrapEnvelope<Partial<LastClosing> | null>(data);
+  return closing && typeof closing.closing_balance === "number"
+    ? { closing_balance: closing.closing_balance, closed_at: closing.closed_at ?? null }
+    : null;
+}
+
 async function catalog(): Promise<CashRegisterCatalog> {
   const { data } = await apiClient.get<unknown>("/cash-register/catalog");
   const raw = unwrapEnvelope<Record<string, unknown>>(data);
@@ -307,4 +329,5 @@ export const cashRegisterApi = {
   createMovement,
   voidMovement,
   catalog,
+  lastClosing,
 };

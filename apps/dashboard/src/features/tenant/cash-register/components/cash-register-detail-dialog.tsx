@@ -74,7 +74,8 @@ export function CashRegisterDetailDialog({
           <CashMovementsTable
             rows={movements.data?.data ?? []}
             isLoading={movements.isPending}
-            onVoidAction={setVoiding}
+            // Una caja cerrada no se modifica (la API lo rechaza): sin "Anular".
+            onVoidAction={register?.status === "open" ? setVoiding : undefined}
             emptyMessage="Sin movimientos en esta caja."
           />
         </div>

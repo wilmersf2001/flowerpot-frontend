@@ -13,6 +13,10 @@ import {
 } from "@/features/_shared";
 import { expensePaymentMethodLabel, formatSoles } from "../lib/expenses.constants";
 import { ExpenseRow } from "../lib/expenses.types";
+import { useCurrentUser } from "@/features/tenant/auth";
+
+/** Roles que pueden aprobar sus propios gastos (`ApproveExpenseRequest::SELF_APPROVAL_ROLES`). */
+const SELF_APPROVAL_ROLES = ["gym_owner", "admin"];
 
 const EXPENSE_STATUS_MAP: StatusMap = {
   pending: { label: "Pendiente", tone: "warning" },
@@ -80,6 +84,7 @@ export function ExpensesTable({
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
+  const { data: me } = useCurrentUser();
   return (
     <DataTable
       columns={columns}
@@ -89,12 +94,15 @@ export function ExpensesTable({
       pagination={pagination}
       rowActions={(row) => {
         const isPending = row.status === "pending";
+        // Solo el dueño y el administrador aprueban sus propios gastos (igual que la API).
+        const isOwnExpense = me != null && row.registered_by?.id === Number(me.id);
+        const canApprove = !isOwnExpense || SELF_APPROVAL_ROLES.includes(me?.role ?? "");
         const canVoid = row.status === "pending" || row.status === "approved";
         return (
           <RowActions
             label={`Acciones del gasto "${row.description}"`}
             actions={[
-              isPending && {
+              isPending && canApprove && {
                 label: "Aprobar",
                 icon: CheckCircle2,
                 onSelect: () => onReviewAction(row, "approve"),

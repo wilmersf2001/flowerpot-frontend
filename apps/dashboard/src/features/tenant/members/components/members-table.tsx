@@ -1,6 +1,6 @@
 "use client";
 
-import { Mars, Pencil, RotateCcw, Trash2, Venus, VenusAndMars } from "lucide-react";
+import { Mars, Pencil, QrCode, RotateCcw, Trash2, Venus, VenusAndMars } from "lucide-react";
 import { Switch } from "@repo/ui/switch";
 import { toast } from "@repo/ui/toast";
 import { ApiError } from "@repo/api-client";
@@ -116,6 +116,7 @@ export function MembersTable({
   isLoading,
   onEditAction,
   onDeleteAction,
+  onShowQrAction,
   pagination,
   emptyMessage = "Aún no hay socios. Crea el primero.",
 }: {
@@ -123,6 +124,7 @@ export function MembersTable({
   isLoading: boolean;
   onEditAction: (member: MemberRow) => void;
   onDeleteAction: (member: MemberRow) => void;
+  onShowQrAction: (member: MemberRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
@@ -214,6 +216,11 @@ export function MembersTable({
                     icon: Pencil,
                     onSelect: () => onEditAction(row),
                   },
+              !isDeleted && {
+                label: "Ver QR",
+                icon: QrCode,
+                onSelect: () => onShowQrAction(row),
+              },
               !isDeleted && {
                 label: "Eliminar",
                 icon: Trash2,

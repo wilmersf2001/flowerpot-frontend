@@ -28,7 +28,7 @@ export interface ExpenseRow {
   /** Relaciones: solo vienen si el backend las cargó (`whenLoaded`). */
   category?: { name: string };
   branch?: { name: string };
-  registered_by?: { name: string };
+  registered_by?: { id: number; name: string };
   approved_by?: { name: string };
 }
 

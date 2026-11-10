@@ -12,7 +12,7 @@ import type {
 /** Formulario de alta/edición de gasto (`POST /expenses`, `PATCH /expenses/{id}`). */
 export const expenseFormSchema = z.object({
   expense_category_id: requiredText("La categoría"),
-  amount: numericText("El monto", { min: 0.01 }),
+  amount: numericText("El monto", { min: 0.01, max: 9999999.99, decimals: 2 }),
   description: boundedText("La descripción", { min: 3, max: 255 }),
   payment_method: z.enum(EXPENSE_PAYMENT_METHODS),
   date: z.string().trim().min(1, "La fecha es obligatoria."),

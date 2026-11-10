@@ -20,6 +20,13 @@ async function list(
   return unwrapPaginated<ClassSessionRow>(data);
 }
 
+async function get(id: number | string): Promise<ClassSessionRow> {
+  const { data } = await apiClient.get<unknown>(
+    `${CLASS_SESSIONS_ENDPOINT}/${encodeURIComponent(id)}`,
+  );
+  return unwrapEnvelope<ClassSessionRow>(data);
+}
+
 async function update(
   id: number,
   input: UpdateClassSessionInput,
@@ -31,4 +38,4 @@ async function update(
   return unwrapEnvelope<ClassSessionRow>(data);
 }
 
-export const classSessionsApi = { list, update };
+export const classSessionsApi = { list, get, update };

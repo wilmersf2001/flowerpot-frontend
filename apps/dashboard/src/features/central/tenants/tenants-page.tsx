@@ -13,6 +13,7 @@ import type { CreateTenantResult, TenantRow } from "./lib/tenants.types";
 import { TenantsTable } from "./components/tenants-table";
 import { TenantFormDialog } from "./components/tenant-form-dialog";
 import { TenantCredentialsDialog } from "./components/tenant-credentials-dialog";
+import { TenantDevicesDialog } from "@/features/central/devices";
 import { DeleteTenantDialog } from "./components/delete-tenant-dialog";
 
 /** Pantalla de gimnasios: lista + búsqueda + paginación + alta + baja. */
@@ -30,6 +31,7 @@ export function TenantsPage() {
     null,
   );
   const [toDelete, setToDelete] = useState<TenantRow | null>(null);
+  const [devicesOf, setDevicesOf] = useState<string | null>(null);
 
   function handleSearch(value: string) {
     setSearch(value);
@@ -71,6 +73,7 @@ export function TenantsPage() {
           rows={meta?.data ?? []}
           isLoading={tenants.isPending}
           onDeleteAction={setToDelete}
+          onDevicesAction={(tenant) => setDevicesOf(tenant.id)}
           emptyMessage={
             debouncedSearch
               ? "Ningún gimnasio coincide con la búsqueda."
@@ -96,6 +99,10 @@ export function TenantsPage() {
       <TenantCredentialsDialog
         result={credentials}
         onCloseAction={() => setCredentials(null)}
+      />
+      <TenantDevicesDialog
+        tenantId={devicesOf}
+        onCloseAction={() => setDevicesOf(null)}
       />
       <DeleteTenantDialog
         tenant={toDelete}

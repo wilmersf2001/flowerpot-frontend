@@ -21,6 +21,13 @@ async function list(
   return unwrapPaginated<ClassScheduleRow>(data);
 }
 
+async function get(id: number | string): Promise<ClassScheduleRow> {
+  const { data } = await apiClient.get<unknown>(
+    `${CLASS_SCHEDULES_ENDPOINT}/${encodeURIComponent(id)}`,
+  );
+  return unwrapEnvelope<ClassScheduleRow>(data);
+}
+
 async function create(
   input: CreateClassScheduleInput,
 ): Promise<ClassScheduleRow> {
@@ -56,4 +63,4 @@ async function restore(id: number): Promise<ClassScheduleRow> {
   return unwrapEnvelope<ClassScheduleRow>(data);
 }
 
-export const classSchedulesApi = { list, create, update, remove, restore };
+export const classSchedulesApi = { list, get, create, update, remove, restore };

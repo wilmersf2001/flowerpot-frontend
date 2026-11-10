@@ -9,7 +9,7 @@ import type { CreateAttendanceInput } from "./attendance.types";
  */
 export const attendanceFormSchema = z.object({
   member_id: requiredText("El socio"),
-  notes: optionalText(500),
+  notes: optionalText(255),
 });
 
 export type AttendanceForm = z.infer<typeof attendanceFormSchema>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Fingerprint, Trash2 } from "lucide-react";
 import {
   DataTable,
   RowActions,
@@ -29,12 +29,14 @@ export function TenantsTable({
   rows,
   isLoading,
   onDeleteAction,
+  onDevicesAction,
   pagination,
   emptyMessage = "Aún no hay gimnasios. Crea el primero.",
 }: {
   rows: TenantRow[];
   isLoading: boolean;
   onDeleteAction: (tenant: TenantRow) => void;
+  onDevicesAction: (tenant: TenantRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
@@ -49,6 +51,11 @@ export function TenantsTable({
         <RowActions
           label={`Acciones de ${row.id}`}
           actions={[
+            {
+              label: "Ver lectores",
+              icon: Fingerprint,
+              onSelect: () => onDevicesAction(row),
+            },
             {
               label: "Eliminar",
               icon: Trash2,
