@@ -1,10 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui/button";
-import { AppDialog, DateField, TextField, useFieldBinder, useResourceFormSubmit } from "@/features/_shared";
+import { Combobox, type ComboboxOption } from "@repo/ui/combobox";
+import {
+  AppDialog,
+  DateField,
+  Field,
+  TextField,
+  useFieldBinder,
+  useResourceFormSubmit,
+} from "@/features/_shared";
+import {
+  EQUIPMENT_MAINTENANCE_PAYMENT_METHODS,
+  EQUIPMENT_MAINTENANCE_PAYMENT_METHOD_LABELS,
+} from "../lib/equipment-maintenances.constants";
 import { useCompleteEquipmentMaintenance } from "../lib/equipment-maintenances.hooks";
 import {
   COMPLETE_EQUIPMENT_MAINTENANCE_FORM_FIELDS,
@@ -16,6 +28,10 @@ import {
 import type { EquipmentMaintenanceRow } from "../lib/equipment-maintenances.types";
 
 const FORM_ID = "complete-equipment-maintenance-form";
+
+const PAYMENT_METHOD_OPTIONS: ComboboxOption[] = EQUIPMENT_MAINTENANCE_PAYMENT_METHODS.map(
+  (method) => ({ value: method, label: EQUIPMENT_MAINTENANCE_PAYMENT_METHOD_LABELS[method] }),
+);
 
 /**
  * Diálogo para completar un mantenimiento `en_progreso` (`PATCH .../complete`).
@@ -39,7 +55,8 @@ export function CompleteEquipmentMaintenanceDialog({
   const {
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    control,
+    formState: { errors, isSubmitting },
   } = form;
   const bind = useFieldBinder(form, "complete-equipment-maintenance");
 
@@ -102,6 +119,26 @@ export function CompleteEquipmentMaintenanceDialog({
           placeholder="350.00"
           autoFocus
         />
+        <Field
+          label="Método de pago"
+          htmlFor="complete-equipment-maintenance-payment-method"
+          error={errors.payment_method?.message}
+          hint="En efectivo se registra un egreso en la caja abierta."
+        >
+          <Controller
+            control={control}
+            name="payment_method"
+            render={({ field }) => (
+              <Combobox
+                id="complete-equipment-maintenance-payment-method"
+                value={field.value}
+                onValueChange={field.onChange}
+                options={PAYMENT_METHOD_OPTIONS}
+                aria-invalid={errors.payment_method ? true : undefined}
+              />
+            )}
+          />
+        </Field>
         <DateField
           form={form}
           name="next_maintenance_date"

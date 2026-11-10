@@ -36,6 +36,14 @@ const DELETED_MAP: StatusMap = {
   true: { label: "Eliminado", tone: "danger" },
 };
 
+/** `scheduled_date` (`YYYY-MM-DD`) posterior a hoy (hora local): aún no se puede iniciar. */
+function isFuture(scheduledDate: string | null): boolean {
+  if (!scheduledDate) return false;
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  return scheduledDate.slice(0, 10) > today;
+}
+
 const baseColumns: Column<EquipmentMaintenanceRow>[] = [
   {
     key: "type",
@@ -150,7 +158,9 @@ export function EquipmentMaintenancesTable({
               isScheduled && {
                 label: "Iniciar",
                 icon: PlayCircle,
-                disabled: startMaintenance.isPending && startMaintenance.variables === row.id,
+                disabled:
+                  isFuture(row.scheduled_date) ||
+                  (startMaintenance.isPending && startMaintenance.variables === row.id),
                 onSelect: () => handleStart(row),
               },
               isInProgress && {
@@ -158,7 +168,7 @@ export function EquipmentMaintenancesTable({
                 icon: CheckCircle2,
                 onSelect: () => onCompleteAction(row),
               },
-              isScheduled && {
+              (isScheduled || (row.status === "completado" && !isDeleted)) && {
                 label: "Cancelar",
                 icon: Ban,
                 onSelect: () => onCancelAction(row),

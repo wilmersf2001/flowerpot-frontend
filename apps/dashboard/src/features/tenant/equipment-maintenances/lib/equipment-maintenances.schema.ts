@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { boundedText, numericText, requiredText } from "@/features/_shared/form-schema";
-import { EQUIPMENT_MAINTENANCE_TYPES } from "./equipment-maintenances.constants";
+import {
+  EQUIPMENT_MAINTENANCE_PAYMENT_METHODS,
+  EQUIPMENT_MAINTENANCE_TYPES,
+} from "./equipment-maintenances.constants";
 import type {
   CompleteEquipmentMaintenanceInput,
   CreateEquipmentMaintenanceInput,
@@ -89,6 +92,7 @@ export function toUpdateEquipmentMaintenanceInput(
 
 export const completeEquipmentMaintenanceFormSchema = z.object({
   cost: numericText("El costo del mantenimiento", { min: 0 }),
+  payment_method: z.enum(EQUIPMENT_MAINTENANCE_PAYMENT_METHODS),
   next_maintenance_date: z.string(),
 });
 
@@ -98,11 +102,13 @@ export type CompleteEquipmentMaintenanceForm = z.infer<
 
 export const completeEquipmentMaintenanceFormDefaults: CompleteEquipmentMaintenanceForm = {
   cost: "",
+  payment_method: "cash",
   next_maintenance_date: "",
 };
 
 export const COMPLETE_EQUIPMENT_MAINTENANCE_FORM_FIELDS = [
   "cost",
+  "payment_method",
   "next_maintenance_date",
 ] as const satisfies readonly (keyof CompleteEquipmentMaintenanceForm)[];
 
@@ -112,6 +118,7 @@ export function toCompleteEquipmentMaintenanceInput(
 ): CompleteEquipmentMaintenanceInput {
   return {
     cost: Number(form.cost),
+    payment_method: form.payment_method,
     next_maintenance_date: form.next_maintenance_date || undefined,
   };
 }

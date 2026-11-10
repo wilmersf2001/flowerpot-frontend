@@ -6,7 +6,7 @@ import { ConfirmDialog } from "@/features/_shared";
 import { useCancelEquipmentMaintenance } from "../lib/equipment-maintenances.hooks";
 import type { EquipmentMaintenanceRow } from "../lib/equipment-maintenances.types";
 
-/** Confirmación para cancelar un mantenimiento `programado` (`PATCH .../cancel`). */
+/** Confirmación para cancelar un mantenimiento `programado` o `completado` (`PATCH .../cancel`). */
 export function CancelEquipmentMaintenanceDialog({
   maintenance,
   onOpenChangeAction,
@@ -32,7 +32,11 @@ export function CancelEquipmentMaintenanceDialog({
       open={maintenance !== null}
       onOpenChange={onOpenChangeAction}
       title="Cancelar mantenimiento"
-      description="El mantenimiento quedará cancelado. El equipo nunca llegó a estar en mantenimiento, así que su estado no cambia."
+      description={
+        maintenance?.status === "completado"
+          ? "El mantenimiento quedará cancelado y, si se pagó en efectivo, se revertirá el movimiento de caja."
+          : "El mantenimiento quedará cancelado. El equipo nunca llegó a estar en mantenimiento, así que su estado no cambia."
+      }
       confirmLabel="Cancelar mantenimiento"
       destructive
       loading={cancelMaintenance.isPending}

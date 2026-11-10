@@ -10,9 +10,31 @@ export const EQUIPMENT_MAINTENANCES_PER_PAGE = 15;
  */
 export const EQUIPMENT_MAINTENANCE_TYPES = ["preventivo", "correctivo"] as const;
 
+/** Métodos de pago al completar. `cash` genera movimiento en caja (requiere caja abierta). */
+export const EQUIPMENT_MAINTENANCE_PAYMENT_METHODS = [
+  "cash",
+  "card",
+  "transfer",
+  "check",
+  "other",
+] as const;
+
+export const EQUIPMENT_MAINTENANCE_PAYMENT_METHOD_LABELS: Record<
+  (typeof EQUIPMENT_MAINTENANCE_PAYMENT_METHODS)[number],
+  string
+> = {
+  cash: "Efectivo",
+  card: "Tarjeta",
+  transfer: "Transferencia",
+  check: "Cheque",
+  other: "Otro",
+};
+
 /**
  * `programado -> en_progreso -> completado`, o `programado -> cancelado`.
+ * `completado -> cancelado` también es válido (revierte el movimiento de caja).
  * Un mantenimiento `en_progreso` no se puede cancelar, solo completar.
+ * No se puede iniciar antes de su `scheduled_date`.
  */
 export const EQUIPMENT_MAINTENANCE_STATUSES = [
   "programado",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { AlertTriangle, Plus, Wallet } from "lucide-react";
+import { useCurrentCashRegister } from "@/features/tenant/cash-register";
 import { Button } from "@repo/ui/button";
 import { ResourceHeader, SearchInput, useDebouncedValue } from "@/features/_shared";
 import type { PaymentRow } from "./lib/payments.types";
@@ -19,6 +20,7 @@ export function PaymentsPage() {
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebouncedValue(search.trim(), 300);
 
+  const currentRegister = useCurrentCashRegister();
   const payments = usePayments({ page, search: debouncedSearch });
   const meta = payments.data;
 
@@ -45,6 +47,20 @@ export function PaymentsPage() {
           </Button>
         }
       />
+
+      {!currentRegister.isPending && !currentRegister.isError ? (
+        currentRegister.data == null ? (
+          <div className="flex items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-400">
+            <AlertTriangle className="size-4 shrink-0" />
+            No hay una caja abierta en esta sede: los pagos en efectivo no se sumarán a caja.
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-700 dark:text-emerald-400">
+            <Wallet className="size-4 shrink-0" />
+            Hay una caja abierta: los pagos en efectivo se sumarán a caja.
+          </div>
+        )
+      ) : null}
 
       <SearchInput
         value={search}

@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSelectedBranch } from "@/components/branch";
 import { equipmentKeys } from "@/features/tenant/equipment";
 import { equipmentMaintenancesApi } from "./equipment-maintenances.api";
 import { equipmentMaintenanceKeys } from "./equipment-maintenances.keys";
@@ -8,6 +9,9 @@ import {
   EquipmentMaintenanceListParams,
   UpdateEquipmentMaintenanceInput,
 } from "./equipment-maintenances.types";
+
+/** Key cruda de caja (evita acoplar con el módulo `cash-register`); completar/cancelar mueve caja. */
+const CASH_REGISTER_KEY = ["cash-register"] as const;
 
 /** Lista paginada de mantenimientos, con filtros opcionales. */
 export function useEquipmentMaintenances(params: EquipmentMaintenanceListParams = {}) {
@@ -74,21 +78,32 @@ export function useStartEquipmentMaintenance() {
 /** `en_progreso -> completado`. Devuelve el equipo a `operativo`. */
 export function useCompleteEquipmentMaintenance() {
   const queryClient = useQueryClient();
+  const { selectedBranchId } = useSelectedBranch();
   return useMutation({
     mutationFn: ({ id, input }: { id: number; input: CompleteEquipmentMaintenanceInput }) =>
-      equipmentMaintenancesApi.complete(id, input),
+      equipmentMaintenancesApi.complete(id, {
+        ...input,
+        branch_id: selectedBranchId ? Number(selectedBranchId) : null,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all });
       queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
+      queryClient.invalidateQueries({ queryKey: CASH_REGISTER_KEY });
     },
   });
 }
 
-/** `programado -> cancelado`. No modifica el estado del equipo. */
+/**
+ * `programado -> cancelado` o `completado -> cancelado` (revierte el movimiento
+ * de caja). Un `en_progreso` no se puede cancelar.
+ */
 export function useCancelEquipmentMaintenance() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => equipmentMaintenancesApi.cancel(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: equipmentMaintenanceKeys.all });
+      queryClient.invalidateQueries({ queryKey: CASH_REGISTER_KEY });
+    },
   });
 }

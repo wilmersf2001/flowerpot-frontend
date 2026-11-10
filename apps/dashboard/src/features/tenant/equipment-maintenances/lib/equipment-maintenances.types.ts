@@ -3,9 +3,13 @@
 
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
 import type {
+  EQUIPMENT_MAINTENANCE_PAYMENT_METHODS,
   EQUIPMENT_MAINTENANCE_STATUSES,
   EQUIPMENT_MAINTENANCE_TYPES,
 } from "./equipment-maintenances.constants";
+
+export type EquipmentMaintenancePaymentMethod =
+  (typeof EQUIPMENT_MAINTENANCE_PAYMENT_METHODS)[number];
 
 export type EquipmentMaintenanceType = (typeof EQUIPMENT_MAINTENANCE_TYPES)[number];
 export type EquipmentMaintenanceStatus = (typeof EQUIPMENT_MAINTENANCE_STATUSES)[number];
@@ -83,5 +87,7 @@ export interface UpdateEquipmentMaintenanceInput {
 /** Cuerpo de `PATCH /equipment-maintenances/{id}/complete`. */
 export interface CompleteEquipmentMaintenanceInput {
   cost: number;
+  payment_method: EquipmentMaintenancePaymentMethod;
+  branch_id?: number | null;
   next_maintenance_date?: string;
 }
