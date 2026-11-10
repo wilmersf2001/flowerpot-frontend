@@ -27,6 +27,8 @@ import {
   useMembershipPlanOptions,
 } from "../lib/memberships.hooks";
 import {
+  MEMBERSHIP_CANCELLATION_REASONS,
+  MEMBERSHIP_CANCELLATION_REASON_LABELS,
   MEMBERSHIP_CREATE_STATUSES,
   MEMBERSHIP_STATUS_LABELS,
   MEMBERSHIP_STATUS_TRANSITIONS,
@@ -50,6 +52,14 @@ const FORM_ID = "membership-form";
 const CREATE_STATUS_OPTIONS: ComboboxOption[] = MEMBERSHIP_CREATE_STATUSES.map(
   (status) => ({ value: status, label: MEMBERSHIP_STATUS_LABELS[status] }),
 );
+
+const CANCELLATION_REASON_OPTIONS: ComboboxOption[] = [
+  { value: "", label: "Selecciona un motivo" },
+  ...MEMBERSHIP_CANCELLATION_REASONS.map((reason) => ({
+    value: reason,
+    label: MEMBERSHIP_CANCELLATION_REASON_LABELS[reason],
+  })),
+];
 
 /** En edición solo se ofrece el estado actual y los cambios permitidos. */
 function editStatusOptions(current: MembershipStatus): ComboboxOption[] {
@@ -128,10 +138,15 @@ export function MembershipFormDialog({
     setValue,
     formState: { errors, isSubmitted, isSubmitting },
   } = form;
-  const [planBranchAccess, planMaxBranches] = useWatch({
+  const [planBranchAccess, planMaxBranches, watchedStatus] = useWatch({
     control,
-    name: ["plan_branch_access", "plan_max_branches"],
+    name: ["plan_branch_access", "plan_max_branches", "status"],
   });
+  // Al pasar una membresía vigente a "Cancelada" se pide el motivo.
+  const askCancellationReason =
+    isEdit &&
+    watchedStatus === "cancelled" &&
+    membership?.status !== "cancelled";
   const startBounds = membershipStartBounds();
   const statusOptions = membership
     ? editStatusOptions(membership.status as MembershipStatus)
@@ -351,6 +366,28 @@ export function MembershipFormDialog({
               )}
             />
           </Field>
+
+          {askCancellationReason ? (
+            <Field
+              label="¿Por qué cancela la membresía?"
+              htmlFor="membership-cancellation-reason"
+              error={errors.cancellation_reason?.message}
+            >
+              <Controller
+                control={control}
+                name="cancellation_reason"
+                render={({ field }) => (
+                  <Combobox
+                    id="membership-cancellation-reason"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    options={CANCELLATION_REASON_OPTIONS}
+                    aria-invalid={errors.cancellation_reason ? true : undefined}
+                  />
+                )}
+              />
+            </Field>
+          ) : null}
 
           <TextareaField
             {...bind("notes")}

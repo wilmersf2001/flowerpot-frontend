@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { toLocalDate } from "@/features/_shared/format";
 import { enumFallback, optionalText, requiredText } from "@/features/_shared/form-schema";
-import { MEMBER_GENDERS, MEMBER_MAX_AGE, MEMBER_MIN_AGE } from "./members.constants";
+import { MEMBER_GENDERS, MEMBER_MAX_AGE, MEMBER_MIN_AGE, MEMBER_SOURCES } from "./members.constants";
 import type { CreateMemberInput, MemberRow, UpdateMemberInput } from "./members.types";
 
 const normalizeGender = enumFallback(["", ...MEMBER_GENDERS] as const, "");
+const normalizeSource = enumFallback(["", ...MEMBER_SOURCES] as const, "");
 
 /*
  * Mismas reglas que `ValidatesMemberData` en la API. Por ahora solo socios
@@ -72,6 +73,7 @@ export const memberFormSchema = z
         message: "La fecha de nacimiento no es válida.",
       }),
     gender: z.enum(["", ...MEMBER_GENDERS]),
+    source: z.enum(["", ...MEMBER_SOURCES]),
     photo_url: z
       .string()
       .trim()
@@ -127,6 +129,7 @@ export const memberFormDefaults: MemberForm = {
   phone: "",
   birth_date: "",
   gender: "",
+  source: "",
   photo_url: "",
   emergency_contact_name: "",
   emergency_contact_phone: "",
@@ -142,6 +145,7 @@ export const MEMBER_FORM_FIELDS = [
   "phone",
   "birth_date",
   "gender",
+  "source",
   "photo_url",
   "emergency_contact_name",
   "emergency_contact_phone",
@@ -158,6 +162,7 @@ export function memberToForm(member: MemberRow): MemberForm {
     phone: member.phone ?? "",
     birth_date: member.birth_date ? member.birth_date.slice(0, 10) : "",
     gender: normalizeGender(member.gender ?? ""),
+    source: normalizeSource(member.source ?? ""),
     photo_url: member.photo_url ?? "",
     emergency_contact_name: member.emergency_contact_name ?? "",
     emergency_contact_phone: member.emergency_contact_phone ?? "",
@@ -175,6 +180,7 @@ export function toCreateMemberInput(form: MemberForm): CreateMemberInput {
     phone: form.phone ? normalizePhone(form.phone) : null,
     birth_date: form.birth_date || null,
     gender: form.gender || null,
+    source: form.source || null,
     photo_url: form.photo_url || null,
     emergency_contact_name: form.emergency_contact_name || null,
     emergency_contact_phone: form.emergency_contact_phone
@@ -194,6 +200,7 @@ export function toUpdateMemberInput(form: MemberForm): UpdateMemberInput {
     phone: form.phone ? normalizePhone(form.phone) : null,
     birth_date: form.birth_date || null,
     gender: form.gender || null,
+    source: form.source || null,
     photo_url: form.photo_url || null,
     emergency_contact_name: form.emergency_contact_name || null,
     emergency_contact_phone: form.emergency_contact_phone

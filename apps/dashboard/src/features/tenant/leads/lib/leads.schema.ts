@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { boundedText, optionalText } from "@/features/_shared/form-schema";
-import { LEAD_INTERESTS } from "./leads.constants";
-import type { ConvertLeadInput, CreateLeadInput, LeadRow, UpdateLeadInput } from "./leads.types";
+import { LEAD_INTERESTS, LEAD_LOST_REASONS } from "./leads.constants";
+import type { ConvertLeadInput, CreateLeadInput, LeadRow, LoseLeadInput, UpdateLeadInput } from "./leads.types";
 
 const emailField = z
   .string()
@@ -18,6 +18,7 @@ export const leadFormSchema = z.object({
   /** `""` = nunca se preguntó. */
   contact_consent: z.enum(["", "true", "false"]),
   source_detail: optionalText(60),
+  promo_code: optionalText(50),
   interest: z.string(),
   notes: optionalText(1000),
   branch_id: z.string(),
@@ -33,6 +34,7 @@ export const leadFormDefaults: LeadForm = {
   birth_date: "",
   contact_consent: "",
   source_detail: "",
+  promo_code: "",
   interest: "",
   notes: "",
   branch_id: "",
@@ -47,6 +49,7 @@ export const LEAD_FORM_FIELDS = [
   "birth_date",
   "contact_consent",
   "source_detail",
+  "promo_code",
   "interest",
   "notes",
   "branch_id",
@@ -61,6 +64,7 @@ export function leadToForm(lead: LeadRow): LeadForm {
     birth_date: lead.birth_date ?? "",
     contact_consent: lead.contact_consent == null ? "" : lead.contact_consent ? "true" : "false",
     source_detail: lead.source_detail ?? "",
+    promo_code: lead.promo_code ?? "",
     interest: lead.interest ?? "",
     notes: lead.notes ?? "",
     branch_id: lead.branch ? String(lead.branch.id) : "",
@@ -77,6 +81,7 @@ export function toUpdateLeadInput(form: LeadForm): UpdateLeadInput {
     birth_date: form.birth_date || null,
     contact_consent: form.contact_consent === "" ? null : form.contact_consent === "true",
     source_detail: form.source_detail || null,
+    promo_code: form.promo_code || null,
     interest: LEAD_INTERESTS.find((i) => i === form.interest) ?? null,
     notes: form.notes || null,
     branch_id: form.branch_id ? Number(form.branch_id) : null,
@@ -86,6 +91,20 @@ export function toUpdateLeadInput(form: LeadForm): UpdateLeadInput {
 /** Convierte el formulario validado al cuerpo de `POST /leads` (carga manual). */
 export function toCreateLeadInput(form: LeadForm): CreateLeadInput {
   return { ...toUpdateLeadInput(form), name: form.name, phone: form.phone, source: "manual" };
+}
+
+/* ------------------------------ Perdido ------------------------------- */
+
+export const loseLeadFormSchema = z.object({
+  lost_reason: z.enum(LEAD_LOST_REASONS, { message: "Selecciona el motivo." }),
+});
+
+export type LoseLeadForm = z.infer<typeof loseLeadFormSchema>;
+
+export const LOSE_LEAD_FORM_FIELDS = ["lost_reason"] as const satisfies readonly (keyof LoseLeadForm)[];
+
+export function toLoseLeadInput(form: LoseLeadForm): LoseLeadInput {
+  return { lost_reason: form.lost_reason };
 }
 
 /* ------------------------------ Convertir ------------------------------ */

@@ -23,5 +23,6 @@ export type {
   CreateLeadInput,
   UpdateLeadInput,
   ConvertLeadInput,
+  LoseLeadInput,
   ImportLeadsResult,
 } from "./lib/leads.types";

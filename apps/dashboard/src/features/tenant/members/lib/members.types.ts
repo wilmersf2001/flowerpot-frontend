@@ -1,7 +1,8 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
-import type { MEMBER_GENDERS } from "./members.constants";
+import type { MEMBER_GENDERS, MEMBER_SOURCES } from "./members.constants";
 
 export type MemberGender = (typeof MEMBER_GENDERS)[number];
+export type MemberSource = (typeof MEMBER_SOURCES)[number];
 
 /** Fila de `GET /members` — `MemberResource`, tal cual la manda la API. */
 export interface MemberRow {
@@ -16,6 +17,7 @@ export interface MemberRow {
   age: number | null;
   gender: MemberGender | null;
   photo_url: string | null;
+  source?: MemberSource | null;
   qr_code: string;
   is_active: boolean;
   emergency_contact_name: string | null;
@@ -48,6 +50,7 @@ export interface CreateMemberInput {
   birth_date?: string | null;
   gender?: MemberGender | null;
   photo_url?: string | null;
+  source?: MemberSource | null;
   emergency_contact_name?: string | null;
   emergency_contact_phone?: string | null;
   notes?: string | null;
@@ -65,6 +68,7 @@ export interface UpdateMemberInput {
   birth_date?: string | null;
   gender?: MemberGender | null;
   photo_url?: string | null;
+  source?: MemberSource | null;
   is_active?: boolean;
   emergency_contact_name?: string | null;
   emergency_contact_phone?: string | null;

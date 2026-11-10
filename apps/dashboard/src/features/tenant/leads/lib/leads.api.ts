@@ -13,6 +13,7 @@ import type {
   ImportLeadsResult,
   LeadListParams,
   LeadRow,
+  LoseLeadInput,
   UpdateLeadInput,
 } from "./leads.types";
 
@@ -44,8 +45,8 @@ async function advance(id: number): Promise<LeadRow> {
   return unwrapEnvelope<LeadRow>(data);
 }
 
-async function lose(id: number): Promise<LeadRow> {
-  const { data } = await apiClient.patch<unknown>(`${leadUrl(id)}/lose`);
+async function lose(id: number, input: LoseLeadInput): Promise<LeadRow> {
+  const { data } = await apiClient.patch<unknown>(`${leadUrl(id)}/lose`, input);
   return unwrapEnvelope<LeadRow>(data);
 }
 

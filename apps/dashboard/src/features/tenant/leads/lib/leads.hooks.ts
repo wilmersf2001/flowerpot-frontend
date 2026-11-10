@@ -2,7 +2,13 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { memberKeys } from "@/features/tenant/members";
 import { leadsApi } from "./leads.api";
 import { leadKeys } from "./leads.keys";
-import type { ConvertLeadInput, CreateLeadInput, LeadListParams, UpdateLeadInput } from "./leads.types";
+import type {
+  ConvertLeadInput,
+  CreateLeadInput,
+  LeadListParams,
+  LoseLeadInput,
+  UpdateLeadInput,
+} from "./leads.types";
 
 export { useBranchOptions } from "@/features/tenant/branches";
 
@@ -50,7 +56,10 @@ export function useAdvanceLead() {
 
 export function useLoseLead() {
   const invalidate = useInvalidateLeads();
-  return useMutation({ mutationFn: (id: number) => leadsApi.lose(id), onSuccess: invalidate });
+  return useMutation({
+    mutationFn: ({ id, input }: { id: number; input: LoseLeadInput }) => leadsApi.lose(id, input),
+    onSuccess: invalidate,
+  });
 }
 
 /** Convertir en socio crea un `Member`: refresca también el módulo de socios. */

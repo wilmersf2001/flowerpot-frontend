@@ -3,11 +3,14 @@ import type {
   ListFilters,
 } from "@/features/_shared/list-params";
 import {
+  MEMBERSHIP_CANCELLATION_REASONS,
   MEMBERSHIP_CREATE_STATUSES,
   MEMBERSHIP_STATUSES,
 } from "./memberships.constants";
 
 export type MembershipStatus = (typeof MEMBERSHIP_STATUSES)[number];
+export type MembershipCancellationReason =
+  (typeof MEMBERSHIP_CANCELLATION_REASONS)[number];
 export type MembershipCreateStatus =
   (typeof MEMBERSHIP_CREATE_STATUSES)[number];
 
@@ -32,6 +35,8 @@ export interface CreateMembershipInput {
 export interface UpdateMembershipInput {
   status?: MembershipStatus;
   notes?: string | null;
+  /** Obligatorio al pasar `status` a `cancelled`. */
+  cancellation_reason?: MembershipCancellationReason;
 }
 
 /** Sin filtros extra por ahora: declara aquí los que soporte `GET /memberships`. */
@@ -65,6 +70,7 @@ export interface MembershipRow {
   /** Aún no los expone `MembershipResource`; el formulario de edición los lee. */
   membership_plan_id?: number;
   notes?: string | null;
+  cancellation_reason?: MembershipCancellationReason | null;
   /** Modo de acceso a sedes del plan; solo `limited` permite cambiar de sede. */
   branch_access?: "all" | "specific" | "limited";
   /** Tope de sedes elegibles (planes `limited`). */

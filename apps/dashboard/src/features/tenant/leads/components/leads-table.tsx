@@ -22,7 +22,7 @@ import {
   LEAD_INTEREST_LABELS,
   LEAD_SOURCE_LABELS,
 } from "../lib/leads.constants";
-import { useAdvanceLead, useLoseLead } from "../lib/leads.hooks";
+import { useAdvanceLead } from "../lib/leads.hooks";
 import type { LeadOrigin, LeadRow } from "../lib/leads.types";
 
 export const LEAD_STATUS_MAP: StatusMap = {
@@ -122,6 +122,7 @@ export function LeadsTable({
   onEditAction,
   onDeleteAction,
   onConvertAction,
+  onLoseAction,
   pagination,
   emptyMessage = "Aún no hay leads en esta bandeja.",
 }: {
@@ -131,12 +132,12 @@ export function LeadsTable({
   onEditAction: (lead: LeadRow) => void;
   onDeleteAction: (lead: LeadRow) => void;
   onConvertAction: (lead: LeadRow) => void;
+  onLoseAction: (lead: LeadRow) => void;
   pagination?: DataTablePagination;
   emptyMessage?: string;
 }) {
   const hasPermission = useHasPermission();
   const advanceLead = useAdvanceLead();
-  const loseLead = useLoseLead();
 
   const columns = [...baseColumns, ...originColumns(origin), statusColumn];
 
@@ -188,14 +189,7 @@ export function LeadsTable({
                 canLose && {
                   label: "Marcar perdido",
                   icon: UserX,
-                  disabled: loseLead.isPending,
-                  onSelect: () =>
-                    run(
-                      loseLead.mutateAsync(row.id),
-                      row,
-                      `"{name}" marcado como perdido.`,
-                      "No se pudo marcar el lead como perdido.",
-                    ),
+                  onSelect: () => onLoseAction(row),
                 },
               hasPermission(LEADS_CONVERT_PERMISSION) &&
                 isOpen && {

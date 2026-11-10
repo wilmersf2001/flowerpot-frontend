@@ -46,6 +46,28 @@ export const MEMBERSHIP_STATUS_TRANSITIONS: Record<
   cancelled: [],
 };
 
+/** Motivos de cancelación (`memberships.cancellation_reason`, para analytics). */
+export const MEMBERSHIP_CANCELLATION_REASONS = [
+  "price",
+  "moving",
+  "health",
+  "schedule",
+  "dissatisfaction",
+  "other",
+] as const;
+
+export const MEMBERSHIP_CANCELLATION_REASON_LABELS: Record<
+  (typeof MEMBERSHIP_CANCELLATION_REASONS)[number],
+  string
+> = {
+  price: "Muy caro",
+  moving: "Se muda de ciudad",
+  health: "Problemas de salud",
+  schedule: "Horarios incompatibles",
+  dissatisfaction: "Insatisfacción con el servicio",
+  other: "Otro",
+};
+
 /** Ventana para la fecha de inicio (igual que `StoreMembershipRequest`). */
 export const MEMBERSHIP_START_MAX_DAYS_IN_PAST = 7;
 export const MEMBERSHIP_START_MAX_DAYS_IN_FUTURE = 30;

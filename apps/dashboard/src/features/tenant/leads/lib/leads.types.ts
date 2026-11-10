@@ -1,9 +1,10 @@
 import type { BaseListParams, ListFilters } from "@/features/_shared/list-params";
-import type { LEAD_INTERESTS, LEAD_SOURCES, LEAD_STATUSES } from "./leads.constants";
+import type { LEAD_INTERESTS, LEAD_LOST_REASONS, LEAD_SOURCES, LEAD_STATUSES } from "./leads.constants";
 
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 export type LeadSource = (typeof LEAD_SOURCES)[number];
 export type LeadInterest = (typeof LEAD_INTERESTS)[number];
+export type LeadLostReason = (typeof LEAD_LOST_REASONS)[number];
 export type LeadOrigin = "acquisition" | "walk_in";
 
 export interface LeadTransition {
@@ -26,6 +27,8 @@ export interface LeadRow {
   last_visit_on?: string | null;
   source: LeadSource;
   source_detail: string | null;
+  promo_code?: string | null;
+  lost_reason?: LeadLostReason | null;
   origin: LeadOrigin;
   status: LeadStatus;
   interest: LeadInterest | null;
@@ -64,6 +67,7 @@ export interface CreateLeadInput {
   contact_consent?: boolean | null;
   source?: LeadSource;
   source_detail?: string | null;
+  promo_code?: string | null;
   interest?: LeadInterest | null;
   notes?: string | null;
   branch_id?: number | null;
@@ -71,6 +75,11 @@ export interface CreateLeadInput {
 
 /** Cuerpo de `PATCH /leads/{id}` (`status` y `source` no se cambian aquí). */
 export type UpdateLeadInput = Omit<Partial<CreateLeadInput>, "source">;
+
+/** Cuerpo de `PATCH /leads/{id}/lose`. */
+export interface LoseLeadInput {
+  lost_reason: LeadLostReason;
+}
 
 /** Cuerpo de `POST /leads/{id}/convert`. */
 export interface ConvertLeadInput {

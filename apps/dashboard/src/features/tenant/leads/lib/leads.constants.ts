@@ -33,6 +33,24 @@ export const LEAD_SOURCE_LABELS: Record<(typeof LEAD_SOURCES)[number], string> =
 /** Fuentes de la bandeja de captación (los visitantes son siempre `walk_in`). */
 export const ACQUISITION_SOURCES = ["web", "widget", "manual", "import"] as const;
 
+/** Por qué se perdió un lead (`leads.lost_reason`, para analytics). */
+export const LEAD_LOST_REASONS = [
+  "price",
+  "schedule",
+  "location",
+  "no_response",
+  "competitor",
+  "other",
+] as const;
+export const LEAD_LOST_REASON_LABELS: Record<(typeof LEAD_LOST_REASONS)[number], string> = {
+  price: "Precio muy alto",
+  schedule: "Horarios no convenientes",
+  location: "Ubicación lejana",
+  no_response: "No responde",
+  competitor: "Eligió competencia",
+  other: "Otro",
+};
+
 export const LEAD_INTERESTS = ["musculacion", "cardio", "clases", "artes_marciales", "otro"] as const;
 export const LEAD_INTEREST_LABELS: Record<(typeof LEAD_INTERESTS)[number], string> = {
   musculacion: "Musculación",

@@ -175,6 +175,13 @@ export function LeadFormDialog({
           </Field>
         </div>
 
+        <TextField
+          {...bind("promo_code")}
+          label="Código promocional"
+          placeholder="Ej: PROMO2026"
+          hint="Opcional."
+        />
+
         <Field label="Sede de interés" htmlFor="lead-branch" error={errors.branch_id?.message}>
           <Controller
             control={control}

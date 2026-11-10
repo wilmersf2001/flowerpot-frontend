@@ -2,6 +2,7 @@ import { z } from "zod";
 import { enumFallback, optionalText, requiredText } from "@/features/_shared/form-schema";
 import { localDateOffset, toDateInputValue } from "@/features/_shared/format";
 import {
+  MEMBERSHIP_CANCELLATION_REASONS,
   MEMBERSHIP_CREATE_STATUSES,
   MEMBERSHIP_START_MAX_DAYS_IN_FUTURE,
   MEMBERSHIP_START_MAX_DAYS_IN_PAST,
@@ -26,6 +27,10 @@ export const membershipFormSchema = z
     starts_at: requiredText("La fecha de inicio", "f"),
     status: z.enum(MEMBERSHIP_STATUSES),
     notes: optionalText(500),
+    /** Estado con el que se abrió la edición (no se envía): el motivo solo se exige al cancelar. */
+    initial_status: z.string(),
+    /** Solo se pide (y se envía) al cancelar. */
+    cancellation_reason: z.enum(["", ...MEMBERSHIP_CANCELLATION_REASONS]),
     /** Sedes elegidas; solo aplica si el plan es `limited`. */
     branches: z.array(z.string()),
     /**
@@ -36,6 +41,17 @@ export const membershipFormSchema = z
     plan_max_branches: z.string(),
   })
   .superRefine((form, ctx) => {
+    if (
+      form.status === "cancelled" &&
+      form.initial_status !== "cancelled" &&
+      !form.cancellation_reason
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["cancellation_reason"],
+        message: "Indica por qué se cancela la membresía.",
+      });
+    }
     if (form.plan_branch_access === "limited") {
       const max = Number(form.plan_max_branches) || 1;
       if (form.branches.length < 1 || form.branches.length > max) {
@@ -80,6 +96,8 @@ export const membershipFormDefaults: MembershipForm = {
   // Queda pendiente de pago: se activa sola cuando el pago queda completo.
   status: "pending",
   notes: "",
+  initial_status: "",
+  cancellation_reason: "",
   branches: [],
   plan_branch_access: "",
   plan_max_branches: "",
@@ -92,6 +110,7 @@ export const MEMBERSHIP_FORM_FIELDS = [
   "starts_at",
   "status",
   "notes",
+  "cancellation_reason",
   "branches",
 ] as const satisfies readonly (keyof MembershipForm)[];
 
@@ -106,6 +125,8 @@ export function membershipToForm(row: MembershipRow): MembershipForm {
     starts_at: toDateInputValue(row.starts_at),
     status: normalizeStatus(row.status),
     notes: row.notes ?? "",
+    initial_status: row.status,
+    cancellation_reason: "",
     branches: [],
     plan_branch_access: "",
     plan_max_branches: "",
@@ -138,5 +159,10 @@ export function toUpdateMembershipInput(
   return {
     status: form.status,
     notes: form.notes || undefined,
+    ...(form.status === "cancelled" &&
+    form.initial_status !== "cancelled" &&
+    form.cancellation_reason
+      ? { cancellation_reason: form.cancellation_reason }
+      : {}),
   };
 }

@@ -15,7 +15,12 @@ import {
   useResourceFormSubmit,
 } from "@/features/_shared";
 import { useCreateMember, useUpdateMember } from "../lib/members.hooks";
-import { MEMBER_GENDERS, MEMBER_GENDER_LABELS } from "../lib/members.constants";
+import {
+  MEMBER_GENDERS,
+  MEMBER_GENDER_LABELS,
+  MEMBER_SOURCES,
+  MEMBER_SOURCE_LABELS,
+} from "../lib/members.constants";
 import {
   MEMBER_FORM_FIELDS,
   birthDateBounds,
@@ -41,7 +46,18 @@ function keepDigits(event: FormEvent<HTMLInputElement>) {
 /** Género: lista fija -> `Combobox` sin buscador. */
 const GENDER_OPTIONS: ComboboxOption[] = [
   { value: "", label: "Sin especificar" },
-  ...MEMBER_GENDERS.map((gender) => ({ value: gender, label: MEMBER_GENDER_LABELS[gender] })),
+  ...MEMBER_GENDERS.map((gender) => ({
+    value: gender,
+    label: MEMBER_GENDER_LABELS[gender],
+  })),
+];
+
+const SOURCE_OPTIONS: ComboboxOption[] = [
+  { value: "", label: "Sin especificar" },
+  ...MEMBER_SOURCES.map((source) => ({
+    value: source,
+    label: MEMBER_SOURCE_LABELS[source],
+  })),
 ];
 
 /**
@@ -85,7 +101,10 @@ export function MemberFormDialog({
       fields: MEMBER_FORM_FIELDS,
       submit: (values) =>
         member
-          ? updateMember.mutateAsync({ id: member.id, input: toUpdateMemberInput(values) })
+          ? updateMember.mutateAsync({
+              id: member.id,
+              input: toUpdateMemberInput(values),
+            })
           : createMember.mutateAsync(toCreateMemberInput(values)),
       successMessage: (values) =>
         `Socio "${values.first_name} ${values.last_name}" ${isEdit ? "actualizado" : "creado"}.`,
@@ -129,10 +148,24 @@ export function MemberFormDialog({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form
+        id={FORM_ID}
+        onSubmit={onSubmit}
+        className="flex flex-col gap-4"
+        noValidate
+      >
         <div className="grid grid-cols-2 gap-4">
-          <TextField {...bind("first_name")} label="Nombres" placeholder="Juan" autoFocus />
-          <TextField {...bind("last_name")} label="Apellidos" placeholder="Pérez" />
+          <TextField
+            {...bind("first_name")}
+            label="Nombres"
+            placeholder="Juan"
+            autoFocus
+          />
+          <TextField
+            {...bind("last_name")}
+            label="Apellidos"
+            placeholder="Pérez"
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -154,7 +187,12 @@ export function MemberFormDialog({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <TextField {...bind("email")} label="Correo" type="email" placeholder="socio@correo.com" />
+          <TextField
+            {...bind("email")}
+            label="Correo"
+            type="email"
+            placeholder="socio@correo.com"
+          />
           <TextField
             {...bind("phone")}
             label="Celular"
@@ -176,6 +214,21 @@ export function MemberFormDialog({
                 value={field.value}
                 onValueChange={field.onChange}
                 options={GENDER_OPTIONS}
+              />
+            )}
+          />
+        </Field>
+
+        <Field label="¿Cómo nos conoció?" htmlFor="member-source">
+          <Controller
+            control={control}
+            name="source"
+            render={({ field }) => (
+              <Combobox
+                id="member-source"
+                value={field.value}
+                onValueChange={field.onChange}
+                options={SOURCE_OPTIONS}
               />
             )}
           />

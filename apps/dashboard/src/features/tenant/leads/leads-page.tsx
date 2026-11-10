@@ -11,6 +11,7 @@ import { ConvertLeadDialog } from "./components/convert-lead-dialog";
 import { DeleteLeadDialog } from "./components/delete-lead-dialog";
 import { ImportLeadsDialog } from "./components/import-leads-dialog";
 import { LeadFormDialog } from "./components/lead-form-dialog";
+import { LoseLeadDialog } from "./components/lose-lead-dialog";
 import { LeadsTable } from "./components/leads-table";
 import {
   ACQUISITION_SOURCES,
@@ -105,6 +106,7 @@ function LeadsInbox({ origin }: { origin: LeadOrigin }) {
   const [editing, setEditing] = useState<LeadRow | null>(null);
   const [deleting, setDeleting] = useState<LeadRow | null>(null);
   const [converting, setConverting] = useState<LeadRow | null>(null);
+  const [losing, setLosing] = useState<LeadRow | null>(null);
 
   const hasFilters = Boolean(debouncedSearch || status || source || onlyConsented);
 
@@ -170,6 +172,7 @@ function LeadsInbox({ origin }: { origin: LeadOrigin }) {
           onEditAction={setEditing}
           onDeleteAction={setDeleting}
           onConvertAction={setConverting}
+          onLoseAction={setLosing}
           emptyMessage={hasFilters ? "Ningún lead coincide con los filtros." : undefined}
           pagination={{
             page: meta?.current_page ?? page,
@@ -194,6 +197,12 @@ function LeadsInbox({ origin }: { origin: LeadOrigin }) {
         lead={converting}
         onOpenChangeAction={(open) => {
           if (!open) setConverting(null);
+        }}
+      />
+      <LoseLeadDialog
+        lead={losing}
+        onOpenChangeAction={(open) => {
+          if (!open) setLosing(null);
         }}
       />
       <DeleteLeadDialog
