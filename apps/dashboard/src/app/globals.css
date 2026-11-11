@@ -102,3 +102,155 @@
    sidebar, el topbar, ResourceHeader y la pantalla de login) están en
    `@repo/config/tailwind/theme.css` — única fuente, compartida con la
    landing. No se redefinen aquí. */
+
+/* ── Login: energía ───────────────────────────────────────────────────── */
+.login-stage {
+  perspective: 900px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card {
+  --mx: 50%;
+  --my: 0%;
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.25s ease-out;
+  animation: login-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  background-image: radial-gradient(
+    320px circle at var(--mx) var(--my),
+    color-mix(in oklab, var(--primary) 14%, transparent),
+    transparent 70%
+  );
+}
+
+.login-card:focus-within {
+  border-color: color-mix(in oklab, var(--primary) 60%, var(--border));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
+    0 0 48px -8px color-mix(in oklab, var(--primary) 45%, transparent);
+}
+
+.login-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--primary);
+  pointer-events: none;
+  transition: width 0.3s, height 0.3s;
+}
+.login-card:hover .login-corner,
+.login-card:focus-within .login-corner {
+  width: 26px;
+  height: 26px;
+}
+
+/* Entrada escalonada de los hijos directos del contenido. */
+.login-item {
+  animation: login-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 150ms);
+}
+
+@keyframes login-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Botón con barrido de luz. */
+.login-cta {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.25s;
+}
+.login-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    color-mix(in oklab, white 55%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%) skewX(-18deg);
+}
+.login-cta:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px -6px color-mix(in oklab, var(--primary) 70%, transparent);
+}
+.login-cta:hover:not(:disabled)::after {
+  transform: translateX(120%) skewX(-18deg);
+  transition: transform 0.7s ease;
+}
+.login-cta:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Titular: línea que "carga" bajo el texto. */
+.login-bolt {
+  stroke-dasharray: 60 240;
+  animation: login-dash 2.6s linear infinite;
+}
+@keyframes login-dash {
+  to {
+    stroke-dashoffset: -300;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-card,
+  .login-item,
+  .login-bolt {
+    animation: none;
+  }
+  .login-card {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Login: estado "cargando" — la tarjeta vibra con energía y el rayo parpadea. */
+.login-card[data-busy] {
+  border-color: var(--primary);
+  animation: login-charge 0.5s ease-in-out infinite alternate;
+}
+@keyframes login-charge {
+  from {
+    box-shadow: 0 0 18px -6px color-mix(in oklab, var(--primary) 55%, transparent);
+  }
+  to {
+    box-shadow: 0 0 64px -2px color-mix(in oklab, var(--primary) 85%, transparent);
+  }
+}
+.login-zap {
+  animation: login-zap 0.45s steps(2, end) infinite;
+}
+@keyframes login-zap {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.35) rotate(-12deg); opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-card[data-busy],
+  .login-zap {
+    animation: none;
+  }
+}
+
+/* Barrido de luz del botón mientras carga (animado por JS, acelera). */
+.login-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    color-mix(in oklab, white 75%, transparent) 50%,
+    transparent 75%
+  );
+}
+.login-cta[aria-busy="true"]::after {
+  display: none;
+}
