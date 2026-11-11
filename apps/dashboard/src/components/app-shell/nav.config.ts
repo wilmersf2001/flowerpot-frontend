@@ -28,6 +28,12 @@ const CENTRAL_NAV: NavItem[] = [
 ];
 
 const TENANT_NAV: NavItem[] = [
+  {
+    href: ROUTES.tenant.dashboard,
+    label: "Dashboard",
+    icon: "layoutDashboard",
+    permission: "analytics.view_management",
+  },
   { href: ROUTES.tenant.members, label: "Socios", icon: "users", permission: "members.view" },
   {
     href: ROUTES.tenant.memberships,

@@ -1,5 +1,6 @@
 import {
   Banknote,
+  LayoutDashboard,
   Building,
   Building2,
   CalendarCheck,
@@ -31,6 +32,7 @@ import {
  */
 export const NAV_ICONS = {
   banknote: Banknote,
+  layoutDashboard: LayoutDashboard,
   building: Building,
   building2: Building2,
   calendarCheck: CalendarCheck,
