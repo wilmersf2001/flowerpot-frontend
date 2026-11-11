@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import { ResourceHeader } from "@/features/_shared";
 import { useHasPermission } from "@/features/tenant/auth";
+import { ExportPdfReportsMenu } from "./components/export-pdf-reports-menu";
 import { ExportReportsMenu } from "./components/export-reports-menu";
 import { CrmPanelView } from "./components/crm-panel";
 import { FinancialPanelView } from "./components/financial-panel";
@@ -63,6 +64,7 @@ export function ManagementDashboardPage() {
               ))}
             </select>
             <ExportReportsMenu params={params} />
+            <ExportPdfReportsMenu params={params} />
           </div>
         }
       />

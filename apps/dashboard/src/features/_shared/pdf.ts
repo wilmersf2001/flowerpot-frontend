@@ -31,10 +31,12 @@ export function filenameFromDisposition(header: unknown): string | null {
 export async function fetchPdf(
   path: string,
   params?: Record<string, string | undefined>,
+  timeout?: number,
 ): Promise<PdfFile> {
   const response = await apiClient.get<Blob>(path, {
     params,
     responseType: "blob",
+    timeout,
     headers: { Accept: "application/pdf" },
   });
   return {

@@ -93,3 +93,34 @@ export const REPORT_TYPES = [
 ] as const;
 
 export type ReportType = (typeof REPORT_TYPES)[number]["value"];
+
+/** Permiso general de la exportación de reportes PDF profesionales. */
+export const EXPORT_PDF_PERMISSION = "analytics.export_pdf_reports";
+
+export const PDF_REPORTS_ENDPOINT = "/analytics/reports/pdf";
+
+/** Los PDF con gráficos tardan hasta ~15 s (60 s el consolidado de personal). */
+export const PDF_REPORT_TIMEOUT_MS = 90_000;
+
+export const PDF_REPORT_TYPES = [
+  {
+    value: "executive",
+    label: "Ejecutivo mensual",
+    description: "KPIs, FODA y proyecciones (8-12 págs.)",
+    permission: "analytics.export_executive_report",
+  },
+  {
+    value: "audit",
+    label: "Auditoría interna",
+    description: "Conciliación, anomalías y controles (10-15 págs.)",
+    permission: "analytics.export_audit_report",
+  },
+  {
+    value: "staff-performance",
+    label: "Desempeño de personal",
+    description: "Evaluación de todo el equipo (20-50 págs.)",
+    permission: "analytics.export_staff_performance",
+  },
+] as const;
+
+export type PdfReportType = (typeof PDF_REPORT_TYPES)[number]["value"];
