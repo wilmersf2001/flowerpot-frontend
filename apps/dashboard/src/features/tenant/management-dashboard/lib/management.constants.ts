@@ -71,3 +71,25 @@ export const MONTH_NAMES = [
   "Noviembre",
   "Diciembre",
 ] as const;
+
+/** Permiso que habilita la exportación de reportes Excel. */
+export const EXPORT_REPORTS_PERMISSION = "analytics.export_reports";
+
+export const REPORTS_ENDPOINT = "/analytics/reports";
+
+export const EXCEL_MIME =
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+/** Los reportes tardan 1-3 s en generarse; se da margen sobre el timeout por defecto. */
+export const REPORT_EXPORT_TIMEOUT_MS = 60_000;
+
+export const REPORT_TYPES = [
+  { value: "financial", label: "Financiero mensual", description: "Ingresos, gastos, anomalías y proyecciones" },
+  { value: "collection", label: "Cobranza", description: "Pagos, morosidad y scoring de riesgo" },
+  { value: "operations", label: "Operaciones", description: "Asistencia, horas pico, clases y equipos" },
+  { value: "retention", label: "Retención", description: "Tendencias, churn y miembros en riesgo" },
+  { value: "crm", label: "CRM", description: "Funnel, fuentes y razones de pérdida" },
+  { value: "inventory", label: "Kardex de inventario", description: "Movimientos, ABC y alertas de stock" },
+] as const;
+
+export type ReportType = (typeof REPORT_TYPES)[number]["value"];

@@ -16,7 +16,7 @@ export interface PdfFile {
 }
 
 /** Extrae `filename` de una cabecera `Content-Disposition`. */
-function filenameFromDisposition(header: unknown): string | null {
+export function filenameFromDisposition(header: unknown): string | null {
   if (typeof header !== "string") return null;
   const match = header.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
   if (!match?.[1]) return null;

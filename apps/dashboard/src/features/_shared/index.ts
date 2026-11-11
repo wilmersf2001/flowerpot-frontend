@@ -75,6 +75,7 @@ export {
 export {
   fetchPdf,
   saveBlob,
+  filenameFromDisposition,
   pdfErrorMessage,
   type PdfFile,
 } from "./pdf";

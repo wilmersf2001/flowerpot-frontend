@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import { ResourceHeader } from "@/features/_shared";
 import { useHasPermission } from "@/features/tenant/auth";
+import { ExportReportsMenu } from "./components/export-reports-menu";
 import { CrmPanelView } from "./components/crm-panel";
 import { FinancialPanelView } from "./components/financial-panel";
 import { MembershipsPanelView } from "./components/memberships-panel";
@@ -36,7 +37,7 @@ export function ManagementDashboardPage() {
         title="Dashboard de gerencia"
         description="Análisis, alertas y recomendaciones del negocio. Los datos se cachean 5 minutos."
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <select
               aria-label="Mes"
               className={SELECT_CLASS}
@@ -61,6 +62,7 @@ export function ManagementDashboardPage() {
                 </option>
               ))}
             </select>
+            <ExportReportsMenu params={params} />
           </div>
         }
       />
