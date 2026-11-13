@@ -1,6 +1,7 @@
 import { PlansSection } from "@/features/plans";
 import { SiteHeader } from "./components/site-header";
 import { Hero } from "./components/hero";
+import { MottoTicker } from "./components/motto-ticker";
 import { FeatureGrid } from "./components/feature-grid";
 import { SecuritySection } from "./components/security-section";
 import { MembersSection } from "./components/members-section";
@@ -18,6 +19,7 @@ export function LandingPage() {
       <SiteHeader />
       <main className="flex flex-col">
         <Hero />
+        <MottoTicker />
         <FeatureGrid />
         <SecuritySection />
         <MembersSection />

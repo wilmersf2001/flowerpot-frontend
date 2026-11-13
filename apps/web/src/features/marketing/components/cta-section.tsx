@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@repo/ui/button";
 import { Container } from "@/features/_shared";
 import { FINAL_CTA } from "../lib/marketing.content";
@@ -28,7 +29,7 @@ export function CtaSection() {
                 className="rounded-lg"
                 asChild
               >
-                <a href="#">{FINAL_CTA.secondaryCta}</a>
+                <Link href="/preguntas-frecuentes">{FINAL_CTA.secondaryCta}</Link>
               </Button>
             </div>
           </div>

@@ -56,4 +56,143 @@
     background-color: var(--border);
     gap: 1px;
   }
+
+  /* ── Dinamismo: entradas con empuje, pulso en vivo, ticker, barrido ── */
+  .fp-rise {
+    animation: fp-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+  }
+
+  [data-reveal="hidden"] {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  .fp-live {
+    position: relative;
+  }
+  .fp-live::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: var(--primary);
+    animation: fp-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .fp-ecg {
+    stroke-dasharray: 90 410;
+    animation: fp-ecg 2.8s linear infinite;
+  }
+
+  .fp-marquee {
+    animation: fp-marquee 38s linear infinite;
+  }
+  .fp-marquee-wrap:hover .fp-marquee {
+    animation-play-state: paused;
+  }
+
+  .fp-cta {
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform 0.15s,
+      box-shadow 0.25s;
+  }
+  .fp-cta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 30%,
+      color-mix(in oklab, white 55%, transparent) 50%,
+      transparent 70%
+    );
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  .fp-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px -6px
+      color-mix(in oklab, var(--primary) 70%, transparent);
+  }
+  .fp-cta:hover::after {
+    transform: translateX(120%) skewX(-18deg);
+    transition: transform 0.7s ease;
+  }
+  .fp-cta:active {
+    transform: scale(0.98);
+  }
+
+  .fp-card {
+    position: relative;
+  }
+  .fp-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .fp-card:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes fp-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  80%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@keyframes fp-ecg {
+  to {
+    stroke-dashoffset: -500;
+  }
+}
+@keyframes fp-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-rise,
+  .fp-live::after,
+  .fp-ecg,
+  .fp-marquee {
+    animation: none;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .fp-cta,
+  .fp-cta::after,
+  .fp-card::before {
+    transition: none;
+  }
 }

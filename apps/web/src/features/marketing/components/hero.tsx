@@ -1,6 +1,8 @@
 import { Button } from "@repo/ui/button";
 import { Container } from "@/features/_shared";
 import { HERO, HERO_STATS } from "../lib/marketing.content";
+import { LiveCapacity } from "./live-capacity";
+import { StatCounter } from "./stat-counter";
 
 /**
  * Portada editorial (dirección "Iron & Lime"): headline condensado gigante a
@@ -19,25 +21,34 @@ export function Hero() {
         <div className="grid items-end gap-14 py-16 sm:py-24 lg:grid-cols-[1.15fr_0.85fr]">
           {/* Columna de texto */}
           <div>
-            <div className="flex items-center gap-3">
+            <div className="fp-rise flex items-center gap-3" style={{ "--i": 0 } as React.CSSProperties}>
               <span className="h-px w-8 bg-primary" />
               <span className="display-label text-[12px] text-primary">
                 {HERO.eyebrow}
               </span>
             </div>
 
-            <h1 className="display-heading mt-7 text-[clamp(2.75rem,8vw,5.75rem)]">
+            <h1
+              className="fp-rise display-heading mt-7 text-[clamp(2.75rem,8vw,5.75rem)]"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
               {headline}
               <span className="text-primary">{HERO.highlight}</span>
               {tail}
             </h1>
 
-            <p className="mt-7 max-w-md text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p
+              className="fp-rise mt-7 max-w-md text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
+              style={{ "--i": 2 } as React.CSSProperties}
+            >
               {HERO.description}
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" className="rounded-lg" asChild>
+            <div
+              className="fp-rise mt-8 flex flex-col gap-3 sm:flex-row"
+              style={{ "--i": 3 } as React.CSSProperties}
+            >
+              <Button size="lg" className="fp-cta rounded-lg" asChild>
                 <a href="#planes">{HERO.primaryCta}</a>
               </Button>
               <Button
@@ -75,22 +86,25 @@ export function Hero() {
                 <path d="M3 9h18M9 21V9" />
               </svg>
 
-              <div className="absolute inset-x-6 bottom-6">
-                <div className="display-label text-[11px] text-muted-foreground">
-                  Aforo en vivo · Sede Miraflores
-                </div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="display-heading text-5xl text-primary">
-                    68
-                  </span>
-                  <span className="display-label text-sm text-muted-foreground">
-                    / 120
-                  </span>
-                </div>
-                <div className="mt-3 h-1 overflow-hidden rounded-full bg-border">
-                  <div className="h-full w-[57%] bg-primary" />
-                </div>
-              </div>
+              {/* Pulso cardíaco recorriendo el panel */}
+              <svg
+                viewBox="0 0 400 80"
+                fill="none"
+                preserveAspectRatio="none"
+                className="absolute inset-x-0 top-1/3 h-20 w-full text-primary/70"
+                aria-hidden
+              >
+                <path
+                  className="fp-ecg"
+                  d="M0 40h120l12-26 16 52 14-40 10 14h58l12-22 14 44 12-22h132"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
+              <LiveCapacity />
             </div>
 
             <div className="display-label absolute -right-3 -top-3 rounded-lg bg-primary px-3 py-1.5 text-[11px] text-primary-foreground">
@@ -107,7 +121,7 @@ export function Hero() {
               className="border-border py-7 not-first:border-t sm:border-t-0 sm:px-7 sm:not-last:border-r sm:first:pl-0"
             >
               <dt className="display-heading text-4xl">
-                {stat.value}
+                <StatCounter value={stat.value} />
                 {stat.unit ? (
                   <span className="text-primary">{stat.unit}</span>
                 ) : null}

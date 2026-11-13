@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Button } from "@repo/ui/button";
 import { Container } from "@/features/_shared";
 import { ADMIN_URL } from "@/lib/site";
-import { NAV_LINKS } from "../lib/marketing.content";
 import { BrandMark } from "./brand-mark";
+import { NavLinks } from "./nav-links";
 
-/** Barra superior fija, translúcida. Navegación por anclas de la landing. */
+/** Barra superior fija, translúcida. Enlaces absolutos: sirven en cualquier página. */
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
@@ -15,17 +15,7 @@ export function SiteHeader() {
             <BrandMark />
           </Link>
 
-          <nav className="hidden items-center gap-7 md:flex">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="display-label text-[12px] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+          <NavLinks />
         </div>
 
         <div className="flex items-center gap-2">
@@ -38,7 +28,7 @@ export function SiteHeader() {
             <a href={ADMIN_URL}>Iniciar sesión</a>
           </Button>
           <Button size="sm" className="rounded-lg" asChild>
-            <a href="#planes">Empezar prueba</a>
+            <Link href="/#planes">Empezar prueba</Link>
           </Button>
         </div>
       </Container>

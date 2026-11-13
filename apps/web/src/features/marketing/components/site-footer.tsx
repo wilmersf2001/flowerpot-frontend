@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Container } from "@/features/_shared";
 import { BRAND, FOOTER } from "../lib/marketing.content";
 import { BrandMark } from "./brand-mark";
@@ -25,12 +26,12 @@ export function SiteFooter() {
               <ul className="mt-4 flex flex-col gap-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

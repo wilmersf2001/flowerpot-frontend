@@ -32,10 +32,12 @@ export const BRAND = {
 } as const;
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Producto", href: "#producto" },
-  { label: "Seguridad", href: "#seguridad" },
-  { label: "Socios", href: "#socios" },
-  { label: "Planes", href: "#planes" },
+  // Rutas absolutas: funcionan igual desde la home y desde /seguridad o /preguntas-frecuentes.
+  { label: "Producto", href: "/#producto" },
+  { label: "Seguridad", href: "/seguridad" },
+  { label: "Socios", href: "/#socios" },
+  { label: "Planes", href: "/#planes" },
+  { label: "Preguntas", href: "/preguntas-frecuentes" },
 ];
 
 export const HERO = {
@@ -226,7 +228,7 @@ export const FINAL_CTA = {
   description:
     "Migramos tus socios y tu historial sin costo. En un día estás operando con Flowerpot.",
   primaryCta: "Empezar prueba gratis",
-  secondaryCta: "Hablar con ventas",
+  secondaryCta: "Resolver mis dudas",
 } as const;
 
 export const FOOTER = {
@@ -246,7 +248,7 @@ export const FOOTER = {
       title: "Empresa",
       links: [
         { label: "Socios", href: "/#socios" },
-        { label: "Contacto", href: "#" },
+        { label: "Contacto", href: "/preguntas-frecuentes#general" },
         { label: "Estado del servicio", href: "#" },
       ],
     },
@@ -260,3 +262,13 @@ export const FOOTER = {
     },
   ],
 } as const;
+
+/** Lema del ticker bajo el hero. */
+export const MOTTO_WORDS = [
+  "Fuerza",
+  "Disciplina",
+  "Constancia",
+  "Sin excusas",
+  "Un rep más",
+  "Cada día cuenta",
+];
