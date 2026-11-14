@@ -15,9 +15,12 @@ import {
 export function PlanCard({
   plan,
   featured = false,
+  promoLabel,
 }: {
   plan: PublicPlan;
   featured?: boolean;
+  /** Descuento de la promoción vigente si aplica a este plan. */
+  promoLabel?: string;
 }) {
   return (
     <div
@@ -29,6 +32,12 @@ export function PlanCard({
       {featured ? (
         <span className="display-label absolute -top-3 left-8 rounded-lg bg-primary px-3 py-1 text-[11px] text-primary-foreground">
           El más elegido
+        </span>
+      ) : null}
+
+      {promoLabel ? (
+        <span className="display-label absolute -top-3 right-8 rounded-lg bg-foreground px-3 py-1 text-[11px] text-background">
+          {promoLabel}
         </span>
       ) : null}
 

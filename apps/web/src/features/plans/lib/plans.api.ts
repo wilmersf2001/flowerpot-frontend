@@ -5,9 +5,10 @@ import { FALLBACK_PLANS } from "./plans.fallback";
 import type { PublicPlan } from "./plans.types";
 
 /**
- * `GET /plans` es público (no requiere tenant ni sesión), así que el sitio
- * lo consulta directo contra Laravel desde el servidor, sin pasar por el BFF
- * proxy del dashboard. El navegador nunca ve esta URL.
+ * `GET /public/plans` es público (no requiere tenant ni sesión), así que el
+ * sitio lo consulta directo contra Laravel desde el servidor, sin pasar por el
+ * BFF proxy del dashboard. El navegador nunca ve esta URL. Las rutas `/public/*`
+ * son solo de lectura para la web; la gestión y validación van en el panel admin.
  */
 const API_BASE = process.env.API_INTERNAL_URL ?? "http://localhost:8000/api";
 
@@ -31,7 +32,7 @@ function pickRows(body: unknown): Record<string, unknown>[] {
  */
 export async function getPublicPlans(): Promise<PublicPlan[]> {
   try {
-    const res = await fetch(`${API_BASE}/plans?per_page=50`, {
+    const res = await fetch(`${API_BASE}/public/plans`, {
       headers: { Accept: "application/json" },
       // Revalida cada 5 min: los planes cambian poco y evita golpear la API.
       next: { revalidate: 300 },

@@ -23,6 +23,9 @@ const CENTRAL_NAV: NavItem[] = [
     label: "Suscripciones",
     icon: "creditCard",
   },
+  { href: ROUTES.central.promotions, label: "Promociones", icon: "tag" },
+  { href: ROUTES.central.testimonials, label: "Testimonios", icon: "messageSquareQuote" },
+  { href: ROUTES.central.siteSettings, label: "Sitio web", icon: "globe" },
   { href: ROUTES.central.gymSettings, label: "Configuración", icon: "settings" },
   { href: ROUTES.central.devices, label: "Lectores", icon: "fingerprint" },
 ];

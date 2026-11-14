@@ -8,15 +8,20 @@ import { SecuritySection } from "./components/security-section";
 import { MembersSection } from "./components/members-section";
 import { CtaSection } from "./components/cta-section";
 import { SiteFooter } from "./components/site-footer";
+import { CampaignBanner } from "./components/campaign-banner";
+import { WhatsAppButton } from "./components/whatsapp-button";
+import { getPublicSiteSettings } from "./lib/site-settings.api";
 
 /**
  * Página pública de Flowerpot. Solo composición: cada bloque es su propio
  * componente y trae su contenido de `lib/marketing.content.ts`. La sección de
  * planes obtiene los datos reales en el servidor (`features/plans`).
  */
-export function LandingPage() {
+export async function LandingPage() {
+  const { banner, whatsapp } = await getPublicSiteSettings();
   return (
     <>
+      {banner ? <CampaignBanner banner={banner} /> : null}
       <SiteHeader />
       <main className="flex flex-col">
         <Hero />
@@ -29,6 +34,7 @@ export function LandingPage() {
         <CtaSection />
       </main>
       <SiteFooter />
+      {whatsapp ? <WhatsAppButton support={whatsapp} /> : null}
     </>
   );
 }

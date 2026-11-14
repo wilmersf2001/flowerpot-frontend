@@ -3,17 +3,18 @@ import { Section, PlaceholderImage } from "@/features/_shared";
 import {
   MEMBERS_SECTION,
   MEMBER_GYMS,
-  TESTIMONIALS,
 } from "../lib/marketing.content";
+import { getFeaturedTestimonials } from "../lib/testimonials.api";
 
 /**
  * Sección "Socios": gimnasios que usan Flowerpot + testimonios.
  *
- * NOTA: `MEMBER_GYMS` y `TESTIMONIALS` son data de PRUEBA y estática (ver
- * `marketing.content.ts`). Falta el flag de visibilidad del gimnasio en el
- * backend; cuando exista, esta sección cargará desde la API.
+ * Los testimonios vienen de `GET /public/testimonials` (con respaldo estático).
+ * `MEMBER_GYMS` sigue siendo data de PRUEBA (ver `marketing.content.ts`): falta
+ * el flag de visibilidad del gimnasio en el backend.
  */
-export function MembersSection() {
+export async function MembersSection() {
+  const testimonials = await getFeaturedTestimonials();
   return (
     <Section
       id="socios"
@@ -54,7 +55,7 @@ export function MembersSection() {
       </ul>
 
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
-        {TESTIMONIALS.map((t) => (
+        {testimonials.map((t) => (
           <figure
             key={t.author}
             className="flex flex-col justify-between rounded-md border border-border bg-card p-8"

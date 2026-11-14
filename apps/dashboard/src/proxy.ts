@@ -27,7 +27,16 @@ const AFTER_LOGIN: Record<PanelKind, string> = {
 };
 
 /** Rutas que pertenecen a cada panel (route groups `(central)` / `(tenant)`). */
-const CENTRAL_PREFIXES = ["/tenants", "/plans", "/subscriptions", "/gym-settings", "/devices"];
+const CENTRAL_PREFIXES = [
+  "/tenants",
+  "/plans",
+  "/subscriptions",
+  "/promotions",
+  "/testimonials",
+  "/site-settings",
+  "/gym-settings",
+  "/devices",
+];
 const TENANT_PREFIXES = [
   "/members",
   "/memberships",
