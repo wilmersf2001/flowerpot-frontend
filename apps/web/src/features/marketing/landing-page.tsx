@@ -3,6 +3,7 @@ import { SiteHeader } from "./components/site-header";
 import { Hero } from "./components/hero";
 import { MottoTicker } from "./components/motto-ticker";
 import { FeatureGrid } from "./components/feature-grid";
+import { HardwareSection } from "./components/hardware-section";
 import { SecuritySection } from "./components/security-section";
 import { MembersSection } from "./components/members-section";
 import { CtaSection } from "./components/cta-section";
@@ -21,6 +22,7 @@ export function LandingPage() {
         <Hero />
         <MottoTicker />
         <FeatureGrid />
+        <HardwareSection />
         <SecuritySection />
         <MembersSection />
         <PlansSection />

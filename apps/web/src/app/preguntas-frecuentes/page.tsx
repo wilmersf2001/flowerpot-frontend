@@ -6,7 +6,7 @@ import { breadcrumbSchema, faqPageSchema } from "@/lib/structured-data";
 export const metadata: Metadata = {
   title: "Preguntas frecuentes",
   description:
-    "Respuestas sobre Flowerpot: cómo se separan los datos de cada gimnasio, seguridad, precios, migración desde Excel, soporte 24/7 e integración con torniquetes y Yape.",
+    "Respuestas sobre Flowerpot: cómo se separan los datos de cada gimnasio, seguridad, precios, migración desde Excel, soporte 24/7 e hardware de control de acceso compatible y Yape.",
   alternates: { canonical: "/preguntas-frecuentes" },
   openGraph: {
     title: "Preguntas frecuentes | Flowerpot",

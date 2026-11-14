@@ -34,6 +34,7 @@ export const BRAND = {
 export const NAV_LINKS: NavLink[] = [
   // Rutas absolutas: funcionan igual desde la home y desde /seguridad o /preguntas-frecuentes.
   { label: "Producto", href: "/#producto" },
+  { label: "Hardware", href: "/#hardware" },
   { label: "Seguridad", href: "/seguridad" },
   { label: "Socios", href: "/#socios" },
   { label: "Planes", href: "/#planes" },
@@ -77,7 +78,7 @@ export const FEATURES: Feature[] = [
     icon: DoorOpen,
     title: "Control de acceso",
     description:
-      "Torniquete, QR o huella. Solo entra quien tiene membresía activa; el resto queda registrado.",
+      "Biométrico facial y de huella, QR o registro en recepción. Se valida la membresía en cada entrada y queda registrada.",
   },
   {
     icon: CreditCard,
@@ -239,6 +240,7 @@ export const FOOTER = {
       title: "Producto",
       links: [
         { label: "Funciones", href: "/#producto" },
+        { label: "Hardware compatible", href: "/#hardware" },
         { label: "Seguridad", href: "/seguridad" },
         { label: "Planes", href: "/#planes" },
         { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
@@ -255,9 +257,9 @@ export const FOOTER = {
     {
       title: "Legal",
       links: [
-        { label: "Términos", href: "#" },
-        { label: "Privacidad", href: "#" },
-        { label: "Tratamiento de datos", href: "#" },
+        { label: "Términos", href: "/terminos" },
+        { label: "Privacidad", href: "/privacidad" },
+        { label: "Tratamiento de datos", href: "/tratamiento-de-datos" },
       ],
     },
   ],

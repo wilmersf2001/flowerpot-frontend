@@ -75,7 +75,7 @@ export function softwareApplicationSchema(opts?: { priceFrom?: number }) {
     publisher: { "@id": `${SITE_URL}/#organization` },
     featureList: [
       "Gestión de socios y membresías",
-      "Control de acceso (QR, huella, torniquete)",
+      "Control de acceso (biométrico facial/huella, QR y registro manual)",
       "Cobros y cierre de caja",
       "Asistencia y aforo en vivo",
       "Reportes de negocio",

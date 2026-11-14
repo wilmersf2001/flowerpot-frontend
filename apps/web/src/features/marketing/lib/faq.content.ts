@@ -131,9 +131,24 @@ export const FAQ_GROUPS: FaqGroup[] = [
     title: "Accesos y hardware",
     items: [
       {
-        question: "¿Funciona con torniquetes y lectores de huella?",
+        question: "¿Con qué equipos de control de acceso funciona?",
         answer:
-          "Sí. Flowerpot se integra con control de acceso por QR, huella o torniquete. Solo abre para socios con membresía activa y el resto de intentos queda registrado.",
+          "Con el biométrico ZKTeco SpeedFace-V4L (reconocimiento facial, huella y palma), que está homologado y probado con Flowerpot; con cualquier lector de código QR USB o Bluetooth; y con registro manual desde recepción. En todos los casos se valida que el socio esté activo, con membresía vigente y con acceso a la sede, y se permite una sola asistencia por día.",
+      },
+      {
+        question: "¿Funciona con torniquetes, tarjetas de proximidad u otros biométricos?",
+        answer:
+          "Todavía no. Hoy solo están soportados los equipos de la lista anterior. Otros modelos de biométricos se homologan uno por uno antes de usarse; si tienes uno en mente, escríbenos y lo evaluamos.",
+      },
+      {
+        question: "¿Y si se cae el internet en el gimnasio?",
+        answer:
+          "El biométrico guarda las marcaciones y las envía solas cuando recupera la conexión. Mientras tanto, recepción puede registrar entradas de forma manual.",
+      },
+      {
+        question: "¿Quién conecta y configura los equipos al sistema?",
+        answer:
+          "Nosotros. Los equipos homologados de nuestra lista los conecta y configura el equipo de Flowerpot a tu cuenta y a tu sede, y probamos el ingreso contigo. Si tu equipo no está en la lista, escríbenos y evaluamos si se puede homologar.",
       },
       {
         question: "¿Puedo cobrar con Yape o tarjeta desde el sistema?",
